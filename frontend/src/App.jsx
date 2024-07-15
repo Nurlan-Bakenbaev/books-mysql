@@ -9,7 +9,7 @@ const App = () => {
     <div>
       <BrowserRouter>
         <Provider store={store}>
-          <div className=" flex justify-center items-center mt-12">
+          <div className=" flex justify-center my-10">
             <Routes>
               <Route path="/" element={<Books />} />
               <Route path="/add" element={<Add />} />
