@@ -10,10 +10,11 @@ const App = () => {
       <BrowserRouter>
         <Provider store={store}>
           <div className=" flex justify-center my-10">
+            <div className="photo-background"></div>
             <Routes>
               <Route path="/" element={<Books />} />
               <Route path="/add" element={<Add />} />
-              <Route path="/Update" element={<Update />} />
+              <Route path="/update/:id" element={<Update />} />
             </Routes>
           </div>
         </Provider>

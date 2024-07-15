@@ -4,11 +4,9 @@ import BookCard from "./Card";
 import { IoIosAddCircleOutline } from "react-icons/io";
 const Books = () => {
   const { data, error, isLoading } = useGetAllTheBooksQuery();
-
   if (error) {
     return <h2> Some Error</h2>;
   }
-
   if (isLoading) {
     return <h2> Please wait ... Loading</h2>;
   }
@@ -37,5 +35,4 @@ const Books = () => {
     </div>
   );
 };
-
 export default Books;

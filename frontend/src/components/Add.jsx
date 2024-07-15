@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { usePostOneBookMutation } from "../redux/books";
 import { useNavigate } from "react-router-dom";
+import { CiEdit } from "react-icons/ci"; <CiEdit />
 const Add = () => {
   const [postOneBook, { isLoading, isError, error: postError }] =
     usePostOneBookMutation();
@@ -8,7 +9,7 @@ const Add = () => {
     title: "",
     desc: "",
     cover: "",
-    price: "",
+    price: null,
   });
   const navigate = useNavigate();
   const handleBook = (e) => {
@@ -43,7 +44,7 @@ const Add = () => {
         <input
           name="price"
           value={book.price}
-          type="text"
+          type="number"
           placeholder="Price"
           onChange={handleBook}
         />

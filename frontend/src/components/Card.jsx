@@ -4,6 +4,8 @@ import Typography from "@mui/material/Typography";
 import { CardActionArea } from "@mui/material";
 import { MdDeleteOutline } from "react-icons/md";
 import { useDeleteOneBookMutation } from "../redux/books";
+import { CiEdit } from "react-icons/ci";
+import { Link } from "react-router-dom";
 
 export default function BookCard({ id, img, title, desc, price }) {
   const [deleteOneBook, { isError, isLoading, isSuccess }] =
@@ -15,8 +17,16 @@ export default function BookCard({ id, img, title, desc, price }) {
       console.log(error);
     }
   };
+  const truncateText = (texts, maxLenght) => {
+    if (texts.length > maxLenght) {
+      return texts.substring(0, maxLenght) + "...";
+    } else {
+      return texts;
+    }
+  };
+
   return (
-    <Card sx={{ minWidth: 280, minHeight: 150 }}>
+    <Card sx={{ maxWidth: 280, minHeight: 150 }}>
       <CardActionArea>
         <div className="w-[300px] h-[300px]">
           <img
@@ -29,16 +39,23 @@ export default function BookCard({ id, img, title, desc, price }) {
           />
         </div>
         <CardContent>
-          <Typography sx={{}} gutterBottom variant="h3" component="div">
+          <Typography gutterBottom variant="h3" component="div">
             {title}
           </Typography>
-          <Typography variant="body2">{desc}</Typography>
+          <Typography variant="body2">{truncateText(desc, 180)}</Typography>
           <Typography variant="body2">${price}</Typography>
         </CardContent>
       </CardActionArea>
-      <button onClick={() => handleDelete(id)}>
-        <MdDeleteOutline />
-      </button>
+      <div className=" flex pb-3 justify-center pt-2 border border-t-grey-500 ">
+        <button className="buttons" onClick={() => handleDelete(id)}>
+          <MdDeleteOutline />
+        </button>
+        <button className="buttons">
+          <Link to={`/update/${id}`}>
+            <CiEdit />
+          </Link>
+        </button>
+      </div>
     </Card>
   );
 }
