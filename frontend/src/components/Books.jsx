@@ -10,7 +10,7 @@ const Books = () => {
   if (isLoading) {
     return <h2> Please wait ... Loading</h2>;
   }
-  console.log(error);
+
   return (
     <div>
       <div className="flex flex-row justify-center  gap-2 items-center">
@@ -20,6 +20,7 @@ const Books = () => {
         </Link>
       </div>
       <div className="flex flex-row gap-3 flex-wrap justify-center">
+        {data.length === 0 && <p>There is no books yet. </p>}
         {data?.map(({ id, cover, title, desc, price }) => (
           <div key={id}>
             <BookCard
