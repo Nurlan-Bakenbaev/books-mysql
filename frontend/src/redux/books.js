@@ -23,10 +23,19 @@ export const booksApi = createApi({
       }),
       invalidatesTags: ["Books"],
     }),
+    updateOneBook: builder.mutation({
+      query: ({ id, ...data }) => ({
+        url: `update/${id}`,
+        method: "PUT",
+        body:data
+      }),
+      invalidatesTags: ["Books"],
+    }),
   }),
 });
 export const {
   useGetAllTheBooksQuery,
   usePostOneBookMutation,
   useDeleteOneBookMutation,
+  useUpdateOneBookMutation,
 } = booksApi;
