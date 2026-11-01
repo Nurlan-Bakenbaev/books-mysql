@@ -40,7 +40,7 @@ function App() {
   const percent = allIds.length ? Math.round(done / allIds.length * 100) : 0;
   const toggle = (id) => setCompleted((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
   const navItems = [
-    ['#overview', 'Обзор', FiLayers], ['#book', 'Читать книгу', FiBookOpen], ['#book-guide', 'Разбор книги', FiBookOpen], ['#roadmap', 'Дорожная карта', FiActivity],
+    ['#overview', 'Обзор', FiLayers], ['#roadmap', 'Дорожная карта', FiActivity], ['#book', 'Читать книгу', FiBookOpen], ['#book-guide', 'Разбор книги', FiBookOpen],
     ['#glossary', 'База знаний', FiBookOpen], ['#labs', 'Домашние лабы', FiTerminal],
     ['#certifications', 'Сертификации', FiAward],
   ];
@@ -69,7 +69,7 @@ function App() {
           <div className="welcome-row"><div><div className="section-kicker"><span className="status-dot" /> ВАША ПАНЕЛЬ УПРАВЛЕНИЯ</div><h1>Путь системного<br className="desktop-break" /> администратора <span>2026</span></h1><p>От основ сетей до безопасности и облака — ваш маршрут в мир системного администрирования.</p></div><div className="welcome-icon"><FiServer /><span>SYS / 2026</span></div></div>
 
           <section className="hero" aria-label="Общий прогресс">
-            <div className="hero-copy"><div className="hero-eyebrow"><span /> ВАШ ПРОГРЕСС</div><h2>Большой путь<br />начинается с <em>первого шага.</em></h2><p>Отмечайте изученные темы и выполненные лаборатории. Ваш прогресс сохранится на этом устройстве.</p><div className="hero-actions"><a className="button button-primary" href="#roadmap">Продолжить обучение <FiArrowRight /></a><a className="hero-secondary" href="#labs">Перейти к лабам <FiArrowDownRight /></a></div></div>
+            <div className="hero-copy"><div className="hero-eyebrow"><span /> ВАШ ПРОГРЕСС</div><h2>Большой путь<br />начинается с <em>первого шага.</em></h2><p>Отмечайте изученные темы и выполненные лаборатории. Ваш прогресс сохранится на этом устройстве.</p><div className="hero-actions"><a className="button button-primary" href="#roadmap">Открыть дорожную карту <FiArrowRight /></a><a className="hero-secondary" href="#labs">Перейти к лабам <FiArrowDownRight /></a></div></div>
             <div className="hero-progress"><div className="progress-orbit"><div className="progress-ring" style={{ '--progress': percent }} role="progressbar" aria-label="Общий прогресс" aria-valuemin="0" aria-valuemax="100" aria-valuenow={percent}><div className="progress-ring-inner"><strong>{percent}<small>%</small></strong><span>ЗАВЕРШЕНО</span></div></div></div><div className="hero-progress-caption"><span>ОБЩИЙ ПРОГРЕСС</span><strong>{done} <small>/ {allIds.length} выполнено</small></strong></div></div>
           </section>
 
@@ -79,9 +79,9 @@ function App() {
             <div className="stat-card"><span className="stat-icon green"><FiCheckCircle /></span><div><span>ЛАБЫ ВЫПОЛНЕНЫ</span><strong className="stat-value">{labsDone.toString().padStart(2, '0')} <small>/ {labs.length}</small></strong><small>практика в деле</small></div><FiArrowDownRight className="stat-arrow" /></div>
           </div>
 
+          <Roadmap phases={phases} completed={completed} onToggle={toggle} />
           <Suspense fallback={<p role="status">Загружаем читалку…</p>}><BookReader pageRequest={bookPageRequest} /></Suspense>
           <BookGuide onOpenPage={openBookPage} />
-          <Roadmap phases={phases} completed={completed} onToggle={toggle} />
           <Glossary />
           <section className="section" id="labs"><div className="section-heading"><div><div className="section-kicker">03 / ПРАКТИКА</div><h2>Домашняя лаборатория <span className="heading-icon"><FiTerminal /></span></h2><p>Закрепляйте знания в безопасной тестовой среде.</p></div><span className="section-count">{labsDone} / {labs.length} ВЫПОЛНЕНО</span></div><div className="lab-grid">{labs.map((lab, index) => <label className={`lab-card ${completed.includes(lab.id) ? 'is-complete' : ''}`} key={lab.id}><span className="lab-top"><span className="lab-number">LAB / {String(index + 1).padStart(2, '0')}</span><span className="lab-check"><input type="checkbox" checked={completed.includes(lab.id)} onChange={() => toggle(lab.id)} /><span><FiCheck /></span></span></span><strong>{lab.title}</strong><p>{lab.description}</p><span className="tag">{lab.platform}</span></label>)}</div></section>
           <section className="section" id="certifications"><div className="section-heading"><div><div className="section-kicker">04 / СЛЕДУЮЩИЙ УРОВЕНЬ</div><h2>Сертификации <span className="heading-icon"><FiAward /></span></h2><p>Подтвердите свои навыки и наметьте следующую цель.</p></div></div><div className="certifications-grid">{certifications.map((cert) => <a className="cert-card" key={cert.id} href={cert.url} target="_blank" rel="noreferrer"><span className="cert-top"><span className="tag">{cert.category}</span><FiArrowDownRight /></span><strong>{cert.name}</strong><p>{cert.description}</p><span className="cert-link">Об экзамене <FiArrowRight /></span></a>)}</div><p className="cert-note"><FiShield /> Перед регистрацией проверьте актуальную программу и требования на официальной странице экзамена.</p></section>
