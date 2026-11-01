@@ -22,7 +22,7 @@ export default function Glossary() {
   const normalizedQuery = query.trim().toLocaleLowerCase('ru');
   const filteredTerms = terms.filter((term) => {
     const matchesCategory = category === 'Все' || term.category === category;
-    const searchableText = [term.name, term.short, term.description, term.example, term.category]
+    const searchableText = [term.name, term.short, term.description, term.how, term.when, term.example, term.check, term.caution, term.category]
       .join(' ')
       .toLocaleLowerCase('ru');
     return matchesCategory && searchableText.includes(normalizedQuery);
@@ -110,7 +110,11 @@ export default function Glossary() {
             <div className="modal-body">
               <h2 id="term-dialog-title">{selectedTerm.name}</h2>
               <p id="term-dialog-description">{selectedTerm.description}</p>
+              <h3>Как это работает</h3><p>{selectedTerm.how}</p>
+              <h3>Когда применяется</h3><p>{selectedTerm.when}</p>
               <div className="modal-example"><strong>На практике</strong><p>{selectedTerm.example}</p></div>
+              <h3>Как проверить</h3><p>{selectedTerm.check}</p>
+              <h3>Важный нюанс</h3><p>{selectedTerm.caution}</p>
             </div>
           </>
         )}

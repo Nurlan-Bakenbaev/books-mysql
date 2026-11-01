@@ -240,3 +240,23 @@ label.book-reader-search { display: flex; align-items: center; gap: 8px; }
 button.book-chapter { display: flex; align-items: center; gap: 12px; }
 button.book-chapter span:last-child { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
 @media (max-width: 480px) { button.book-chapter { justify-content: space-between; width: 100%; } }
+
+/* Reading surfaces match the site palette while keeping the PDF paper white. */
+.book-reader-header h2, .book-guide h2 { letter-spacing: -.045em; }
+.book-reader-layout, .book-part { border-radius: 15px; }
+.book-reader-stage { background: #dfe8ef; }
+.app-shell[data-theme='dark'] .book-reader-stage { background: #091522; }
+.book-reader-toolbar { gap: 12px; }
+.book-reader-sidebar-header { color: var(--text); }
+.book-reader-upload.button { min-height: 48px; }
+.book-reader-outline-button, .book-reader-result { font-size: 15px; }
+.book-guide-intro { border-radius: 14px; }
+.book-part-heading { min-height: 78px; }
+.book-part-body { max-width: 95ch; }
+.book-section p { font-size: 16px; line-height: 1.75; }
+.book-example { color: var(--text); line-height: 1.7; }
+.book-reader-upload:focus-within, .book-reader-search:focus-within { outline-color: #349bfc; }
+@media (max-width: 760px) {
+  .book-reader-layout { grid-template-columns: minmax(0, 1fr); }
+  .book-reader-outline, .book-reader-results { max-height: 190px; }
+}

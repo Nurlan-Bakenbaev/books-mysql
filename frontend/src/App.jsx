@@ -24,6 +24,14 @@ function App() {
   });
   const [theme, setTheme] = useState(() => readStored(THEME_KEY, 'dark') === 'light' ? 'light' : 'dark');
   const [menuOpen, setMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState(() => window.location.hash || '#overview');
+  useEffect(() => {
+    const syncHash = () => setActiveSection(window.location.hash || '#overview');
+    const onKeyDown = (event) => { if (event.key === 'Escape') setMenuOpen(false); };
+    window.addEventListener('hashchange', syncHash);
+    window.addEventListener('keydown', onKeyDown);
+    return () => { window.removeEventListener('hashchange', syncHash); window.removeEventListener('keydown', onKeyDown); };
+  }, []);
   const [bookPageRequest, setBookPageRequest] = useState(null);
   const openBookPage = (page) => {
     setBookPageRequest((previous) => ({ page, requestId: (previous?.requestId || 0) + 1 }));
@@ -47,11 +55,14 @@ function App() {
 
   return (
     <div className="app-shell" data-theme={theme}>
+      <a className="skip-link" href="#roadmap">Перейти к дорожной карте</a>
+      {menuOpen && <button className="sidebar-overlay" type="button" aria-label="Закрыть меню" onClick={() => setMenuOpen(false)} />}
       <aside className={`sidebar ${menuOpen ? 'is-open' : ''}`}>
         <a className="brand" href="#overview" onClick={() => setMenuOpen(false)}><span className="brand-mark"><FiCommand /></span><span>sysadmin<span className="brand-accent">.</span><small>YOUR LEARNING SPACE</small></span></a>
+        <button className="sidebar-close" type="button" aria-label="Закрыть меню" onClick={() => setMenuOpen(false)}><FiX /></button>
         <div className="sidebar-label">РАБОЧЕЕ ПРОСТРАНСТВО</div>
         <nav className="nav" aria-label="Основная навигация">
-          {navItems.map(([href, label, Icon], index) => <a className={`nav-link ${index === 0 ? 'active' : ''}`} href={href} key={href} onClick={() => setMenuOpen(false)}><Icon aria-hidden="true" /><span>{label}</span>{index === 0 && <FiChevronRight className="nav-arrow" />}</a>)}
+          {navItems.map(([href, label, Icon]) => <a className={`nav-link ${activeSection === href ? 'active' : ''}`} href={href} key={href} aria-current={activeSection === href ? 'location' : undefined} onClick={() => { setActiveSection(href); setMenuOpen(false); }}><Icon aria-hidden="true" /><span>{label}</span>{activeSection === href && <FiChevronRight className="nav-arrow" />}</a>)}
         </nav>
         <div className="sidebar-footer">
           <div className="sidebar-note"><span className="sidebar-note-icon"><FiTerminal /></span><strong>Учись на практике</strong><p>Маленькие шаги каждый день приводят к большим результатам.</p><a href="#labs" onClick={() => setMenuOpen(false)}>Открыть лаборатории <FiArrowRight /></a></div>
@@ -66,7 +77,7 @@ function App() {
           <div className="topbar-actions"><span className="topbar-date"><span className="status-dot" /> ТВОЙ ПЛАН НА 2026</span><button className="theme-toggle" type="button" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} aria-label={theme === 'dark' ? 'Включить светлую тему' : 'Включить тёмную тему'}>{theme === 'dark' ? <FiSun /> : <FiMoon />}</button><span className="avatar" aria-hidden="true">SA</span></div>
         </header>
         <div className="content-wrap">
-          <div className="welcome-row"><div><div className="section-kicker"><span className="status-dot" /> ВАША ПАНЕЛЬ УПРАВЛЕНИЯ</div><h1>Путь системного<br className="desktop-break" /> администратора <span>2026</span></h1><p>От основ сетей до безопасности и облака — ваш маршрут в мир системного администрирования.</p></div><div className="welcome-icon"><FiServer /><span>SYS / 2026</span></div></div>
+          <div className="welcome-row"><div><div className="section-kicker"><span className="status-dot" /> ОБНОВЛЁННЫЙ КУРС · 23 УРОКА</div><h1>Путь системного<br className="desktop-break" /> администратора <span>2026</span></h1><p>23 подробных урока, практические задания и полный маршрут от основ сетей до облака и безопасности.</p></div><div className="welcome-icon"><FiServer /><span>SYS / 2026</span></div></div>
 
           <section className="hero" aria-label="Общий прогресс">
             <div className="hero-copy"><div className="hero-eyebrow"><span /> ВАШ ПРОГРЕСС</div><h2>Большой путь<br />начинается с <em>первого шага.</em></h2><p>Отмечайте изученные темы и выполненные лаборатории. Ваш прогресс сохранится на этом устройстве.</p><div className="hero-actions"><a className="button button-primary" href="#roadmap">Открыть дорожную карту <FiArrowRight /></a><a className="hero-secondary" href="#labs">Перейти к лабам <FiArrowDownRight /></a></div></div>
