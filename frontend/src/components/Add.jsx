@@ -3,7 +3,7 @@ import { usePostOneBookMutation } from "../redux/books";
 import { useNavigate } from "react-router-dom";
 import { CiEdit } from "react-icons/ci"; <CiEdit />
 const Add = () => {
-  const [postOneBook, { isLoading, isError, error: postError }] =
+  const [postOneBook, { error: postError }] =
     usePostOneBookMutation();
   const [book, setBook] = useState({
     title: "",

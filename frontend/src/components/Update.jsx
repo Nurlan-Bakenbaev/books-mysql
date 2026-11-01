@@ -10,7 +10,7 @@ const Add = () => {
     price: null,
   });
   const { id } = useParams();
-  const [updateOneBook, { isLoading, isError, error: postError }] =
+  const [updateOneBook, { error: postError }] =
     useUpdateOneBookMutation();
   useEffect(() => {
     const fetchBook = async () => {
