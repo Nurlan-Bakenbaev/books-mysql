@@ -1,0 +1,242 @@
+/* Reading room: inherits the application's light and dark theme tokens. */
+.book-reader {
+  scroll-margin-top: 24px;
+  margin-top: 56px;
+  color: var(--text);
+}
+.book-reader-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+.book-reader-header h2, .book-guide h2 {
+  margin: 5px 0 8px;
+  font-size: clamp(26px, 2.8vw, 36px);
+  line-height: 1.2;
+  letter-spacing: -.045em;
+}
+.book-reader-header p, .book-reader-intro, .book-reader-note {
+  max-width: 850px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.7;
+}
+.book-reader-intro { margin-bottom: 20px; }
+.book-reader-note { margin: 12px 0 20px; font-size: 14px; }
+.book-reader-upload {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 18px 20px;
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+.book-reader-upload label { font-weight: 700; }
+.book-reader-upload input[type='file'] {
+  max-width: 100%;
+  color: var(--muted);
+  font-size: 14px;
+}
+.book-reader-upload input[type='file']::file-selector-button {
+  margin-right: 12px;
+  padding: 9px 14px;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.book-reader-error {
+  margin: 16px 0;
+  padding: 14px 16px;
+  border: 1px solid #d58178;
+  border-radius: 10px;
+  background: #fff3f0;
+  color: #8b2921;
+  line-height: 1.6;
+}
+.app-shell[data-theme='dark'] .book-reader-error { background: #3e2524; color: #ffd7ce; border-color: #a9615a; }
+.book-reader-layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+.book-reader-sidebar {
+  min-width: 0;
+  padding: 20px 16px;
+  border-right: 1px solid var(--border);
+  background: var(--surface-soft);
+}
+.book-reader-sidebar-header { margin-bottom: 14px; font-weight: 700; }
+.book-reader-search {
+  width: 100%;
+  min-width: 0;
+  min-height: 43px;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--surface);
+  color: var(--text);
+}
+.book-reader-search::placeholder { color: var(--muted); opacity: 1; }
+.book-reader-outline, .book-reader-results {
+  display: grid;
+  align-content: start;
+  gap: 3px;
+  max-height: 62vh;
+  overflow-y: auto;
+  margin-top: 14px;
+  padding: 0;
+  list-style: none;
+}
+.book-reader-result, .book-reader-outline-button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.book-reader-result:hover, .book-reader-outline-button:hover,
+.book-reader-result[aria-current], .book-reader-outline-button[aria-current] {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.book-reader-main { min-width: 0; }
+.book-reader-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+.book-reader-toolbar .button { min-height: 40px; }
+.book-reader-page-input {
+  width: 72px;
+  min-height: 40px;
+  padding: 7px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-soft);
+  color: var(--text);
+  text-align: center;
+}
+.book-reader-stage {
+  min-width: 0;
+  min-height: 380px;
+  max-height: 78vh;
+  overflow: auto;
+  padding: 24px;
+  background: #e5ebe8;
+  overscroll-behavior: contain;
+}
+.app-shell[data-theme='dark'] .book-reader-stage { background: #111b19; }
+.book-reader-page {
+  position: relative;
+  width: fit-content;
+  margin: 0 auto;
+  background: white;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, .18);
+}
+.book-reader-page canvas { display: block; max-width: none; }
+.book-reader-status { padding: 12px 16px; color: var(--muted); font-size: 14px; line-height: 1.5; }
+
+/* Structured companion guide: long-form content remains comfortable to scan. */
+.book-guide { margin-top: 38px; color: var(--text); }
+.book-guide-intro { max-width: 850px; color: var(--muted); font-size: 16px; line-height: 1.75; }
+.book-part { margin-top: 18px; overflow: hidden; border: 1px solid var(--border); border-radius: 13px; background: var(--surface); box-shadow: var(--shadow); }
+.book-part > summary { padding: 19px 22px; cursor: pointer; font-weight: 700; line-height: 1.45; }
+.book-part > summary:hover { background: var(--surface-soft); }
+.book-part > h3 { margin: 0; padding: 20px 22px 0; font-size: 19px; line-height: 1.4; }
+.book-part > p { margin: 12px 22px; color: var(--muted); line-height: 1.7; }
+.book-chapters { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
+.book-chapter { padding: 20px 22px; border-top: 1px solid var(--border); }
+.book-chapter-title { margin: 0 0 8px; color: var(--text); font-size: 18px; line-height: 1.4; }
+.book-chapter-pages { color: var(--accent); font: 600 12px 'JetBrains Mono', monospace; }
+.book-chapter-description, .book-chapter p { margin: 8px 0; color: var(--muted); font-size: 16px; line-height: 1.75; }
+.book-guide button:focus-visible, .book-reader button:focus-visible,
+.book-reader input:focus-visible, .book-part summary:focus-visible {
+  outline: 3px solid #27a887;
+  outline-offset: 3px;
+}
+@media (max-width: 760px) {
+  .book-reader-header { align-items: start; flex-direction: column; }
+  .book-reader-layout { grid-template-columns: minmax(0, 1fr); }
+  .book-reader-sidebar { border-right: 0; border-bottom: 1px solid var(--border); padding: 16px; }
+  .book-reader-outline, .book-reader-results { max-height: 210px; }
+  .book-reader-stage { min-height: 280px; max-height: 65vh; padding: 14px; }
+  .book-reader-toolbar { padding: 10px; }
+}
+@media (max-width: 480px) {
+  .book-reader { margin-top: 40px; }
+  .book-reader-upload { align-items: stretch; flex-direction: column; }
+  .book-reader-upload input[type='file'] { width: 100%; }
+  .book-reader-stage { padding: 10px; }
+  .book-chapter, .book-part > summary { padding: 16px; }
+}
+
+.book-part-heading { color: var(--text); font-size: 18px; }
+.book-part-body { padding: 0 22px 22px; border-top: 1px solid var(--border); }
+.book-section { padding: 18px 0; border-bottom: 1px solid var(--border); }
+.book-section h3, .book-section h4 { margin: 0 0 9px; font-size: 18px; line-height: 1.4; }
+.book-section p, .book-section li, .book-part-body > p { color: var(--muted); font-size: 16px; line-height: 1.75; }
+.book-example { margin: 16px 0; padding: 16px 18px; border-left: 3px solid var(--accent); border-radius: 0 9px 9px 0; background: var(--accent-soft); }
+.book-example p { margin: 6px 0; color: var(--text); }
+.book-roadmap { margin: 16px 0 0; color: var(--muted); line-height: 1.7; }
+.book-chapters { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 14px; }
+button.book-chapter { width: auto; min-height: 40px; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--accent); text-align: left; font-size: 14px; line-height: 1.4; }
+button.book-chapter:hover { border-color: var(--accent); background: var(--accent-soft); }
+@media (max-width: 480px) { .book-part-body { padding: 0 16px 16px; } }
+.book-reader-filename { min-width: 0; color: var(--muted); font-size: 14px; overflow-wrap: anywhere; }
+.book-reader-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+/* Details of the actual reader and guide markup. */
+.book-reader-header > svg { width: 42px; height: 42px; flex: none; color: var(--accent); }
+.book-reader-upload.button { position: relative; display: inline-flex; width: fit-content; padding: 10px 16px; cursor: pointer; }
+.book-reader-upload input[type='file'] { position: absolute; width: 1px; height: 1px; overflow: hidden; opacity: 0; }
+.book-reader-upload:focus-within { outline: 3px solid #27a887; outline-offset: 3px; }
+.book-reader-sidebar-header { display: flex; align-items: center; gap: 9px; }
+.book-reader-sidebar-header svg { color: var(--accent); }
+label.book-reader-search { display: flex; align-items: center; gap: 8px; }
+.book-reader-search svg { flex: none; color: var(--muted); }
+.book-reader-search input { min-width: 0; width: 100%; padding: 0; border: 0; outline: 0; background: transparent; color: var(--text); font-size: 14px; }
+.book-reader-search:focus-within { outline: 3px solid #27a887; outline-offset: 3px; }
+.book-reader-outline ul { margin: 0; padding: 0; list-style: none; }
+.book-reader-outline ul ul { padding-left: 12px; }
+.book-reader-results p { margin: 0 0 8px; color: var(--muted); font-size: 14px; }
+.book-reader-result strong, .book-reader-result span { display: block; }
+.book-reader-result strong { color: var(--accent); font-size: 14px; }
+.book-reader-result span { margin-top: 3px; color: var(--muted); font-size: 14px; }
+.book-reader-filename { flex: 1 1 150px; }
+.book-reader-controls label { white-space: nowrap; }
+.book-guide-intro { display: flex; align-items: flex-start; gap: 14px; max-width: none; padding: 18px 20px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-soft); }
+.book-guide-intro svg { flex: none; margin-top: 5px; color: var(--accent); font-size: 20px; }
+.book-guide-intro p { margin: 0; }
+.book-part-heading { display: flex; align-items: center; gap: 14px; list-style: none; }
+.book-part-heading::-webkit-details-marker { display: none; }
+.book-part-heading::after { content: '+'; margin-left: auto; color: var(--accent); font-size: 24px; }
+.book-part[open] > .book-part-heading::after { content: '−'; }
+.book-part-heading strong, .book-part-heading small { display: block; }
+.book-part-heading small { margin-top: 4px; color: var(--muted); font-size: 13px; font-weight: 500; }
+.book-part-number { display: grid; place-items: center; width: 42px; height: 42px; flex: none; border-radius: 10px; background: var(--accent-soft); color: var(--accent); font: 700 12px 'JetBrains Mono', monospace; }
+button.book-chapter { display: flex; align-items: center; gap: 12px; }
+button.book-chapter span:last-child { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+@media (max-width: 480px) { button.book-chapter { justify-content: space-between; width: 100%; } }

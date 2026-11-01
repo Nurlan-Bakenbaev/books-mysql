@@ -1,8 +1,11 @@
-import { useEffect, useMemo, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { FiActivity, FiArrowDownRight, FiArrowRight, FiAward, FiBookOpen, FiCheck, FiCheckCircle, FiChevronRight, FiCommand, FiLayers, FiMenu, FiMoon, FiServer, FiShield, FiSun, FiTerminal, FiX } from 'react-icons/fi';
 import { phases, labs, certifications } from './data/guide';
 import Roadmap from './components/Roadmap';
 import Glossary from './components/Glossary';
+const BookReader = lazy(() => import('./components/BookReader'));
+import BookGuide from './components/BookGuide';
+import './book-reader.css';
 
 const STORAGE_KEY = 'sysadmin-path-2026-progress';
 const THEME_KEY = 'sysadmin-path-2026-theme';
@@ -21,6 +24,11 @@ function App() {
   });
   const [theme, setTheme] = useState(() => readStored(THEME_KEY, 'dark') === 'light' ? 'light' : 'dark');
   const [menuOpen, setMenuOpen] = useState(false);
+  const [bookPageRequest, setBookPageRequest] = useState(null);
+  const openBookPage = (page) => {
+    setBookPageRequest((previous) => ({ page, requestId: (previous?.requestId || 0) + 1 }));
+    document.getElementById('book')?.scrollIntoView({ behavior: 'smooth' });
+  };
   useEffect(() => { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(completed)); } catch { /* Storage may be unavailable. */ } }, [completed]);
   useEffect(() => { try { localStorage.setItem(THEME_KEY, JSON.stringify(theme)); } catch { /* Storage may be unavailable. */ } }, [theme]);
 
@@ -32,7 +40,7 @@ function App() {
   const percent = allIds.length ? Math.round(done / allIds.length * 100) : 0;
   const toggle = (id) => setCompleted((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
   const navItems = [
-    ['#overview', 'Обзор', FiLayers], ['#roadmap', 'Дорожная карта', FiActivity],
+    ['#overview', 'Обзор', FiLayers], ['#book', 'Читать книгу', FiBookOpen], ['#book-guide', 'Разбор книги', FiBookOpen], ['#roadmap', 'Дорожная карта', FiActivity],
     ['#glossary', 'База знаний', FiBookOpen], ['#labs', 'Домашние лабы', FiTerminal],
     ['#certifications', 'Сертификации', FiAward],
   ];
@@ -71,6 +79,8 @@ function App() {
             <div className="stat-card"><span className="stat-icon green"><FiCheckCircle /></span><div><span>ЛАБЫ ВЫПОЛНЕНЫ</span><strong className="stat-value">{labsDone.toString().padStart(2, '0')} <small>/ {labs.length}</small></strong><small>практика в деле</small></div><FiArrowDownRight className="stat-arrow" /></div>
           </div>
 
+          <Suspense fallback={<p role="status">Загружаем читалку…</p>}><BookReader pageRequest={bookPageRequest} /></Suspense>
+          <BookGuide onOpenPage={openBookPage} />
           <Roadmap phases={phases} completed={completed} onToggle={toggle} />
           <Glossary />
           <section className="section" id="labs"><div className="section-heading"><div><div className="section-kicker">03 / ПРАКТИКА</div><h2>Домашняя лаборатория <span className="heading-icon"><FiTerminal /></span></h2><p>Закрепляйте знания в безопасной тестовой среде.</p></div><span className="section-count">{labsDone} / {labs.length} ВЫПОЛНЕНО</span></div><div className="lab-grid">{labs.map((lab, index) => <label className={`lab-card ${completed.includes(lab.id) ? 'is-complete' : ''}`} key={lab.id}><span className="lab-top"><span className="lab-number">LAB / {String(index + 1).padStart(2, '0')}</span><span className="lab-check"><input type="checkbox" checked={completed.includes(lab.id)} onChange={() => toggle(lab.id)} /><span><FiCheck /></span></span></span><strong>{lab.title}</strong><p>{lab.description}</p><span className="tag">{lab.platform}</span></label>)}</div></section>
