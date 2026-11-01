@@ -1,0 +1,5 @@
+# Avoid processing application sources and vendored dependencies while Pages
+# is still configured to build from a branch. The Vite site is built by Actions.
+exclude:
+  - frontend
+  - server
