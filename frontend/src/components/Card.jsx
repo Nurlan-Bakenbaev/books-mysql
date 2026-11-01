@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
@@ -8,8 +9,7 @@ import { CiEdit } from "react-icons/ci";
 import { Link } from "react-router-dom";
 
 export default function BookCard({ id, img, title, desc, price }) {
-  const [deleteOneBook, { isError, isLoading, isSuccess }] =
-    useDeleteOneBookMutation();
+  const [deleteOneBook] = useDeleteOneBookMutation();
   const handleDelete = async (id) => {
     try {
       await deleteOneBook(id).unwrap();
@@ -59,3 +59,11 @@ export default function BookCard({ id, img, title, desc, price }) {
     </Card>
   );
 }
+
+BookCard.propTypes = {
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  img: PropTypes.string,
+  title: PropTypes.string.isRequired,
+  desc: PropTypes.string.isRequired,
+  price: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+};
