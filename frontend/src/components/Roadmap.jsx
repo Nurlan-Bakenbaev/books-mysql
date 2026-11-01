@@ -5,7 +5,7 @@ import LessonDialog from './LessonDialog';
 
 /* eslint-disable react/prop-types */
 export default function Roadmap({ phases, completed, onToggle }) {
-  const [openPhases, setOpenPhases] = useState(() => phases[0] ? [phases[0].id] : []);
+  const [openPhases, setOpenPhases] = useState([]);
   const [selectedTopic, setSelectedTopic] = useState(null);
   const triggerRef = useRef(null);
 
@@ -18,7 +18,7 @@ export default function Roadmap({ phases, completed, onToggle }) {
   }
 
   return <section className="section" id="roadmap" aria-labelledby="roadmap-heading">
-    <div className="section-heading"><div><span className="eyebrow">ВАШ МАРШРУТ</span><h2 id="roadmap-heading">Дорожная карта</h2><p>Откройте этап, изучите урок и выполните практику. Отмечайте пройденные темы по мере обучения.</p></div><span className="section-count">05 ЭТАПОВ · {phases.reduce((count, phase) => count + phase.topics.length, 0)} УРОКА</span></div>
+    <div className="section-heading"><div><span className="eyebrow">НАЧНИТЕ ЗДЕСЬ · 2026</span><h1 id="roadmap-heading">Дорожная карта системного администратора</h1><p>Выберите этап → откройте урок → выполните практику. Отмечайте пройденные темы, чтобы видеть свой прогресс.</p></div><span className="section-count">05 ЭТАПОВ · {phases.reduce((count, phase) => count + phase.topics.length, 0)} УРОКА</span></div>
     <div className="roadmap-list">{phases.map((phase) => {
       const isOpen = openPhases.includes(phase.id);
       const done = phase.topics.filter((topic) => completed.includes(topic.id)).length;

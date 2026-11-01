@@ -24,9 +24,9 @@ function App() {
   });
   const [theme, setTheme] = useState(() => readStored(THEME_KEY, 'dark') === 'light' ? 'light' : 'dark');
   const [menuOpen, setMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState(() => window.location.hash || '#overview');
+  const [activeSection, setActiveSection] = useState(() => window.location.hash || '#roadmap');
   useEffect(() => {
-    const syncHash = () => setActiveSection(window.location.hash || '#overview');
+    const syncHash = () => setActiveSection(window.location.hash || '#roadmap');
     const onKeyDown = (event) => { if (event.key === 'Escape') setMenuOpen(false); };
     window.addEventListener('hashchange', syncHash);
     window.addEventListener('keydown', onKeyDown);
@@ -77,7 +77,8 @@ function App() {
           <div className="topbar-actions"><span className="topbar-date"><span className="status-dot" /> ТВОЙ ПЛАН НА 2026</span><button className="theme-toggle" type="button" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} aria-label={theme === 'dark' ? 'Включить светлую тему' : 'Включить тёмную тему'}>{theme === 'dark' ? <FiSun /> : <FiMoon />}</button><span className="avatar" aria-hidden="true">SA</span></div>
         </header>
         <div className="content-wrap">
-          <div className="welcome-row"><div><div className="section-kicker"><span className="status-dot" /> ОБНОВЛЁННЫЙ КУРС · 23 УРОКА</div><h1>Путь системного<br className="desktop-break" /> администратора <span>2026</span></h1><p>23 подробных урока, практические задания и полный маршрут от основ сетей до облака и безопасности.</p></div><div className="welcome-icon"><FiServer /><span>SYS / 2026</span></div></div>
+          <Roadmap phases={phases} completed={completed} onToggle={toggle} />
+          <div className="welcome-row"><div><div className="section-kicker"><span className="status-dot" /> ОБНОВЛЁННЫЙ КУРС · 23 УРОКА</div><h2>Путь системного<br className="desktop-break" /> администратора <span>2026</span></h2><p>23 подробных урока, практические задания и полный маршрут от основ сетей до облака и безопасности.</p></div><div className="welcome-icon"><FiServer /><span>SYS / 2026</span></div></div>
 
           <section className="hero" aria-label="Общий прогресс">
             <div className="hero-copy"><div className="hero-eyebrow"><span /> ВАШ ПРОГРЕСС</div><h2>Большой путь<br />начинается с <em>первого шага.</em></h2><p>Отмечайте изученные темы и выполненные лаборатории. Ваш прогресс сохранится на этом устройстве.</p><div className="hero-actions"><a className="button button-primary" href="#roadmap">Открыть дорожную карту <FiArrowRight /></a><a className="hero-secondary" href="#labs">Перейти к лабам <FiArrowDownRight /></a></div></div>
@@ -90,7 +91,6 @@ function App() {
             <div className="stat-card"><span className="stat-icon green"><FiCheckCircle /></span><div><span>ЛАБЫ ВЫПОЛНЕНЫ</span><strong className="stat-value">{labsDone.toString().padStart(2, '0')} <small>/ {labs.length}</small></strong><small>практика в деле</small></div><FiArrowDownRight className="stat-arrow" /></div>
           </div>
 
-          <Roadmap phases={phases} completed={completed} onToggle={toggle} />
           <Suspense fallback={<p role="status">Загружаем читалку…</p>}><BookReader pageRequest={bookPageRequest} /></Suspense>
           <BookGuide onOpenPage={openBookPage} />
           <Glossary />
