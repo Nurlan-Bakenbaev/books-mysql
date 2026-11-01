@@ -4,8 +4,10 @@ import { phases, labs, certifications } from './data/guide';
 import Roadmap from './components/Roadmap';
 import Glossary from './components/Glossary';
 const BookReader = lazy(() => import('./components/BookReader'));
+const BookCourse = lazy(() => import('./components/BookCourse'));
 import BookGuide from './components/BookGuide';
 import './book-reader.css';
+import './course.css';
 
 const STORAGE_KEY = 'sysadmin-path-2026-progress';
 const THEME_KEY = 'sysadmin-path-2026-theme';
@@ -48,7 +50,7 @@ function App() {
   const percent = allIds.length ? Math.round(done / allIds.length * 100) : 0;
   const toggle = (id) => setCompleted((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
   const navItems = [
-    ['#overview', 'Обзор', FiLayers], ['#roadmap', 'Дорожная карта', FiActivity], ['#book', 'Читать книгу', FiBookOpen], ['#book-guide', 'Разбор книги', FiBookOpen],
+    ['#overview', 'Обзор', FiLayers], ['#roadmap', 'Дорожная карта', FiActivity], ['#course', 'Курс по книге', FiBookOpen], ['#book', 'Читать книгу', FiBookOpen], ['#book-guide', 'Разбор книги', FiBookOpen],
     ['#glossary', 'База знаний', FiBookOpen], ['#labs', 'Домашние лабы', FiTerminal],
     ['#certifications', 'Сертификации', FiAward],
   ];
@@ -91,6 +93,7 @@ function App() {
             <div className="stat-card"><span className="stat-icon green"><FiCheckCircle /></span><div><span>ЛАБЫ ВЫПОЛНЕНЫ</span><strong className="stat-value">{labsDone.toString().padStart(2, '0')} <small>/ {labs.length}</small></strong><small>практика в деле</small></div><FiArrowDownRight className="stat-arrow" /></div>
           </div>
 
+          <Suspense fallback={<p role="status">Загружаем курс…</p>}><BookCourse onOpenBookPage={openBookPage} /></Suspense>
           <Suspense fallback={<p role="status">Загружаем читалку…</p>}><BookReader pageRequest={bookPageRequest} /></Suspense>
           <BookGuide onOpenPage={openBookPage} />
           <Glossary />
