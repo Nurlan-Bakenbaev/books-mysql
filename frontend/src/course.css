@@ -119,3 +119,12 @@
 .course-scene-indicator { display: block; width: 100%; height: 100%; transform-origin: left; background: var(--accent); }
 .course-term { display: contents; }
 @media (max-width: 1023px) { .course-story-layout { grid-template-columns: 1fr; } .course-story-rail { display: none; } }
+
+.course-deep-dive { margin-top: 32px; }
+.course-deep-dive > h3 { margin: 8px 0; font-size: clamp(24px, 2.5vw, 30px); line-height: 1.25; color: var(--text); }
+.course-deep-intro { color: var(--muted); font-size: 16px; line-height: 1.7; }
+.course-deep-section { padding: 24px 0; border-bottom: 1px solid var(--border); }
+.course-deep-section h4 { margin: 0 0 12px; font-size: 20px; line-height: 1.35; color: var(--text); }
+.course-deep-section > p { max-width: 76ch; color: var(--text); font-size: 16px; line-height: 1.8; }
+.course-deep-example { margin-top: 18px; padding: 16px 20px; border-left: 3px solid var(--accent); border-radius: 0 10px 10px 0; background: var(--accent-soft); color: var(--text); }
+.course-deep-example p { margin: 8px 0 0; line-height: 1.7; }

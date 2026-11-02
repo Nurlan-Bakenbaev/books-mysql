@@ -5,6 +5,10 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { FiArrowLeft, FiBookOpen, FiCheckCircle } from 'react-icons/fi';
 import { Button } from './ui/button';
 import VideoPlayer from './VideoPlayer';
+import RelatedPractice from './RelatedPractice';
+import { deepDiveA } from '../data/deepDiveA';
+import { deepDiveB } from '../data/deepDiveB';
+import { deepDiveC } from '../data/deepDiveC';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -15,9 +19,11 @@ export type CourseTopic = {
   youtube: { queriesRu: string[]; queriesEn: string[] };
   quiz: { question: string; options: string[]; answer: number; explanation: string }[];
 };
-type Props = { topic: CourseTopic; onClose: () => void; onOpenBookPage: (page: number) => void };
+type DeepDiveSection = { title: string; paragraphs: string[]; example: string };
+const deepDives: Record<string, DeepDiveSection[]> = { ...deepDiveA, ...deepDiveB, ...deepDiveC };
+type Props = { topic: CourseTopic; onClose: () => void; onOpenBookPage: (page: number) => void; completed: string[]; onToggle: (id: string) => void };
 
-export default function InteractiveLesson({ topic, onClose, onOpenBookPage }: Props) {
+export default function InteractiveLesson({ topic, onClose, onOpenBookPage, completed, onToggle }: Props) {
   const lessonRef = useRef<HTMLElement>(null);
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [checked, setChecked] = useState(false);
@@ -59,6 +65,8 @@ export default function InteractiveLesson({ topic, onClose, onOpenBookPage }: Pr
       {scene.diagram && <div className="course-diagram" aria-label={`Схема: ${scene.diagram}`}>{scene.diagram.split('→').map((item, i, items) => <span key={`${item}-${i}`}>{item.trim()}{i < items.length - 1 && <span aria-hidden="true"> →</span>}</span>)}</div>}
       <div className="course-scene-track" aria-hidden="true"><span className="course-scene-indicator" /></div>
     </motion.section>)}</div></div>
+    <section className="course-deep-dive" aria-labelledby="deep-dive-title"><span className="eyebrow">ПОДРОБНОЕ ИЗУЧЕНИЕ</span><h3 id="deep-dive-title">Разбираем тему на практике</h3><p className="course-deep-intro">Самостоятельные объяснения и примеры дополняют чтение оригинала.</p>{(deepDives[topic.id] || []).map((section) => <article className="course-deep-section" key={section.title}><h4>{section.title}</h4>{section.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}<div className="course-deep-example"><strong>Пример из практики</strong><p>{section.example}</p></div></article>)}</section>
+    <RelatedPractice topicId={topic.id} completed={completed} onToggle={onToggle} />
     {topic.terms.length > 0 && <section className="course-terms"><h3>Термины в этой главе</h3><dl>{topic.terms.map(({ term, definition }) => <div className="course-term" key={term}><dt>{term}</dt><dd>{definition}</dd></div>)}</dl></section>}
     <VideoPlayer key={topic.id} topicId={topic.id} queriesRu={topic.youtube.queriesRu} queriesEn={topic.youtube.queriesEn} />
     <section className="course-quiz" aria-labelledby="quiz-title"><h3 id="quiz-title">Проверьте себя</h3><p>Выберите ответы, затем проверьте объяснения.</p>{topic.quiz.map((item, index) => <fieldset className="course-question" key={`${topic.id}-${index}`}><legend>{item.question}</legend>{item.options.map((option, optionIndex) => <label className="course-quiz-option" key={option}><input type="radio" name={`quiz-${topic.id}-${index}`} checked={answers[index] === optionIndex} onChange={() => { setAnswers((previous) => ({ ...previous, [index]: optionIndex })); setChecked(false); }} />{option}</label>)}{checked && <p className="course-quiz-feedback" data-correct={answers[index] === item.answer} role="status">{answers[index] === undefined ? 'Ответ не выбран. ' : answers[index] === item.answer ? 'Верно. ' : 'Попробуйте ещё раз. '}{item.explanation}</p>}</fieldset>)}<Button type="button" onClick={() => setChecked(true)}><FiCheckCircle /> Проверить ответы</Button></section>

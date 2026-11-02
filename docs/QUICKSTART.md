@@ -46,6 +46,7 @@ books-mysql/
 │       └── components/
 │           ├── BookCourse.tsx          # выбор модулей и глав
 │           ├── InteractiveLesson.tsx   # интерактивный урок, Motion и GSAP ScrollTrigger
+│           ├── RelatedPractice.tsx     # дополнительные практические уроки по теме
 │           ├── VideoPlayer.tsx         # YouTube-поиск и плеер выбранного ролика
 │           ├── Roadmap.jsx             # этапы и уроки дорожной карты
 │           ├── BookReader.jsx          # локальное чтение PDF через PDF.js

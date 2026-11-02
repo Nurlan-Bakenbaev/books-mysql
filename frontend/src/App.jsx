@@ -93,7 +93,7 @@ function App() {
             <div className="stat-card"><span className="stat-icon green"><FiCheckCircle /></span><div><span>ЛАБЫ ВЫПОЛНЕНЫ</span><strong className="stat-value">{labsDone.toString().padStart(2, '0')} <small>/ {labs.length}</small></strong><small>практика в деле</small></div><FiArrowDownRight className="stat-arrow" /></div>
           </div>
 
-          <Suspense fallback={<p role="status">Загружаем курс…</p>}><BookCourse onOpenBookPage={openBookPage} /></Suspense>
+          <Suspense fallback={<p role="status">Загружаем курс…</p>}><BookCourse onOpenBookPage={openBookPage} completed={completed} onToggle={toggle} /></Suspense>
           <Suspense fallback={<p role="status">Загружаем читалку…</p>}><BookReader pageRequest={bookPageRequest} /></Suspense>
           <BookGuide onOpenPage={openBookPage} />
           <Glossary />
