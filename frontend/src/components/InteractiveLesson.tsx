@@ -28,6 +28,14 @@ export default function InteractiveLesson({ topic, onClose, onOpenBookPage, comp
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [checked, setChecked] = useState(false);
   const reducedMotion = useReducedMotion();
+  const detailedSections = deepDives[topic.id] || [];
+  const sectionsForScene = (sceneIndex: number) => {
+    if (topic.id === 'monitoring-theory') {
+      const groups = [[0, 6], [1, 3, 4, 5, 8], [2, 7]];
+      return (groups[sceneIndex] || []).map((index) => detailedSections[index]).filter(Boolean);
+    }
+    return detailedSections.filter((_, index) => index % topic.scenes.length === sceneIndex);
+  };
 
   useEffect(() => {
     setAnswers({});
@@ -62,10 +70,10 @@ export default function InteractiveLesson({ topic, onClose, onOpenBookPage, comp
     <header className="course-lesson-header"><span className="eyebrow">ИНТЕРАКТИВНЫЙ УРОК · PDF СТР. {topic.pdfPage}</span><h3 id="course-lesson-title">{topic.title}</h3><p>{topic.summary}</p><div className="course-lesson-controls"><Button variant="outline" type="button" onClick={onClose}><FiArrowLeft /> Все главы</Button><Button type="button" onClick={() => onOpenBookPage(topic.pdfPage)}><FiBookOpen /> Открыть оригинал</Button></div></header>
     <div className="course-lesson-body"><div className="course-story-layout"><aside className="course-story-rail" aria-hidden="true"><span>ПРОЧИТАЙТЕ</span><strong>{String(topic.scenes.length).padStart(2, '0')}</strong><small>СЦЕНЫ</small></aside><div className="course-scene-list">{topic.scenes.map((scene, index) => <motion.section className="course-scene" key={`${topic.id}-${index}`} initial={reducedMotion ? false : { y: 12 }} whileInView={reducedMotion ? undefined : { y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.35 }}>
       <span className="course-scene-number">СЦЕНА {String(index + 1).padStart(2, '0')}</span><h4>{scene.title}</h4><p>{scene.body}</p>
+      {sectionsForScene(index).map((section) => <article className="course-deep-section" key={section.title}><h5>{section.title}</h5>{section.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}<div className="course-deep-example"><strong>Пример из практики</strong><p>{section.example}</p></div></article>)}
       {scene.diagram && <div className="course-diagram" aria-label={`Схема: ${scene.diagram}`}>{scene.diagram.split('→').map((item, i, items) => <span key={`${item}-${i}`}>{item.trim()}{i < items.length - 1 && <span aria-hidden="true"> →</span>}</span>)}</div>}
       <div className="course-scene-track" aria-hidden="true"><span className="course-scene-indicator" /></div>
     </motion.section>)}</div></div>
-    <section className="course-deep-dive" aria-labelledby="deep-dive-title"><span className="eyebrow">ПОДРОБНОЕ ИЗУЧЕНИЕ</span><h3 id="deep-dive-title">Разбираем тему на практике</h3><p className="course-deep-intro">Самостоятельные объяснения и примеры дополняют чтение оригинала.</p>{(deepDives[topic.id] || []).map((section) => <article className="course-deep-section" key={section.title}><h4>{section.title}</h4>{section.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}<div className="course-deep-example"><strong>Пример из практики</strong><p>{section.example}</p></div></article>)}</section>
     <RelatedPractice topicId={topic.id} completed={completed} onToggle={onToggle} />
     {topic.terms.length > 0 && <section className="course-terms"><h3>Термины в этой главе</h3><dl>{topic.terms.map(({ term, definition }) => <div className="course-term" key={term}><dt>{term}</dt><dd>{definition}</dd></div>)}</dl></section>}
     <VideoPlayer key={topic.id} topicId={topic.id} queriesRu={topic.youtube.queriesRu} queriesEn={topic.youtube.queriesEn} />
