@@ -1,8 +1,9 @@
 import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
-import { FiActivity, FiArrowDownRight, FiArrowRight, FiAward, FiBookOpen, FiCheck, FiCheckCircle, FiChevronRight, FiCommand, FiLayers, FiMenu, FiMoon, FiServer, FiShield, FiSun, FiTerminal, FiX } from 'react-icons/fi';
+import { FiActivity, FiArrowDownRight, FiArrowRight, FiAward, FiBookOpen, FiCheck, FiCheckCircle, FiChevronRight, FiCommand, FiLayers, FiMenu, FiMoon, FiServer, FiShield, FiSun, FiTerminal, FiTarget, FiX } from 'react-icons/fi';
 import { phases, labs, certifications } from './data/guide';
 import Roadmap from './components/Roadmap';
 import Glossary from './components/Glossary';
+import LearningPath from './components/LearningPath';
 const BookReader = lazy(() => import('./components/BookReader'));
 const BookCourse = lazy(() => import('./components/BookCourse'));
 import BookGuide from './components/BookGuide';
@@ -50,8 +51,8 @@ function App() {
   const percent = allIds.length ? Math.round(done / allIds.length * 100) : 0;
   const toggle = (id) => setCompleted((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
   const navItems = [
-    ['#overview', 'Обзор', FiLayers], ['#roadmap', 'Дорожная карта', FiActivity], ['#course', 'Курс по книге', FiBookOpen], ['#book', 'Читать книгу', FiBookOpen], ['#book-guide', 'Разбор книги', FiBookOpen],
-    ['#glossary', 'База знаний', FiBookOpen], ['#labs', 'Домашние лабы', FiTerminal],
+    ['#overview', 'Обзор', FiLayers], ['#career-path', 'Карьерный маршрут', FiTarget], ['#roadmap', 'Дорожная карта', FiActivity], ['#course', 'Курс по книге', FiBookOpen], ['#book', 'Читать книгу', FiBookOpen], ['#book-guide', 'Разбор книги', FiBookOpen],
+    ['#glossary', 'Термины / словарь', FiBookOpen], ['#labs', 'Домашние лабы', FiTerminal],
     ['#certifications', 'Сертификации', FiAward],
   ];
 
@@ -79,6 +80,7 @@ function App() {
           <div className="topbar-actions"><span className="topbar-date"><span className="status-dot" /> ТВОЙ ПЛАН НА 2026</span><button className="theme-toggle" type="button" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} aria-label={theme === 'dark' ? 'Включить светлую тему' : 'Включить тёмную тему'}>{theme === 'dark' ? <FiSun /> : <FiMoon />}</button><span className="avatar" aria-hidden="true">SA</span></div>
         </header>
         <div className="content-wrap">
+          <LearningPath phases={phases} completed={completed} />
           <Roadmap phases={phases} completed={completed} onToggle={toggle} />
           <div className="welcome-row"><div><div className="section-kicker"><span className="status-dot" /> ОБНОВЛЁННЫЙ КУРС · 23 УРОКА</div><h2>Путь системного<br className="desktop-break" /> администратора <span>2026</span></h2><p>23 подробных урока, практические задания и полный маршрут от основ сетей до облака и безопасности.</p></div><div className="welcome-icon"><FiServer /><span>SYS / 2026</span></div></div>
 
