@@ -4,7 +4,8 @@ import { FiExternalLink, FiPlay, FiTrash2, FiYoutube } from 'react-icons/fi';
 
 type Bookmark = { id: string; label: string; seconds: number };
 type SavedVideo = { videoId: string; bookmarks: Bookmark[] };
-export type VideoPlayerProps = { topicId: string; queriesRu: string[]; queriesEn: string[] };
+type RecommendedVideo = { id: string; title: string; source: string; sourceName: string };
+export type VideoPlayerProps = { topicId: string; queriesRu: string[]; queriesEn: string[]; recommended?: RecommendedVideo };
 
 const storagePrefix = 'sysadmin-course-video:';
 const videoIdPattern = /^[A-Za-z0-9_-]{11}$/;
@@ -49,7 +50,7 @@ function formatTime(seconds: number): string {
     : `${minutes}:${String(remainder).padStart(2, '0')}`;
 }
 
-export default function VideoPlayer({ topicId, queriesRu, queriesEn }: VideoPlayerProps) {
+export default function VideoPlayer({ topicId, queriesRu, queriesEn, recommended }: VideoPlayerProps) {
   const uid = useId();
   const [saved, setSaved] = useState<SavedVideo>(() => readSaved(topicId));
   const [url, setUrl] = useState(() => readSaved(topicId).videoId);
@@ -113,6 +114,7 @@ export default function VideoPlayer({ topicId, queriesRu, queriesEn }: VideoPlay
   const groups = [{ label: 'На русском', queries: queriesRu }, { label: 'In English', queries: queriesEn }];
   return <section className="video-section" aria-labelledby={`${uid}-heading`}>
     <div className="video-heading"><FiYoutube aria-hidden="true" /><div><h3 id={`${uid}-heading`}>Видео по теме</h3><p>Найдите подходящий ролик, добавьте ссылку и сохраните собственные таймкоды.</p></div></div>
+    {recommended && <div className="video-recommendation"><strong>Рекомендуемое видео на английском: {recommended.title}</strong><p>Ролик раскрывает тему или связанный практический пример. Подборка: <a href={recommended.source} target="_blank" rel="noreferrer">{recommended.sourceName} <FiExternalLink aria-hidden="true" /></a>. Доступность зависит от YouTube.</p><div className="video-actions"><button className="button" type="button" onClick={() => { setUrl(recommended.id); setNotice('Нажмите «Открыть видео». При смене ролика прежние таймкоды этой главы будут удалены.'); }}>Подставить видео</button><a className="button" href={`https://www.youtube.com/watch?v=${recommended.id}`} target="_blank" rel="noreferrer">Открыть на YouTube <FiExternalLink aria-hidden="true" /></a></div></div>}
     <div className="video-search-groups">{groups.map((group) => <div className="video-search-group" key={group.label}>
       <strong>{group.label}</strong><ul>{group.queries.map((query) => <li key={query}><a href={`https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`} target="_blank" rel="noopener noreferrer">{query} <FiExternalLink aria-hidden="true" /><span className="sr-only"> (откроется в новой вкладке)</span></a></li>)}</ul>
     </div>)}</div>

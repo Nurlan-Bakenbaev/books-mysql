@@ -1,11 +1,19 @@
 import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { FiActivity, FiArrowDownRight, FiArrowRight, FiAward, FiBookOpen, FiCheck, FiCheckCircle, FiChevronRight, FiCommand, FiLayers, FiMenu, FiMoon, FiServer, FiShield, FiSun, FiTerminal, FiX } from 'react-icons/fi';
 import { phases, labs, certifications } from './data/guide';
+import { lessons } from './data/lessons';
+import { windowsSecurityCourse } from './data/windowsSecurity';
+import course from './data/course.json';
+import { currentRoute, sectionHref } from './navigation';
 import Roadmap from './components/Roadmap';
 import Glossary from './components/Glossary';
 import ResourceLibrary from './components/ResourceLibrary';
+import WindowsSecurityCourse from './components/WindowsSecurityCourse';
+import Simulators from './components/Simulators';
 const BookReader = lazy(() => import('./components/BookReader'));
 const BookCourse = lazy(() => import('./components/BookCourse'));
+const InteractiveLesson = lazy(() => import('./components/InteractiveLesson'));
+const LessonPage = lazy(() => import('./components/LessonPage'));
 import BookGuide from './components/BookGuide';
 import './book-reader.css';
 import './course.css';
@@ -27,58 +35,103 @@ function App() {
   });
   const [theme, setTheme] = useState(() => readStored(THEME_KEY, 'dark') === 'light' ? 'light' : 'dark');
   const [menuOpen, setMenuOpen] = useState(false);
+  const [route, setRoute] = useState(currentRoute);
   const [activeSection, setActiveSection] = useState(() => window.location.hash || '#roadmap');
   useEffect(() => {
     const syncHash = () => setActiveSection(window.location.hash || '#roadmap');
+    const syncHistory = () => {
+      const next = currentRoute();
+      setRoute(next);
+      setMenuOpen(false);
+      syncHash();
+      requestAnimationFrame(() => {
+        const target = next.type === 'home' && window.location.hash ? document.getElementById(decodeURIComponent(window.location.hash.slice(1))) : null;
+        if (target) target.scrollIntoView();
+        else window.scrollTo({ top: 0, behavior: 'instant' });
+      });
+    };
     const onKeyDown = (event) => { if (event.key === 'Escape') setMenuOpen(false); };
     window.addEventListener('hashchange', syncHash);
+    window.addEventListener('popstate', syncHistory);
     window.addEventListener('keydown', onKeyDown);
-    return () => { window.removeEventListener('hashchange', syncHash); window.removeEventListener('keydown', onKeyDown); };
+    return () => { window.removeEventListener('hashchange', syncHash); window.removeEventListener('popstate', syncHistory); window.removeEventListener('keydown', onKeyDown); };
   }, []);
+  function navigate(to) {
+    const url = new URL(to, window.location.href);
+    window.history.pushState(null, '', `${url.pathname}${url.search}${url.hash}`);
+    const next = currentRoute();
+    setRoute(next);
+    setActiveSection(url.hash || '#roadmap');
+    setMenuOpen(false);
+    requestAnimationFrame(() => {
+      const target = next.type === 'home' && url.hash ? document.getElementById(decodeURIComponent(url.hash.slice(1))) : null;
+      if (target) target.scrollIntoView();
+      else window.scrollTo({ top: 0, behavior: 'instant' });
+    });
+  }
+  function followRouteLink(event) {
+    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || !(event.target instanceof Element)) return;
+    const link = event.target.closest('a[data-route-link]');
+    if (!link || link.target || link.hasAttribute('download')) return;
+    const url = new URL(link.href);
+    if (url.origin !== window.location.origin || url.pathname !== window.location.pathname) return;
+    event.preventDefault();
+    navigate(url.href);
+  }
   const [bookPageRequest, setBookPageRequest] = useState(null);
   const openBookPage = (page) => {
     setBookPageRequest((previous) => ({ page, requestId: (previous?.requestId || 0) + 1 }));
-    document.getElementById('book')?.scrollIntoView({ behavior: 'smooth' });
+    navigate(sectionHref('#book'));
   };
   useEffect(() => { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(completed)); } catch { /* Storage may be unavailable. */ } }, [completed]);
   useEffect(() => { try { localStorage.setItem(THEME_KEY, JSON.stringify(theme)); } catch { /* Storage may be unavailable. */ } }, [theme]);
 
-  const topicIds = useMemo(() => phases.flatMap((phase) => phase.topics.map((topic) => topic.id)), []);
+  const roadmapTopics = useMemo(() => phases.flatMap((phase) => phase.topics), []);
+  const topicIds = useMemo(() => [...roadmapTopics, ...windowsSecurityCourse.topics].map((topic) => topic.id), [roadmapTopics]);
   const allIds = useMemo(() => [...topicIds, ...labs.map((lab) => lab.id)], [topicIds]);
   const done = allIds.filter((id) => completed.includes(id)).length;
   const topicsDone = topicIds.filter((id) => completed.includes(id)).length;
   const labsDone = labs.filter((lab) => completed.includes(lab.id)).length;
   const percent = allIds.length ? Math.round(done / allIds.length * 100) : 0;
   const toggle = (id) => setCompleted((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
+  const track = windowsSecurityCourse.topics.some((topic) => topic.id === route.id) ? 'windows-security' : 'roadmap';
+  const sequence = track === 'windows-security' ? windowsSecurityCourse.topics : roadmapTopics;
+  const topicIndex = sequence.findIndex((topic) => topic.id === route.id);
+  const selectedTopic = topicIndex >= 0 ? sequence[topicIndex] : null;
+  const selectedChapter = course.modules.flatMap((module) => module.topics).find((topic) => topic.id === route.id);
+  useEffect(() => {
+    document.title = route.type === 'lesson' && selectedTopic ? `${selectedTopic.title} — Sysadmin 2026` : route.type === 'chapter' && selectedChapter ? `${selectedChapter.title} — Sysadmin 2026` : 'Путь системного администратора 2026';
+  }, [route.type, selectedTopic, selectedChapter]);
   const navItems = [
-    ['#overview', 'Обзор', FiLayers], ['#roadmap', 'Дорожная карта', FiActivity], ['#resources', 'Учебные материалы', FiBookOpen], ['#course', 'Курс по книге', FiBookOpen], ['#book', 'Читать книгу', FiBookOpen], ['#book-guide', 'Разбор книги', FiBookOpen],
+    ['#overview', 'Обзор', FiLayers], ['#roadmap', 'Дорожная карта', FiActivity], ['#windows-security', 'Безопасность Windows', FiShield], ['#simulators', 'Тренажёры', FiTerminal], ['#resources', 'Учебные материалы', FiBookOpen], ['#course', 'Курс по книге', FiBookOpen], ['#book', 'Читать книгу', FiBookOpen], ['#book-guide', 'Разбор книги', FiBookOpen],
     ['#glossary', 'База знаний', FiBookOpen], ['#labs', 'Домашние лабы', FiTerminal],
     ['#certifications', 'Сертификации', FiAward],
   ];
+  const topbar = <header className="topbar">
+    <button className="mobile-menu button-icon" type="button" onClick={() => setMenuOpen(!menuOpen)} aria-expanded={menuOpen} aria-label={menuOpen ? 'Закрыть меню' : 'Открыть меню'}>{menuOpen ? <FiX /> : <FiMenu />}</button>
+    <div className="topbar-breadcrumb"><span>Рабочее пространство</span><FiChevronRight /><strong>{route.type === 'home' ? 'Обзор' : 'Учебный материал'}</strong></div>
+    <div className="topbar-actions"><span className="topbar-date"><span className="status-dot" /> ТВОЙ ПЛАН НА 2026</span><button className="theme-toggle" type="button" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} aria-label={theme === 'dark' ? 'Включить светлую тему' : 'Включить тёмную тему'}>{theme === 'dark' ? <FiSun /> : <FiMoon />}</button><span className="avatar" aria-hidden="true">SA</span></div>
+  </header>;
 
   return (
-    <div className="app-shell" data-theme={theme}>
-      <a className="skip-link" href="#roadmap">Перейти к дорожной карте</a>
+    <div className="app-shell" data-theme={theme} onClick={followRouteLink}>
+      <a className="skip-link" href={route.type === 'home' ? '#roadmap' : '#route-main'}>Перейти к содержимому</a>
       {menuOpen && <button className="sidebar-overlay" type="button" aria-label="Закрыть меню" onClick={() => setMenuOpen(false)} />}
       <aside className={`sidebar ${menuOpen ? 'is-open' : ''}`}>
-        <a className="brand" href="#overview" onClick={() => setMenuOpen(false)}><span className="brand-mark"><FiCommand /></span><span>sysadmin<span className="brand-accent">.</span><small>YOUR LEARNING SPACE</small></span></a>
+        <a className="brand" href={sectionHref('#overview')} data-route-link><span className="brand-mark"><FiCommand /></span><span>sysadmin<span className="brand-accent">.</span><small>YOUR LEARNING SPACE</small></span></a>
         <button className="sidebar-close" type="button" aria-label="Закрыть меню" onClick={() => setMenuOpen(false)}><FiX /></button>
         <div className="sidebar-label">РАБОЧЕЕ ПРОСТРАНСТВО</div>
         <nav className="nav" aria-label="Основная навигация">
-          {navItems.map(([href, label, Icon]) => <a className={`nav-link ${activeSection === href ? 'active' : ''}`} href={href} key={href} aria-current={activeSection === href ? 'location' : undefined} onClick={() => { setActiveSection(href); setMenuOpen(false); }}><Icon aria-hidden="true" /><span>{label}</span>{activeSection === href && <FiChevronRight className="nav-arrow" />}</a>)}
+          {navItems.map(([href, label, Icon]) => <a className={`nav-link ${route.type === 'home' && activeSection === href ? 'active' : ''}`} href={sectionHref(href)} data-route-link key={href} aria-current={route.type === 'home' && activeSection === href ? 'location' : undefined}><Icon aria-hidden="true" /><span>{label}</span>{route.type === 'home' && activeSection === href && <FiChevronRight className="nav-arrow" />}</a>)}
         </nav>
         <div className="sidebar-footer">
-          <div className="sidebar-note"><span className="sidebar-note-icon"><FiTerminal /></span><strong>Учись на практике</strong><p>Маленькие шаги каждый день приводят к большим результатам.</p><a href="#labs" onClick={() => setMenuOpen(false)}>Открыть лаборатории <FiArrowRight /></a></div>
+          <div className="sidebar-note"><span className="sidebar-note-icon"><FiTerminal /></span><strong>Учись на практике</strong><p>Маленькие шаги каждый день приводят к большим результатам.</p><a href={sectionHref('#labs')} data-route-link>Открыть лаборатории <FiArrowRight /></a></div>
           <div className="sidebar-version"><span className="status-dot" /> СИСТЕМА ГОТОВА <span>v.2026</span></div>
         </div>
       </aside>
 
-      <main className="main" id="overview">
-        <header className="topbar">
-          <button className="mobile-menu button-icon" type="button" onClick={() => setMenuOpen(!menuOpen)} aria-expanded={menuOpen} aria-label={menuOpen ? 'Закрыть меню' : 'Открыть меню'}>{menuOpen ? <FiX /> : <FiMenu />}</button>
-          <div className="topbar-breadcrumb"><span>Рабочее пространство</span><FiChevronRight /><strong>Обзор</strong></div>
-          <div className="topbar-actions"><span className="topbar-date"><span className="status-dot" /> ТВОЙ ПЛАН НА 2026</span><button className="theme-toggle" type="button" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} aria-label={theme === 'dark' ? 'Включить светлую тему' : 'Включить тёмную тему'}>{theme === 'dark' ? <FiSun /> : <FiMoon />}</button><span className="avatar" aria-hidden="true">SA</span></div>
-        </header>
+      <main className="main" id="overview" hidden={route.type !== 'home'}>
+        {topbar}
         <div className="content-wrap">
           <Roadmap phases={phases} completed={completed} onToggle={toggle} />
           <div className="welcome-row"><div><div className="section-kicker"><span className="status-dot" /> ОБНОВЛЁННЫЙ КУРС · ТЕМЫ: {topicIds.length}</div><h2>Путь системного<br className="desktop-break" /> администратора <span>2026</span></h2><p>Пошаговые уроки, практические задания и учебные материалы: от основ сетей и Linux до облака и безопасности.</p></div><div className="welcome-icon"><FiServer /><span>SYS / 2026</span></div></div>
@@ -94,8 +147,10 @@ function App() {
             <div className="stat-card"><span className="stat-icon green"><FiCheckCircle /></span><div><span>ЛАБЫ ВЫПОЛНЕНЫ</span><strong className="stat-value">{labsDone.toString().padStart(2, '0')} <small>/ {labs.length}</small></strong><small>практика в деле</small></div><FiArrowDownRight className="stat-arrow" /></div>
           </div>
 
+          <WindowsSecurityCourse completed={completed} onToggle={toggle} />
+          <Simulators />
           <ResourceLibrary />
-          <Suspense fallback={<p role="status">Загружаем курс…</p>}><BookCourse onOpenBookPage={openBookPage} completed={completed} onToggle={toggle} /></Suspense>
+          <Suspense fallback={<p role="status">Загружаем курс…</p>}><BookCourse /></Suspense>
           <Suspense fallback={<p role="status">Загружаем читалку…</p>}><BookReader pageRequest={bookPageRequest} /></Suspense>
           <BookGuide onOpenPage={openBookPage} />
           <Glossary />
@@ -104,6 +159,16 @@ function App() {
           <footer className="page-footer"><span><FiCommand /> sysadmin<span className="brand-accent">.</span> <small>ПУТЬ СИСТЕМНОГО АДМИНИСТРАТОРА</small></span><span>СОЗДАНО ДЛЯ ТЕХ, КТО РАЗБИРАЕТСЯ <FiActivity /></span></footer>
         </div>
       </main>
+      {route.type !== 'home' && <main className="main" id="route-main" tabIndex="-1">
+        {topbar}
+        <div className="content-wrap route-content">
+          <Suspense fallback={<p role="status">Загружаем учебный материал…</p>}>
+            {route.type === 'lesson' && selectedTopic && lessons[selectedTopic.id] ? <LessonPage key={selectedTopic.id} topic={selectedTopic} lesson={lessons[selectedTopic.id]} isComplete={completed.includes(selectedTopic.id)} onToggle={toggle} track={track} previous={sequence[topicIndex - 1]} next={sequence[topicIndex + 1]} />
+              : route.type === 'chapter' && selectedChapter ? <InteractiveLesson key={selectedChapter.id} topic={selectedChapter} onClose={() => navigate(sectionHref('#course'))} onOpenBookPage={openBookPage} />
+                : <section className="route-not-found"><h1>Учебный материал не найден</h1><p>Проверьте ссылку или выберите существующий урок.</p><a className="button" href={sectionHref('#roadmap')} data-route-link>К дорожной карте <FiArrowRight aria-hidden="true" /></a></section>}
+          </Suspense>
+        </div>
+      </main>}
     </div>
   );
 }

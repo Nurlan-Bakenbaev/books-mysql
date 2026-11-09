@@ -9,6 +9,7 @@ import RelatedPractice from './RelatedPractice';
 import { deepDiveA } from '../data/deepDiveA';
 import { deepDiveB } from '../data/deepDiveB';
 import { deepDiveC } from '../data/deepDiveC';
+import { chapterVideos } from '../data/lessonVideos';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -21,14 +22,15 @@ export type CourseTopic = {
 };
 type DeepDiveSection = { title: string; paragraphs: string[]; example: string };
 const deepDives: Record<string, DeepDiveSection[]> = { ...deepDiveA, ...deepDiveB, ...deepDiveC };
-type Props = { topic: CourseTopic; onClose: () => void; onOpenBookPage: (page: number) => void; completed: string[]; onToggle: (id: string) => void };
+type Props = { topic: CourseTopic; onClose: () => void; onOpenBookPage: (page: number) => void };
 
-export default function InteractiveLesson({ topic, onClose, onOpenBookPage, completed, onToggle }: Props) {
+export default function InteractiveLesson({ topic, onClose, onOpenBookPage }: Props) {
   const lessonRef = useRef<HTMLElement>(null);
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [checked, setChecked] = useState(false);
   const reducedMotion = useReducedMotion();
   const detailedSections = deepDives[topic.id] || [];
+  const recommendedVideo = Object.entries(chapterVideos).find(([id]) => id === topic.id)?.[1];
   const sectionsForScene = (sceneIndex: number) => {
     if (topic.id === 'monitoring-theory') {
       const groups = [[0, 6], [1, 3, 4, 5, 8], [2, 7]];
@@ -41,6 +43,7 @@ export default function InteractiveLesson({ topic, onClose, onOpenBookPage, comp
     setAnswers({});
     setChecked(false);
     lessonRef.current?.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
+    lessonRef.current?.querySelector<HTMLElement>('#course-lesson-title')?.focus({ preventScroll: true });
   }, [topic.id, reducedMotion]);
 
   useEffect(() => {
@@ -67,16 +70,16 @@ export default function InteractiveLesson({ topic, onClose, onOpenBookPage, comp
   }, [topic.id, reducedMotion]);
 
   return <article className="course-lesson" id="course-lesson" ref={lessonRef} aria-labelledby="course-lesson-title">
-    <header className="course-lesson-header"><span className="eyebrow">ИНТЕРАКТИВНЫЙ УРОК · PDF СТР. {topic.pdfPage}</span><h3 id="course-lesson-title">{topic.title}</h3><p>{topic.summary}</p><div className="course-lesson-controls"><Button variant="outline" type="button" onClick={onClose}><FiArrowLeft /> Все главы</Button><Button type="button" onClick={() => onOpenBookPage(topic.pdfPage)}><FiBookOpen /> Открыть оригинал</Button></div></header>
+    <header className="course-lesson-header"><span className="eyebrow">ИНТЕРАКТИВНЫЙ УРОК · PDF СТР. {topic.pdfPage}</span><h1 id="course-lesson-title" tabIndex={-1}>{topic.title}</h1><p>{topic.summary}</p><div className="course-lesson-controls"><Button variant="outline" type="button" onClick={onClose}><FiArrowLeft /> Все главы</Button><Button type="button" onClick={() => onOpenBookPage(topic.pdfPage)}><FiBookOpen /> Открыть оригинал</Button></div></header>
     <div className="course-lesson-body"><div className="course-story-layout"><aside className="course-story-rail" aria-hidden="true"><span>ПРОЧИТАЙТЕ</span><strong>{String(topic.scenes.length).padStart(2, '0')}</strong><small>СЦЕНЫ</small></aside><div className="course-scene-list">{topic.scenes.map((scene, index) => <motion.section className="course-scene" key={`${topic.id}-${index}`} initial={reducedMotion ? false : { y: 12 }} whileInView={reducedMotion ? undefined : { y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.35 }}>
       <span className="course-scene-number">СЦЕНА {String(index + 1).padStart(2, '0')}</span><h4>{scene.title}</h4><p>{scene.body}</p>
       {sectionsForScene(index).map((section) => <article className="course-deep-section" key={section.title}><h5>{section.title}</h5>{section.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}<div className="course-deep-example"><strong>Пример из практики</strong><p>{section.example}</p></div></article>)}
       {scene.diagram && <div className="course-diagram" aria-label={`Схема: ${scene.diagram}`}>{scene.diagram.split('→').map((item, i, items) => <span key={`${item}-${i}`}>{item.trim()}{i < items.length - 1 && <span aria-hidden="true"> →</span>}</span>)}</div>}
       <div className="course-scene-track" aria-hidden="true"><span className="course-scene-indicator" /></div>
     </motion.section>)}</div></div>
-    <RelatedPractice topicId={topic.id} completed={completed} onToggle={onToggle} />
+    <RelatedPractice topicId={topic.id} />
     {topic.terms.length > 0 && <section className="course-terms"><h3>Термины в этой главе</h3><dl>{topic.terms.map(({ term, definition }) => <div className="course-term" key={term}><dt>{term}</dt><dd>{definition}</dd></div>)}</dl></section>}
-    <VideoPlayer key={topic.id} topicId={topic.id} queriesRu={topic.youtube.queriesRu} queriesEn={topic.youtube.queriesEn} />
+    <VideoPlayer key={topic.id} topicId={topic.id} queriesRu={topic.youtube.queriesRu} queriesEn={topic.youtube.queriesEn} recommended={recommendedVideo} />
     <section className="course-quiz" aria-labelledby="quiz-title"><h3 id="quiz-title">Проверьте себя</h3><p>Выберите ответы, затем проверьте объяснения.</p>{topic.quiz.map((item, index) => <fieldset className="course-question" key={`${topic.id}-${index}`}><legend>{item.question}</legend>{item.options.map((option, optionIndex) => <label className="course-quiz-option" key={option}><input type="radio" name={`quiz-${topic.id}-${index}`} checked={answers[index] === optionIndex} onChange={() => { setAnswers((previous) => ({ ...previous, [index]: optionIndex })); setChecked(false); }} />{option}</label>)}{checked && <p className="course-quiz-feedback" data-correct={answers[index] === item.answer} role="status">{answers[index] === undefined ? 'Ответ не выбран. ' : answers[index] === item.answer ? 'Верно. ' : 'Попробуйте ещё раз. '}{item.explanation}</p>}</fieldset>)}<Button type="button" onClick={() => setChecked(true)}><FiCheckCircle /> Проверить ответы</Button></section>
     </div>
   </article>;

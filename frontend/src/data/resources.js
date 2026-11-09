@@ -180,6 +180,61 @@ export const resources = [
     description: 'Обсуждения сообщества Ansible и ссылки на ресурсы проекта.',
     url: 'https://github.com/ansible-community/community-topics/discussions',
   },
+  {
+    id: 'network-open-book', title: 'Computer Networks: A Systems Approach', type: 'Книга', language: 'EN', access: 'Бесплатно',
+    description: 'Открытая цифровая книга Ларри Петерсона и Брюса Дэви о сетях и протоколах; исходники и сведения о лицензии доступны авторам на GitHub.',
+    url: 'https://github.com/SystemsApproach/book',
+  },
+  {
+    id: 'ansible-ru', title: 'Пособие по Ansible', type: 'Книга', language: 'RU', access: 'Бесплатно',
+    description: 'Русскоязычное пособие по inventory, модулям и playbook из каталога свободных учебных материалов.',
+    url: 'https://github.com/freetonik/ansible-tuto-rus',
+  },
+  {
+    id: 'progit-ru', title: 'Pro Git на русском', type: 'Книга', language: 'RU', access: 'Бесплатно',
+    description: 'Исходники русскоязычной версии книги Pro Git: история изменений, ветви и совместная работа.',
+    url: 'https://github.com/progit/progit2-ru',
+  },
+  {
+    id: 'ms-sc900', title: 'Microsoft Learning: лаборатории SC-900', type: 'Курс', language: 'EN', access: 'Материалы бесплатно; учебный арендатор может быть платным',
+    description: 'Официальные инструкции Microsoft по основам безопасности, идентичности и соответствия. Некоторые лаборатории требуют подготовленного арендатора и лицензий.',
+    url: 'https://github.com/MicrosoftLearning/SC-900-Microsoft-Security-Compliance-and-Identity-Fundamentals',
+  },
+  {
+    id: 'ms-sc200', title: 'Microsoft Learning: лаборатории SC-200', type: 'Курс', language: 'EN', access: 'Материалы бесплатно; облачные службы могут быть платными',
+    description: 'Официальные лабораторные инструкции для изучения операций безопасности, Defender и Sentinel; проверяйте требования к лицензиям.',
+    url: 'https://github.com/MicrosoftLearning/SC-200T00A-Microsoft-Security-Operations-Analyst',
+  },
+  {
+    id: 'ms-defender-status', title: 'Microsoft: Get-MpComputerStatus', type: 'Документация', language: 'EN', access: 'Бесплатно',
+    description: 'Справочник PowerShell для просмотра состояния антивирусного компонента Defender.',
+    url: 'https://github.com/MicrosoftDocs/windows-powershell-docs/blob/main/docset/winserver2025-ps/Defender/Get-MpComputerStatus.md',
+  },
+  {
+    id: 'ms-firewall-profile', title: 'Microsoft: Get-NetFirewallProfile', type: 'Документация', language: 'EN', access: 'Бесплатно',
+    description: 'Справочник PowerShell для просмотра настроек профилей брандмауэра Windows.',
+    url: 'https://github.com/MicrosoftDocs/windows-powershell-docs/blob/main/docset/winserver2025-ps/NetSecurity/Get-NetFirewallProfile.md',
+  },
+  {
+    id: 'ms-bitlocker-volume', title: 'Microsoft: Get-BitLockerVolume', type: 'Документация', language: 'EN', access: 'Бесплатно',
+    description: 'Справочник просмотра состояния томов BitLocker без публикации ключей восстановления.',
+    url: 'https://github.com/MicrosoftDocs/windows-powershell-docs/blob/main/docset/winserver2025-ps/BitLocker/Get-BitLockerVolume.md',
+  },
+  {
+    id: 'ms-mfa', title: 'Microsoft: как работает MFA', type: 'Документация', language: 'EN', access: 'Бесплатно',
+    description: 'Объяснение многофакторной аутентификации Microsoft Entra и доступных методов.',
+    url: 'https://github.com/MicrosoftDocs/entra-docs/blob/main/docs/identity/authentication/concept-mfa-howitworks.md',
+  },
+  {
+    id: 'ms-windows-security', title: 'Microsoft: безопасность Windows Server', type: 'Документация', language: 'EN', access: 'Бесплатно',
+    description: 'Официальный указатель материалов по укреплению сервера, защите учётных данных и сетевой безопасности; включает ссылку на книгу Windows Server 2025 Security.',
+    url: 'https://github.com/MicrosoftDocs/windowsserverdocs/blob/main/WindowsServerDocs/security/security-and-assurance.yml',
+  },
+  {
+    id: 'cisco-packet-tracer', title: 'Cisco Networking Academy: Packet Tracer', type: 'Курс', language: 'EN', access: 'Регистрация и условия Cisco',
+    description: 'Официальная отправная точка Cisco для обучения Packet Tracer. Наличие версий, регистрация и порядок скачивания определяются Cisco.',
+    url: 'https://www.netacad.com/courses/packet-tracer',
+  },
 ];
 
 export const resourcesById = Object.fromEntries(resources.map((resource) => [resource.id, resource]));
@@ -190,10 +245,12 @@ export const lessonResources = {
     { sourceId: 'network-roadmap', focus: 'Найдите разделы OSI, TCP/IP, TCP и UDP; сопоставьте уровни с путём запроса из урока.', takeaway: 'Сетевые функции удобно разбирать по уровням: адресация и маршрутизация отличаются от транспортной доставки данных.' },
     { sourceId: 'network-guide', focus: 'Просмотрите назначение сетевых служб и определите роль DNS в инфраструктуре.' },
     { sourceId: 'http-evolution', focus: 'Сравните HTTP/1.1 и HTTP/2 с разделом об HTTP/3.', takeaway: 'HTTP/3 использует QUIC поверх UDP, в отличие от HTTP/2 поверх TCP.' },
+    { sourceId: 'network-open-book', focus: 'Найдите введение, разделы об архитектуре и многоуровневых протоколах.' },
   ],
   'ip-addressing': [
     { sourceId: 'network-roadmap', focus: 'Изучите разделы IP addressing, IPv4/IPv6 и CIDR; повторите расчёт подсетей.', takeaway: 'CIDR задаёт длину сетевого префикса; адрес и префикс вместе позволяют определить принадлежность узла подсети.' },
     { sourceId: 'network-guide', focus: 'Обратите внимание на планирование адресов и шлюзов для клиентских машин.' },
+    { sourceId: 'network-open-book', focus: 'Найдите разделы об IP и маршрутизации, затем сравните их с расчётом CIDR в тренажёре.' },
   ],
   'routing-vlan': [
     { sourceId: 'network-roadmap', focus: 'Сравните темы маршрутизации, VLAN и ACL: они решают разные задачи.', takeaway: 'VLAN разделяет канальные сегменты, маршрутизация соединяет сети, а ACL ограничивает разрешённый трафик.' },
@@ -285,11 +342,13 @@ export const lessonResources = {
     { sourceId: 'docker-docs', focus: 'Сравните образ, контейнер и хост; изучите жизненный цикл контейнера.', takeaway: 'Контейнер упаковывает приложение и его окружение для запуска на хосте, но не равен полноценной виртуальной машине.' },
     { sourceId: 'devops-roadmap', focus: 'Найдите Git, CI/CD и контейнеры; определите их роль в проверке изменений.' },
     { sourceId: 'kubernetes-basics', focus: 'Дополнительно посмотрите, как кластер развёртывает и масштабирует контейнерное приложение.' },
+    { sourceId: 'progit-ru', focus: 'Прочитайте введение, основы фиксаций и ветвления Git на русском языке.' },
   ],
   'ansible-iac': [
     { sourceId: 'ansible-docs', focus: 'Пройдите введение, inventory и первый playbook; сравните результаты повторных запусков.', takeaway: 'Inventory задаёт управляемые узлы, а playbook описывает задачи, выполняемые модулями Ansible.' },
     { sourceId: 'devops-roadmap', focus: 'Найдите configuration management и infrastructure as code и сравните задачи этих подходов.' },
     { sourceId: 'ansible-community', focus: 'Изучите обсуждения сообщества, не публикуя конфигурации с секретами.' },
+    { sourceId: 'ansible-ru', focus: 'Сверьте понятия inventory и playbook с русскоязычным пособием.' },
   ],
   'operations-monitoring': [
     { sourceId: 'prometheus-docs', focus: 'Прочитайте о метриках, временных рядах и компонентах системы оповещения.', takeaway: 'Prometheus хранит измерения как временные ряды с метками и собирает их у настроенных целей.' },
@@ -314,5 +373,41 @@ export const lessonResources = {
   'incident-portfolio': [
     { sourceId: 'postmortem-templates', focus: 'Выберите структуру с влиянием, хронологией и действиями после инцидента.', takeaway: 'Шаблон разбора помогает зафиксировать влияние, последовательность событий и последующие улучшения.' },
     { sourceId: 'prometheus-docs', focus: 'Определите, какие метрики помогли бы обнаружить отказ учебного сервиса.' },
+  ],
+  'winsec-foundations': [
+    { sourceId: 'ms-sc900', focus: 'Изучите вводные материалы о безопасности и идентичности; отдельно проверьте требования к лабораториям.', takeaway: 'Безопасность, идентичность и соответствие рассматриваются совместно, а учебные облачные лаборатории требуют подходящей среды.' },
+    { sourceId: 'ms-windows-security', focus: 'Просмотрите разделы защиты Windows Server и выберите защитные слои для учебной схемы.' },
+  ],
+  'winsec-accounts': [
+    { sourceId: 'entra-docs', focus: 'Сравните аутентификацию, авторизацию, идентичности и роли.', takeaway: 'Подтверждение личности и предоставление прав — разные действия.' },
+    { sourceId: 'ms-windows-security', focus: 'Найдите раздел управления привилегированным доступом и защиты учётных данных.' },
+  ],
+  'winsec-defender': [
+    { sourceId: 'ms-defender-status', focus: 'Изучите назначение команды, её свойства и примеры просмотра состояния.', takeaway: 'Get-MpComputerStatus показывает состояние установленного антивирусного компонента.' },
+    { sourceId: 'ms-sc200', focus: 'Ознакомьтесь со структурой лабораторий по операциям безопасности и требованиями к среде.' },
+  ],
+  'winsec-firewall': [
+    { sourceId: 'ms-firewall-profile', focus: 'Изучите параметры профилей и примеры команды просмотра.', takeaway: 'У разных профилей брандмауэра могут быть разные настройки по умолчанию.' },
+    { sourceId: 'network-roadmap', focus: 'Повторите разделы firewall, TCP и порты, прежде чем анализировать правило.' },
+  ],
+  'winsec-patching': [
+    { sourceId: 'wsus-docs', focus: 'Уточните статус устаревания и поддерживаемый жизненный цикл WSUS.', takeaway: 'WSUS объявлен устаревшим, но поддерживается согласно жизненному циклу продукта.' },
+    { sourceId: 'ms-windows-security', focus: 'Просмотрите материалы об укреплении системы и ограничениях защитных настроек.' },
+  ],
+  'winsec-identity': [
+    { sourceId: 'ms-mfa', focus: 'Изучите типы факторов и поддерживаемые способы проверки.', takeaway: 'Многофакторная аутентификация использует дополнительные независимые факторы подтверждения личности.' },
+    { sourceId: 'ms-sc900', focus: 'Найдите лабораторию Conditional Access и заранее прочитайте требования и предупреждения.' },
+  ],
+  'winsec-encryption': [
+    { sourceId: 'ms-bitlocker-volume', focus: 'Изучите описание свойств томов и параметры команды.', takeaway: 'Get-BitLockerVolume показывает сведения о защищаемых томах; ключи восстановления необходимо хранить безопасно.' },
+    { sourceId: 'backup-docs', focus: 'Сравните задачу шифрования с подготовкой и проверкой восстановления данных.' },
+  ],
+  'winsec-detection': [
+    { sourceId: 'ms-sc200', focus: 'Изучите список лабораторий по анализу сигналов и требования к учебному окружению.', takeaway: 'Для расследования важно сопоставлять события и использовать доступные источники данных в настроенной среде.' },
+    { sourceId: 'secops-docs', focus: 'Просмотрите введение в операции безопасности и мониторинг идентичностей.' },
+  ],
+  'winsec-response': [
+    { sourceId: 'ms-sc200', focus: 'Посмотрите, как учебные лаборатории связывают обнаружение и дальнейшее расследование.', takeaway: 'Сбор сигналов и последующее расследование требуют заранее подготовленных процессов и источников данных.' },
+    { sourceId: 'postmortem-templates', focus: 'Выберите шаблон и заполните хронологию и последующие действия без реальных секретов.' },
   ],
 };

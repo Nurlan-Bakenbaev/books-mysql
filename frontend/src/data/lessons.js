@@ -1,4 +1,5 @@
 import { extendedLessons } from './extendedLessons.js';
+import { windowsSecurityLessons } from './windowsSecurity.js';
 
 // Подробные самостоятельные уроки; упражнения предназначены для изолированной лаборатории.
 export const lessons = {
@@ -757,5 +758,6 @@ BASH`,
       ]
     }
   },
-  ...extendedLessons
+  ...extendedLessons,
+  ...windowsSecurityLessons,
 };

@@ -19,7 +19,7 @@
 .course-topic-button svg { flex: none; }
 .course-lesson { min-width: 0; margin-top: 32px; overflow: hidden; border: 1px solid var(--border); border-radius: 20px; background: var(--surface); color: var(--text); box-shadow: var(--shadow); scroll-margin-top: 24px; }
 .course-lesson-header { padding: clamp(22px, 4vw, 42px); border-bottom: 1px solid var(--border); background: linear-gradient(125deg, var(--surface-soft), var(--accent-soft)); }
-.course-lesson-header h2, .course-lesson-header h3 { max-width: 24ch; margin: 9px 0 14px; color: var(--text); font-size: clamp(26px, 3.5vw, 40px); line-height: 1.18; letter-spacing: -.04em; }
+.course-lesson-header h1, .course-lesson-header h2, .course-lesson-header h3 { max-width: 24ch; margin: 9px 0 14px; color: var(--text); font-size: clamp(26px, 3.5vw, 40px); line-height: 1.18; letter-spacing: -.04em; }
 .course-lesson-header p { max-width: 76ch; margin: 0; color: var(--muted); font-size: 17px; line-height: 1.75; }
 .course-lesson-header button { margin-top: 14px; }
 .course-lesson-body { padding: clamp(22px, 4vw, 42px); }
@@ -82,6 +82,9 @@
 .video-heading { display: flex; align-items: flex-start; gap: 14px; }
 .video-heading > svg { flex: none; margin-top: 3px; color: var(--accent); font-size: 24px; }
 .video-heading p { margin-top: 0; }
+.video-recommendation { margin: 16px 0; padding: 16px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
+.video-recommendation > p { margin: 8px 0 14px; font-size: 14px; }
+.video-recommendation > p a { color: var(--accent); text-decoration: underline; }
 .video-search-groups { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 16px 0; }
 .video-search-group { min-width: 0; padding: 16px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
 .video-search-group > strong { color: var(--text); font-size: 14px; }
