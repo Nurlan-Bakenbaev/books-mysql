@@ -1,5 +1,7 @@
+import { trackResources, trackLessonResources } from './trackContent.js';
+
 // Ссылки ведут к открытым материалам авторов; объяснения уроков написаны самостоятельно.
-export const resources = [
+const baseResources = [
   {
     id: 'linux-course', title: 'Linux Upskill Challenge', type: 'Курс', language: 'EN', access: 'Бесплатно',
     description: 'Пошаговый курс по Linux-серверу: SSH, права, службы, сеть, журналы и сценарии.',
@@ -237,10 +239,12 @@ export const resources = [
   },
 ];
 
+export const resources = [...baseResources, ...trackResources];
+
 export const resourcesById = Object.fromEntries(resources.map((resource) => [resource.id, resource]));
 
 // Подсказка указывает, какую часть источника связать с конкретным уроком.
-export const lessonResources = {
+const baseLessonResources = {
   'network-models': [
     { sourceId: 'network-roadmap', focus: 'Найдите разделы OSI, TCP/IP, TCP и UDP; сопоставьте уровни с путём запроса из урока.', takeaway: 'Сетевые функции удобно разбирать по уровням: адресация и маршрутизация отличаются от транспортной доставки данных.' },
     { sourceId: 'network-guide', focus: 'Просмотрите назначение сетевых служб и определите роль DNS в инфраструктуре.' },
@@ -411,3 +415,5 @@ export const lessonResources = {
     { sourceId: 'postmortem-templates', focus: 'Выберите шаблон и заполните хронологию и последующие действия без реальных секретов.' },
   ],
 };
+
+export const lessonResources = { ...baseLessonResources, ...trackLessonResources };

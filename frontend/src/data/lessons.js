@@ -1,8 +1,12 @@
 import { extendedLessons } from './extendedLessons.js';
 import { windowsSecurityLessons } from './windowsSecurity.js';
+import { mergeLessonLabs } from './enrichmentMerge.js';
+import { roadmapEnrichmentB } from './lessonEnrichmentRoadmapB.js';
+import { roadmapEnrichmentC } from './lessonEnrichmentRoadmapC.js';
+import { trackLessons } from './trackContent.js';
 
 // Подробные самостоятельные уроки; упражнения предназначены для изолированной лаборатории.
-export const lessons = {
+const baseLessons = {
   "network-models": {
     "intro": "Сеть передаёт данные через несколько уровней: приложение формирует сообщение, транспорт организует доставку, IP выбирает адрес получателя, а канальный уровень передаёт кадры между соседними устройствами. Модель OSI помогает разделить симптомы по уровням; TCP/IP описывает практическое семейство протоколов.",
     "sections": [
@@ -760,4 +764,7 @@ BASH`,
   },
   ...extendedLessons,
   ...windowsSecurityLessons,
+  ...trackLessons,
 };
+
+export const lessons = mergeLessonLabs(baseLessons, [roadmapEnrichmentB, roadmapEnrichmentC]);

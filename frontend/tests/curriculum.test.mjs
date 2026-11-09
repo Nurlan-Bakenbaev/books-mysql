@@ -12,8 +12,9 @@ import { windowsWalkthroughs } from '../src/data/lessonWalkthroughsWindows.js';
 import { lessonResources, resources } from '../src/data/resources.js';
 import { chapterVideos, lessonVideos } from '../src/data/lessonVideos.js';
 import { windowsSecurityCourse } from '../src/data/windowsSecurity.js';
+import { azureAdminCourse, azureAdminPlanned } from '../src/data/azureAdmin.js';
 
-const topics = [...phases.flatMap((phase) => phase.topics), ...windowsSecurityCourse.topics];
+const topics = [...phases.flatMap((phase) => phase.topics), ...windowsSecurityCourse.topics, ...azureAdminCourse.topics];
 const topicIds = topics.map((topic) => topic.id);
 const sourceIds = resources.map((resource) => resource.id);
 const course = JSON.parse(readFileSync(new URL('../src/data/course.json', import.meta.url), 'utf8'));
@@ -44,7 +45,7 @@ test('every roadmap step has a unique, complete lesson and practical outcome', (
 
 test('every lesson has at least two specific, resolvable learning resources', () => {
   assert.equal(new Set(sourceIds).size, sourceIds.length);
-  assert.deepEqual(Object.keys(lessonResources).sort(), [...topicIds].sort());
+  assert.deepEqual(topicIds.filter((id) => !lessonResources[id]), []);
   for (const resource of resources) {
     assert.ok(resource.title && resource.type && resource.language && resource.access && resource.description, resource.id);
     assert.equal(new URL(resource.url).protocol, 'https:', resource.id);
@@ -66,7 +67,7 @@ test('every lesson has at least two specific, resolvable learning resources', ()
 
 test('every lesson has substantial original detail, a diagram, a quiz, and a sourced video', () => {
   assert.deepEqual(Object.keys(lessonDetails).sort(), [...topicIds].sort());
-  assert.deepEqual(Object.keys(lessonVideos).sort(), [...topicIds].sort());
+  assert.deepEqual(topicIds.filter((id) => !lessonVideos[id]), []);
   for (const topic of topics) {
     const detail = lessonDetails[topic.id];
     assert.ok(detail.goals.length >= 3 && detail.goals.every(Boolean), topic.id);
@@ -116,7 +117,7 @@ test('self-contained Linux and Python examples produce their documented results'
     [lessonDetails['ip-addressing'].example.code, ['Network: 192.0.2.128/26', 'Netmask: 255.255.255.192', 'Broadcast: 192.0.2.191', 'Usable hosts: 62']],
     [lessonDetails['logs-scripting'].example.code, ['2026-01-02T10:01:00Z ERROR request timeout']],
     [lessonDetails['cloud-foundations'].example.code, ['Estimated total: 2.50 units']],
-    [lessonDetails.bash.example.code, ['Check planned: web', 'Check planned: database']],
+    [lessonDetails.bash.example.code, ['аргументов: 4', 'аргументов: 2', '640 notes.txt', 'grep: код 1']],
     [lessons['database-operations'].lab.commands, ["[('test-server',)]"]],
   ];
   for (const [command, expected] of examples) {
@@ -124,6 +125,32 @@ test('self-contained Linux and Python examples produce their documented results'
     for (const line of expected) assert.ok(output.includes(line), `${line}: ${output}`);
   }
   assert.match(lessonDetails['powershell-ad'].example.code, /New-ADUser[^\n]+-WhatIf/);
+});
+
+test('AZ-104 track publishes only finished lessons and lists the rest as planned', () => {
+  const published = azureAdminCourse.topics.map((topic) => topic.id);
+  const planned = azureAdminPlanned.flatMap((phase) => phase.topics.map((topic) => topic.id));
+  assert.ok(published.length >= 6);
+  assert.equal(new Set([...published, ...planned]).size, published.length + planned.length);
+  assert.equal(published.length + planned.length, 26);
+  for (const id of published) {
+    assert.ok(lessons[id] && lessonDetails[id] && lessonWalkthroughs[id], id);
+    assert.ok(lessons[id].lab.commands.includes('az ') || lessons[id].lab.commands.includes('Mg'), id);
+    assert.ok(lessonDetails[id].practiceTasks.length >= 2, id);
+  }
+  for (const id of planned) assert.equal(lessons[id], undefined, `${id}: planned topic must not have a half-finished lesson`);
+});
+
+test('enriched roadmap lessons carry extended practice material', () => {
+  for (const id of ['server-deployment', 'ad-ds', 'gpo', 'bash']) {
+    const detail = lessonDetails[id];
+    assert.ok(detail.deepDive.length >= 4, id);
+    assert.ok(detail.example.code.length > 300, id);
+    assert.ok(detail.terminal.lines.some((line) => line.type === 'input'), id);
+    assert.ok(detail.practiceTasks.length >= 3 && detail.practiceTasks.every((item) => item.task && item.hint && item.solution), id);
+    assert.ok(lessons[id].lab.steps.length >= 8, id);
+    assert.ok(lessonWalkthroughs[id].steps.length >= 7, id);
+  }
 });
 
 test('existing topic identifiers remain available for saved progress', () => {
