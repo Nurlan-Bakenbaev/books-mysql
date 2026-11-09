@@ -3,6 +3,7 @@ import { FiActivity, FiArrowDownRight, FiArrowRight, FiAward, FiBookOpen, FiChec
 import { phases, labs, certifications } from './data/guide';
 import Roadmap from './components/Roadmap';
 import Glossary from './components/Glossary';
+import ResourceLibrary from './components/ResourceLibrary';
 const BookReader = lazy(() => import('./components/BookReader'));
 const BookCourse = lazy(() => import('./components/BookCourse'));
 import BookGuide from './components/BookGuide';
@@ -50,7 +51,7 @@ function App() {
   const percent = allIds.length ? Math.round(done / allIds.length * 100) : 0;
   const toggle = (id) => setCompleted((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
   const navItems = [
-    ['#overview', 'Обзор', FiLayers], ['#roadmap', 'Дорожная карта', FiActivity], ['#course', 'Курс по книге', FiBookOpen], ['#book', 'Читать книгу', FiBookOpen], ['#book-guide', 'Разбор книги', FiBookOpen],
+    ['#overview', 'Обзор', FiLayers], ['#roadmap', 'Дорожная карта', FiActivity], ['#resources', 'Учебные материалы', FiBookOpen], ['#course', 'Курс по книге', FiBookOpen], ['#book', 'Читать книгу', FiBookOpen], ['#book-guide', 'Разбор книги', FiBookOpen],
     ['#glossary', 'База знаний', FiBookOpen], ['#labs', 'Домашние лабы', FiTerminal],
     ['#certifications', 'Сертификации', FiAward],
   ];
@@ -80,7 +81,7 @@ function App() {
         </header>
         <div className="content-wrap">
           <Roadmap phases={phases} completed={completed} onToggle={toggle} />
-          <div className="welcome-row"><div><div className="section-kicker"><span className="status-dot" /> ОБНОВЛЁННЫЙ КУРС · 23 УРОКА</div><h2>Путь системного<br className="desktop-break" /> администратора <span>2026</span></h2><p>23 подробных урока, практические задания и полный маршрут от основ сетей до облака и безопасности.</p></div><div className="welcome-icon"><FiServer /><span>SYS / 2026</span></div></div>
+          <div className="welcome-row"><div><div className="section-kicker"><span className="status-dot" /> ОБНОВЛЁННЫЙ КУРС · ТЕМЫ: {topicIds.length}</div><h2>Путь системного<br className="desktop-break" /> администратора <span>2026</span></h2><p>Пошаговые уроки, практические задания и учебные материалы: от основ сетей и Linux до облака и безопасности.</p></div><div className="welcome-icon"><FiServer /><span>SYS / 2026</span></div></div>
 
           <section className="hero" aria-label="Общий прогресс">
             <div className="hero-copy"><div className="hero-eyebrow"><span /> ВАШ ПРОГРЕСС</div><h2>Большой путь<br />начинается с <em>первого шага.</em></h2><p>Отмечайте изученные темы и выполненные лаборатории. Ваш прогресс сохранится на этом устройстве.</p><div className="hero-actions"><a className="button button-primary" href="#roadmap">Открыть дорожную карту <FiArrowRight /></a><a className="hero-secondary" href="#labs">Перейти к лабам <FiArrowDownRight /></a></div></div>
@@ -88,11 +89,12 @@ function App() {
           </section>
 
           <div className="stats-grid" aria-label="Статистика обучения">
-            <div className="stat-card"><span className="stat-icon blue"><FiLayers /></span><div><span>ЭТАПЫ ПУТИ</span><strong className="stat-value">05</strong><small>от основ до SecOps</small></div><FiArrowDownRight className="stat-arrow" /></div>
+            <div className="stat-card"><span className="stat-icon blue"><FiLayers /></span><div><span>ЭТАПЫ ПУТИ</span><strong className="stat-value">{phases.length.toString().padStart(2, '0')}</strong><small>от основ до SecOps</small></div><FiArrowDownRight className="stat-arrow" /></div>
             <div className="stat-card"><span className="stat-icon violet"><FiBookOpen /></span><div><span>ТЕМЫ ИЗУЧЕНЫ</span><strong className="stat-value">{topicsDone.toString().padStart(2, '0')} <small>/ {topicIds.length}</small></strong><small>знания шаг за шагом</small></div><FiArrowDownRight className="stat-arrow" /></div>
             <div className="stat-card"><span className="stat-icon green"><FiCheckCircle /></span><div><span>ЛАБЫ ВЫПОЛНЕНЫ</span><strong className="stat-value">{labsDone.toString().padStart(2, '0')} <small>/ {labs.length}</small></strong><small>практика в деле</small></div><FiArrowDownRight className="stat-arrow" /></div>
           </div>
 
+          <ResourceLibrary />
           <Suspense fallback={<p role="status">Загружаем курс…</p>}><BookCourse onOpenBookPage={openBookPage} completed={completed} onToggle={toggle} /></Suspense>
           <Suspense fallback={<p role="status">Загружаем читалку…</p>}><BookReader pageRequest={bookPageRequest} /></Suspense>
           <BookGuide onOpenPage={openBookPage} />

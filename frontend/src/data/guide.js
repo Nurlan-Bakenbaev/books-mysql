@@ -4,6 +4,7 @@ export const phases = [
     id: 'foundation', number: '01', title: 'Фундамент', subtitle: 'Networking & Hardware Essentials',
     description: 'Разберитесь, как устройства обмениваются данными и из чего состоит надёжная инфраструктура.',
     topics: [
+      { id: 'virtualization', title: 'Подготовка лаборатории: виртуальные машины', description: 'Выберите гипервизор, создайте изолированную VM и разберитесь с виртуальными сетями и снимками.' },
       { id: 'network-models', title: 'Модели OSI и TCP/IP', description: 'Уровни моделей, инкапсуляция, порты и протоколы TCP и UDP. Проследите путь запроса от приложения до сети.' },
       { id: 'ip-addressing', title: 'IPv4, IPv6 и подсети', description: 'Адресация, маски и префиксы CIDR, шлюзы и диапазоны. Рассчитайте подсети и объясните различия IPv4 и IPv6.' },
       { id: 'routing-vlan', title: 'Маршрутизация, VLAN и firewall', description: 'Статические маршруты, сегментация сети, правила брандмауэра и принцип минимально необходимого доступа.' },
@@ -12,7 +13,17 @@ export const phases = [
     ],
   },
   {
-    id: 'windows', number: '02', title: 'Windows Server', subtitle: 'Core Infrastructure',
+    id: 'linux', number: '02', title: 'Linux и сервисы', subtitle: 'Linux & Service Operations',
+    description: 'Освойте файловую систему, службы, веб-сервер и безопасную работу с данными в лабораторной VM.',
+    topics: [
+      { id: 'linux-basics', title: 'Основы администрирования Linux', description: 'Файловая система, пользователи, группы, права, пакеты и безопасный доступ по SSH.' },
+      { id: 'linux-services', title: 'Процессы, службы и журналы Linux', description: 'Исследуйте процессы, systemd, журналы и планирование задач; отличайте состояние службы от доступности приложения.' },
+      { id: 'web-services', title: 'Веб-сервисы, HTTP и TLS', description: 'Разберите запросы HTTP, обратный прокси и сертификаты; запустите учебный сервис только на localhost.' },
+      { id: 'database-operations', title: 'Эксплуатация баз данных', description: 'Основы SQL, права, согласованное резервное копирование и проверка восстановления базы.' },
+    ],
+  },
+  {
+    id: 'windows', number: '03', title: 'Windows Server', subtitle: 'Core Infrastructure',
     description: 'Постройте управляемую инфраструктуру идентификации и сетевых служб на Windows Server 2022 / 2025.',
     topics: [
       { id: 'server-deployment', title: 'Развёртывание Windows Server', description: 'Установка Windows Server 2022 / 2025, Server Core, роли, обновления и удалённое администрирование.' },
@@ -23,34 +34,37 @@ export const phases = [
     ],
   },
   {
-    id: 'hybrid', number: '03', title: 'Гибридное облако', subtitle: 'Hybrid & Cloud Ops',
+    id: 'hybrid', number: '04', title: 'Гибридное облако', subtitle: 'Hybrid & Cloud Ops',
     description: 'Соедините локальные службы, виртуализацию и облако в устойчивую инфраструктуру.',
     topics: [
-      { id: 'virtualization', title: 'Hyper-V и VMware vSphere / ESXi', description: 'Создавайте виртуальные машины и сети, управляйте ресурсами, снимками и шаблонами.' },
       { id: 'backup-dr', title: 'Резервное копирование и DR', description: 'Применяйте стратегию 3-2-1, изучите Veeam, определите RPO и RTO и регулярно проверяйте восстановление.' },
+      { id: 'cloud-foundations', title: 'Основы облачной инфраструктуры', description: 'Вычисления, сети, хранилище, общая ответственность, доступ и контроль расходов в облаке.' },
       { id: 'entra-id', title: 'Microsoft Entra ID', description: 'Пользователи, группы, приложения и роли облачного каталога; различия с локальным AD DS.' },
       { id: 'hybrid-identity', title: 'Гибридная идентификация', description: 'Изучите Entra Connect Sync, гибридную аутентификацию, MFA и единый вход SSO.' },
-      { id: 'devops-basics', title: 'Docker, Git и CI/CD', description: 'Запускайте контейнеры, храните конфигурации в Git и проверяйте изменения инфраструктуры в простом конвейере CI/CD.' },
     ],
   },
   {
-    id: 'automation', number: '04', title: 'Автоматизация', subtitle: 'PowerShell & CLI',
+    id: 'automation', number: '05', title: 'Автоматизация и наблюдаемость', subtitle: 'Automation & Observability',
     description: 'Превращайте повторяемые задачи в понятные и проверяемые сценарии.',
     topics: [
+      { id: 'bash', title: 'Bash и кроссплатформенное управление', description: 'Освойте оболочку, права, процессы, SSH и базовые сценарии для Linux и смешанных сред.' },
       { id: 'powershell', title: 'Продвинутый PowerShell', description: 'Объекты и конвейер, функции, обработка ошибок, работа со службами и удалённое управление.' },
       { id: 'powershell-ad', title: 'Автоматизация Active Directory', description: 'Используйте модуль ActiveDirectory для поиска и массового создания пользователей из CSV; сначала проверяйте изменения с WhatIf.' },
       { id: 'logs-scripting', title: 'Разбор логов', description: 'Собирайте и фильтруйте события, формируйте отчёты и планируйте регулярное выполнение сценариев.' },
-      { id: 'bash', title: 'Bash и кроссплатформенное управление', description: 'Освойте оболочку, права, процессы, SSH и базовые сценарии для Linux и смешанных сред.' },
+      { id: 'devops-basics', title: 'Docker, Git и CI/CD', description: 'Изучите контейнеры, хранение конфигураций в Git и проверку изменений в CI/CD; познакомьтесь с Kubernetes как дополнительным направлением.' },
+      { id: 'ansible-iac', title: 'Ansible и инфраструктура как код', description: 'Опишите конфигурацию декларативно, проверьте повторяемость и познакомьтесь с планированием изменений инфраструктуры.' },
+      { id: 'operations-monitoring', title: 'Мониторинг доступности и ресурсов', description: 'Собирайте базовые показатели, различайте метрики и журналы и связывайте оповещения с действиями.' },
     ],
   },
   {
-    id: 'security', number: '05', title: 'Кибербезопасность', subtitle: 'Cybersecurity & SecOps',
+    id: 'security', number: '06', title: 'Кибербезопасность и итоговый проект', subtitle: 'Security & Incident Response',
     description: 'Защищайте доступ, наблюдайте за событиями и готовьтесь к реагированию на инциденты.',
     topics: [
       { id: 'zero-trust', title: 'Zero Trust и наименьшие привилегии', description: 'Проверяйте идентичность и контекст каждого запроса, ограничивайте доступ и регулярно пересматривайте привилегии.' },
       { id: 'hardening', title: 'Укрепление Windows и серверов', description: 'Отключайте ненужные службы, настраивайте аудит безопасности, используйте BitLocker и проверенные базовые конфигурации.' },
       { id: 'security-monitoring', title: 'Мониторинг и реагирование', description: 'Изучите Event Viewer, Sysmon и SIEM; разберите обнаружение и расследование в Defender for Endpoint и Microsoft Sentinel.' },
       { id: 'patch-management', title: 'Уязвимости и обновления', description: 'Инвентаризация, приоритизация уязвимостей, тестирование и развёртывание обновлений через WSUS, Intune или сторонние решения.' },
+      { id: 'incident-portfolio', title: 'Итоговый проект: сервис и инцидент', description: 'Документируйте учебный сервис, проверьте восстановление, разберите сбой и подготовьте портфолио без секретов.' },
     ],
   },
 ]

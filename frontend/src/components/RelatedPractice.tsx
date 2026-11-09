@@ -5,26 +5,26 @@ import { lessons } from '../data/lessons';
 import LessonDialog from './LessonDialog';
 
 type Topic = { id: string; title: string; description: string };
-type Lesson = { intro: string; sections: { title: string; paragraphs: string[] }[]; lab: { steps: string[]; commands: string; expected: string; pitfalls: string[] } };
+type Lesson = { intro: string; sections: { title: string; paragraphs: string[] }[]; lab: { steps: string[]; commands: string; commandsLabel?: string; extraCommands?: { label: string; commands: string }[]; expected: string; pitfalls: string[] } };
 type Props = { topicId: string; completed: string[]; onToggle: (id: string) => void };
 
 // Эти материалы дополняют курс и не являются текстом книги.
 const relatedByChapter: Record<string, string[]> = {
-  compute: ['virtualization'],
-  storage: ['hardware-storage', 'backup-dr'],
+  compute: ['virtualization', 'linux-basics', 'linux-services'],
+  storage: ['hardware-storage', 'backup-dr', 'database-operations'],
   network: ['network-models', 'routing-vlan', 'network-troubleshooting'],
   toolkit: ['powershell', 'bash', 'network-troubleshooting'],
   'version-control': ['devops-basics'],
   testing: ['devops-basics'],
   'infrastructure-security': ['zero-trust', 'hardening', 'iam-rbac-laps'],
   'scripting-infrastructure': ['powershell', 'bash', 'powershell-ad'],
-  'managing-infrastructure': ['devops-basics', 'patch-management'],
+  'managing-infrastructure': ['devops-basics', 'ansible-iac', 'patch-management'],
   'securing-infrastructure': ['zero-trust', 'hardening'],
-  'monitoring-theory': ['security-monitoring', 'logs-scripting'],
+  'monitoring-theory': ['operations-monitoring', 'security-monitoring', 'logs-scripting'],
   'compute-monitoring': ['logs-scripting', 'network-troubleshooting'],
   'monitoring-data': ['logs-scripting', 'security-monitoring'],
   'capacity-management': ['virtualization'],
-  'incident-management': ['security-monitoring', 'logs-scripting'],
+  'incident-management': ['security-monitoring', 'logs-scripting', 'incident-portfolio'],
 };
 
 const topicsById = new Map<string, Topic>(phases.flatMap((phase) => phase.topics.map((topic) => [topic.id, topic] as [string, Topic])));
