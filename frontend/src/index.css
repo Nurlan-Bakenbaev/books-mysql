@@ -483,7 +483,7 @@ input[type='checkbox'] { width: 19px; height: 19px; flex: none; margin: 3px 0 0;
 .lesson-jump a:hover { border-color: var(--accent); }
 .lesson-page-content { width: 100%; max-width: none; padding: clamp(24px, 4vw, 48px); }
 .lesson-video-first { padding-top: 0 !important; }
-.lesson-video-first .curated-video { max-width: 1080px; }
+.lesson-video-first .curated-video { width: 100%; max-width: none; padding: clamp(20px, 2.5vw, 30px); }
 .lesson-page-content .lesson-section { padding: 30px 0; scroll-margin-top: 20px; }
 .lesson-page-content .lesson-section:first-child { padding-top: 0; }
 .lesson-page-content h2 { margin: 8px 0 14px; font-size: clamp(23px, 2.4vw, 29px); line-height: 1.3; letter-spacing: -.025em; }
@@ -545,6 +545,11 @@ input[type='checkbox'] { width: 19px; height: 19px; flex: none; margin: 3px 0 0;
 .curated-video { padding: 20px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-soft); }
 .curated-video a:not(.button) { color: var(--accent); text-decoration: underline; }
 .curated-video p { margin: 8px 0 14px; font-size: 14px; }
+.video-card-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.video-card-heading > strong { font-size: 19px; line-height: 1.45; }
+.video-card-heading > span { flex: none; padding: 6px 9px; border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border)); border-radius: 999px; color: var(--accent); background: var(--accent-soft); font-size: 12px; font-weight: 750; white-space: nowrap; }
+.lesson-video-first .video-frame { position: relative; width: 100%; aspect-ratio: 16 / 9; min-height: 420px; overflow: hidden; margin: 18px 0; border: 1px solid var(--border); border-radius: 14px; background: #07111a; box-shadow: 0 18px 48px rgba(3, 15, 26, .2); }
+.lesson-video-first .video-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 .video-actions { display: flex; flex-wrap: wrap; gap: 10px; }
 .lesson-completion { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px; padding: 26px 0; }
 .lesson-completion > span { color: var(--muted); font-size: 14px; }
@@ -767,7 +772,7 @@ input[type='checkbox'] { width: 19px; height: 19px; flex: none; margin: 3px 0 0;
 .landing-section-heading { max-width: 780px; }
 .landing-section-heading h2 { margin: 10px 0 14px; font-size: clamp(34px, 4.4vw, 62px); line-height: 1.08; letter-spacing: -.055em; }
 .landing-section-heading p { margin: 0; color: var(--muted); font-size: 17px; line-height: 1.75; }
-.landing-path-preview, .landing-tracks, .landing-method { padding: 120px 0; }
+.landing-path-preview, .landing-tracks { padding: 120px 0; }
 .landing-path-canvas { position: relative; min-height: 390px; margin-top: 46px; border: 1px solid var(--border); border-radius: 28px; background: radial-gradient(circle at 50% 40%, var(--accent-soft), transparent 62%), var(--surface); box-shadow: var(--shadow); }
 .landing-path-canvas svg { position: absolute; inset: 30px 4%; width: 92%; height: calc(100% - 60px); overflow: visible; }
 .landing-map-base, .landing-map-line { fill: none; stroke-width: 7; stroke-linecap: round; }
@@ -793,17 +798,6 @@ input[type='checkbox'] { width: 19px; height: 19px; flex: none; margin: 3px 0 0;
 .landing-track-progress { height: 5px; margin-top: 8px; overflow: hidden; border-radius: 999px; background: var(--border); }
 .landing-track-progress span { display: block; height: 100%; border-radius: inherit; background: var(--track-color); }
 .landing-track-link { display: flex; align-items: center; gap: 7px; margin-top: 23px; color: var(--track-color); font-size: 13px; }
-.landing-method { border-top: 1px solid var(--border); }
-.landing-method-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 42px; }
-.landing-method-grid article { min-height: 240px; padding: 28px; border: 1px solid var(--border); border-radius: 18px; background: var(--surface); }
-.landing-method-grid article > span { color: var(--accent); font: 800 12px 'JetBrains Mono', monospace; }
-.landing-method-grid h3 { margin: 40px 0 10px; font-size: 22px; }
-.landing-method-grid p { color: var(--muted); line-height: 1.7; }
-.landing-review { display: flex; justify-content: space-between; align-items: center; gap: 50px; margin-bottom: 100px; padding: clamp(30px, 5vw, 62px); border: 1px solid #28647a; border-radius: 24px; color: #f0fbff; background: linear-gradient(125deg, #103753, #0e5e62); }
-.landing-review > div { max-width: 850px; }
-.landing-review h2 { margin: 10px 0; font-size: clamp(28px, 3.5vw, 45px); letter-spacing: -.045em; }
-.landing-review p { margin: 0; color: #d6edf1; line-height: 1.75; }
-.landing-review .button { flex: none; border-color: #8ee8dc; background: #e7fffa; color: #0b3a42; }
 .landing-footer { display: flex; align-items: center; justify-content: space-between; gap: 30px; width: min(100% - 48px, 1440px); min-height: 105px; margin: 0 auto; border-top: 1px solid var(--border); color: var(--muted); }
 .landing-footer > span { color: var(--text); font-size: 20px; font-weight: 800; }
 .landing-footer p { font-size: 12px; }
@@ -837,7 +831,7 @@ input[type='checkbox'] { width: 19px; height: 19px; flex: none; margin: 3px 0 0;
   .landing-proof { grid-template-columns: repeat(2, 1fr); }
   .landing-proof > div:nth-child(2) { border-right: 0; }
   .landing-proof > div:nth-child(-n+2) { border-bottom: 1px solid var(--border); }
-  .landing-path-preview, .landing-tracks, .landing-method { padding: 80px 0; }
+  .landing-path-preview, .landing-tracks { padding: 80px 0; }
   .landing-path-canvas { min-height: 560px; }
   .landing-path-canvas svg { display: none; }
   .landing-path-canvas::before { content: ''; position: absolute; left: 36px; top: 48px; bottom: 48px; width: 4px; border-radius: 99px; background: linear-gradient(var(--accent), #8e77e9, #e99a4c); }
@@ -846,10 +840,6 @@ input[type='checkbox'] { width: 19px; height: 19px; flex: none; margin: 3px 0 0;
   .landing-map-node strong { font-size: 14px; }
   .landing-track-grid { grid-template-columns: 1fr; }
   .landing-track-card, .landing-track-card:nth-child(4), .landing-track-card:last-child { grid-column: auto; }
-  .landing-method-grid { grid-template-columns: 1fr; }
-  .landing-method-grid article { min-height: 190px; }
-  .landing-method-grid h3 { margin-top: 25px; }
-  .landing-review { align-items: flex-start; flex-direction: column; }
   .landing-footer { align-items: flex-start; flex-direction: column; padding: 28px 0; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -980,7 +970,7 @@ input[type='checkbox'] { width: 19px; height: 19px; flex: none; margin: 3px 0 0;
 }
 
 /* Keep the skill-map layout above the legacy sequential-map fallbacks. */
-.standalone-view .roadmap-map.skill-map-board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: none; padding: 50px 24px 32px; gap: 52px 18px; overflow-x: hidden; }
+.standalone-view .roadmap-map.skill-map-board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: none; padding: 50px 24px 32px; gap: 96px 18px; overflow-x: hidden; }
 .standalone-view .skill-sequence-rail { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(var(--phase-count), minmax(0, 1fr)); align-items: center; min-height: 46px; margin: -28px 0 -10px; }
 .standalone-view .skill-sequence-step { position: relative; display: grid; place-items: center; min-width: 0; }
 .standalone-view .skill-sequence-step::after { content: ''; position: absolute; z-index: 0; left: 50%; top: 50%; width: 100%; height: 3px; background: linear-gradient(90deg, #38bdf8, #8b5cf6); transform: translateY(-50%); }
@@ -995,19 +985,25 @@ input[type='checkbox'] { width: 19px; height: 19px; flex: none; margin: 3px 0 0;
 .standalone-view .map-stop.skill-column,
 .standalone-view .map-stop.skill-column:nth-of-type(even) { width: auto; margin: 0; }
 .standalone-view .map-stop.skill-column::before,
-.standalone-view .map-stop.skill-column:nth-of-type(even)::before { left: 50%; right: auto; top: -50px; width: 3px; height: 50px; transform: translateX(-50%); }
+.standalone-view .map-stop.skill-column:nth-of-type(even)::before { left: 50%; right: auto; top: -90px; width: 3px; height: 90px; transform: translateX(-50%); }
 .standalone-view .map-stop.skill-column .phase-header { min-height: 176px; }
 @media (min-width: 1700px) {
-  .standalone-view .roadmap-map.skill-map-board { grid-template-columns: repeat(var(--phase-count), minmax(0, 1fr)); gap: 18px; }
+  .standalone-view .roadmap-map.skill-map-board { grid-template-columns: repeat(var(--phase-count), minmax(0, 1fr)); gap: 96px 18px; }
 }
 @media (min-width: 761px) and (max-width: 1100px) {
   .standalone-view .roadmap-map.skill-map-board { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 760px) {
-  .standalone-view .roadmap-map.skill-map-board { grid-template-columns: 1fr; gap: 52px; padding: 52px 14px 24px; }
+  .standalone-view .roadmap-map.skill-map-board { grid-template-columns: 1fr; gap: 72px; padding: 52px 14px 24px; }
   .standalone-view .map-stop.skill-column::before,
-  .standalone-view .map-stop.skill-column:nth-of-type(even)::before { top: -52px; height: 52px; }
+  .standalone-view .map-stop.skill-column:nth-of-type(even)::before { top: -72px; height: 72px; }
   .standalone-view .map-stop.skill-column .phase-header { min-height: 155px; }
+}
+
+@media (max-width: 760px) {
+  .lesson-video-first .video-frame { min-height: 0; }
+  .video-card-heading { flex-direction: column; gap: 10px; }
+  .video-card-heading > span { white-space: normal; }
 }
 
 /* Readable academy typography: Jakarta for UI, Inter for long-form text. */

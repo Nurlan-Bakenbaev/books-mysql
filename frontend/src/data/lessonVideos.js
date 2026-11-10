@@ -2,16 +2,23 @@ const linuxVideo = (id, title, day) => ({
   id, title,
   source: `https://github.com/livialima/linuxupskillchallenge/blob/master/docs/${day}.md`,
   sourceName: 'Linux Upskill Challenge',
+  maxDurationMinutes: 15,
 });
 
 const roadmapVideo = (id, title, file) => ({
   id, title,
   source: `https://github.com/nilbuild/developer-roadmap/blob/master/roadmaps/${file}`,
   sourceName: 'Developer Roadmap',
+  maxDurationMinutes: 15,
 });
 
 const microsoftVideo = (id, title, file) => ({
-  id, title, source: file, sourceName: 'Документация Microsoft',
+  id, title, source: file, sourceName: 'Документация Microsoft', maxDurationMinutes: 15,
+});
+
+const popularVideo = (id, title, duration, sourceName) => ({
+  id, title, duration, sourceName, maxDurationMinutes: 15,
+  source: `https://www.youtube.com/watch?v=${id}`,
 });
 
 const sreVideo = (id, title) => ({
@@ -22,40 +29,41 @@ const sreVideo = (id, title) => ({
 
 const videos = {
   vm: linuxVideo('nKcfhI1B4mA', 'Creating a local VM with VirtualBox', '00'),
-  linuxBasics: linuxVideo('xaDAB0vbIr4', 'Get to know your server', '01'),
+  linuxBasics: popularVideo('rrB13utjYV4', 'Linux in 100 Seconds', '≈ 3 минуты', 'Fireship'),
   linuxServices: linuxVideo('VzXwO0qq-bg', 'The server and its services', '07'),
   linuxLogs: linuxVideo('sd5NFUo5JYM', 'Logs, monitoring and troubleshooting', '18'),
-  bash: linuxVideo('G7GyMuyauVk', 'Scripting', '20'),
+  bash: popularVideo('I4EWvMFj37g', 'Bash in 100 Seconds', '≈ 2 минуты', 'Fireship'),
   tcp: roadmapVideo('PpsEaqJV_A0', 'What is TCP/IP?', 'network-engineer/content/tcp@Wqc3KD1ttRWQplt1oPpTf.md'),
   cidr: roadmapVideo('KiWXRL-2TnY', 'What is CIDR?', 'network-engineer/content/cidr@y43H6qnMn4qUTjInlGR04.md'),
   vlan: roadmapVideo('jC6MJTh9fRE', 'VLAN Explained', 'network-engineer/content/vlans@x0bAdjSBNfZ4gm1CwnPBK.md'),
   troubleshoot: roadmapVideo('1i3XdhC2ZAs', 'Steps for Network Troubleshooting', 'network-engineer/content/troubleshooting@vG_95IDrk5lOnCQub2XkD.md'),
   storage: roadmapVideo('3yZDDr0JKVc', 'NAS vs SAN', 'network-engineer/content/san@9tkaAhzPhiiGUoL2LqbPb.md'),
   dhcp: roadmapVideo('e6-TaH5bkjo', 'DHCP Explained', 'network-engineer/content/dhcp@yL4HVbX33i2wAj-k92X48.md'),
-  http: roadmapVideo('iYM2zFP3Zn0', 'HTTP Crash Course & Exploration', 'devops/content/http@ke-8MeuLx7AS2XjSsPhxe.md'),
-  database: roadmapVideo('qw--VYLpxG4', 'PostgreSQL Full Course for Beginners', 'backend/content/postgresql@FihTrMO56kj9jT8O_pO2T.md'),
+  http: popularVideo('-Zea7GB2OwA', 'HTTP in 100 Seconds', '≈ 2 минуты', 'Fireship'),
+  database: popularVideo('zsjvFFKOm3c', 'SQL Explained in 100 Seconds', '≈ 3 минуты', 'Fireship'),
   ad: {
     id: 'GfqsFtmJQg0', title: 'What is Active Directory?', sourceName: 'IT Learning Pathway',
     source: 'https://github.com/samuelogunti/it-learning-pathway/blob/main/important-technologies/active-directory/02-fundamentals.md',
+    maxDurationMinutes: 15,
   },
-  adPowershell: {
-    id: 'VXxH4n684HE', title: 'PowerShell for Active Directory', sourceName: 'IT Learning Pathway',
+  adPowershell: popularVideo('UVUd9_k9C6A', 'PowerShell in 100 Seconds', '≈ 2 минуты', 'Fireship'),
+  gpo: {
+    id: 'GfqsFtmJQg0', title: 'Active Directory fundamentals before Group Policy', sourceName: 'IT Learning Pathway', maxDurationMinutes: 15,
     source: 'https://github.com/samuelogunti/it-learning-pathway/blob/main/important-technologies/active-directory/02-fundamentals.md',
   },
-  gpo: roadmapVideo('rEhTzP-ScBo', 'Learn Windows Group Policy the easy way!', 'cyber-security/content/group-policy@FxuMJmDoDkIsPFp2iocFg.md'),
-  laps: microsoftVideo('jdEDIXm4JgU', 'Windows LAPS: technical presentation', 'https://github.com/MicrosoftDocs/windowsserverdocs/blob/main/WindowsServerDocs/identity/laps/laps-overview.md'),
+  laps: roadmapVideo('8GZ6516Kao4', 'Principle of Least Privilege for administrator access', 'devsecops/content/least-privilege@rK-RToN5JRcclYl23TyYz.md'),
   backup: roadmapVideo('S8BIkoHlU_0', 'Why backup should be part of a cyber resilience plan?', 'cyber-security/content/understand-backups-and-resiliency@9asy3STW4oTYYHcUazaRj.md'),
-  azure: roadmapVideo('5abffC-K40c', 'Microsoft Azure Fundamentals Certification Course', 'devops/content/azure@ctor79Vd7EXDMdrLyUcu_.md'),
+  azure: popularVideo('NKEFWyqJ5XA', 'Microsoft Azure in 100 Seconds', '≈ 2 минуты', 'Fireship'),
   mfa: microsoftVideo('fSIM_Zrlv70', 'Get started with phishing-resistant MFA', 'https://github.com/MicrosoftDocs/entra-docs/blob/main/docs/identity/authentication/phishing-resistant-authentication-videos.md'),
-  hybrid: microsoftVideo('Cqn3INyjg5s', 'Windows Hello for Business and cloud Kerberos trust', 'https://github.com/MicrosoftDocs/entra-docs/blob/main/docs/identity/authentication/phishing-resistant-authentication-videos.md'),
-  powershell: roadmapVideo('ZOoCaWyifmI', 'Learn PowerShell in Less Than 2 Hours', 'devops/content/power-shell@z6IBekR8Xl-6f8WEb05Nw.md'),
-  docker: roadmapVideo('RqTEHSBrYFw', 'Docker Tutorial', 'devops/content/docker@P0acFNZ413MSKElHqCxr3.md'),
+  hybrid: microsoftVideo('fSIM_Zrlv70', 'Phishing-resistant MFA for hybrid identity', 'https://github.com/MicrosoftDocs/entra-docs/blob/main/docs/identity/authentication/phishing-resistant-authentication-videos.md'),
+  powershell: popularVideo('UVUd9_k9C6A', 'PowerShell in 100 Seconds', '≈ 2 минуты', 'Fireship'),
+  docker: popularVideo('Gjnup-PuquQ', 'Docker in 100 Seconds', '≈ 2 минуты', 'Fireship'),
   git: roadmapVideo('vA5TTz6BXhY', 'Git & GitHub Crash Course For Beginners', 'devops/content/git@uyDm1SpOQdpHjq9zBAdck.md'),
-  ansible: roadmapVideo('9Ua2b06oAr4', 'Ansible Full Course for Beginners', 'devops/content/ansible@h9vVPOmdUSeEGVQQaSTH5.md'),
+  ansible: popularVideo('xRMPKQweySE', 'Ansible in 100 Seconds', '≈ 2 минуты', 'Developer Roadmap · YouTube'),
   monitoring: roadmapVideo('STVMGrYIlfg', 'Introduction to the Prometheus Monitoring System', 'devops/content/prometheus@NiVvRbCOCDpVvif48poCo.md'),
   leastPrivilege: roadmapVideo('8GZ6516Kao4', 'What is the Principle of Least Privilege?', 'devsecops/content/least-privilege@rK-RToN5JRcclYl23TyYz.md'),
   defender: microsoftVideo('P1aNEy09NaI', 'Windows Defender Antivirus (older Windows Server material)', 'https://github.com/MicrosoftDocs/windowsserverdocs/blob/main/WindowsServerDocs/security/gdpr/gdpr-winserver-whitepaper.md'),
-  firewall: microsoftVideo('2VioHFDBWJE', 'Demystifying the Windows Firewall', 'https://github.com/MicrosoftDocs/windowsserverdocs/blob/main/WindowsServerDocs/storage/file-server/smb-secure-traffic.md'),
+  firewall: popularVideo('kDEX1HXybrU', 'What is a Firewall?', '≈ 6 минут', 'PowerCert Animated Videos'),
   siem: roadmapVideo('JEcETdy5WxU', 'SIEM Explained', 'cyber-security/content/siem@c2kY3wZVFKZYxMARhLIwO.md'),
   patch: roadmapVideo('O5XXlJear0w', 'What Is Patch Management?', 'cyber-security/content/patching@e-MDyUR3GEv-e4Qsx_5vV.md'),
   incident: roadmapVideo('MsGl6lX-YaI', 'Incident Detection & Response', 'devsecops/content/incident-response@V5eQcby9FNcGv68KPj5rH.md'),
@@ -83,7 +91,7 @@ const videos = {
   azNetworkTopology: roadmapVideo('IPaU-N7p4L0', 'Network Topology Explained', 'cloud-computing/content/network-topology@ePXTBUCFKWMC2xStg4QHF.md'),
   azLoadBalancer: roadmapVideo('sCR3SAVdyCc', 'What is a Load Balancer?', 'cloud-computing/content/load-balancers@YXpKsHX1YX40NlezjO6Ut.md'),
   lsecCia: roadmapVideo('SBcDGb9l6yo', 'The CIA Triad', 'cyber-security/content/understand-cia-triad@uz6ELaLEu9U4fHVfnQiOa.md'),
-  lsecSsh: roadmapVideo('5JvLV2-ngCI', 'How does SSH work', 'cyber-security/content/ssh@8Mog890Lj-gVBpWa05EzT.md'),
+  lsecSsh: popularVideo('qWKK_PNHnnA', 'SSH in 100 Seconds', '≈ 2 минуты', 'Fireship'),
   lsecFirewall: roadmapVideo('9GZlVOafYTg', 'Firewalls and Network Security', 'devsecops/content/firewalls@LV_uiNRdUi9OrmxQCdeGw.md'),
   lsecHardeningTech: roadmapVideo('wXoC46Qr_9Q', 'Hardening Techniques', 'cyber-security/content/operating-system-hardening@_S25EOGS3P8647zLM5i-g.md'),
   lsecCis: roadmapVideo('f-Z7h5dI6uQ', 'CIS Benchmarks Overview', 'cyber-security/content/cis@sSihnptkoEqUsHjDpckhG.md'),

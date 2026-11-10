@@ -25,7 +25,7 @@ function CodeBlock({ label, code }) {
 function LessonVideo({ video }) {
   return <section className="lesson-section lesson-video-first" id="lesson-video" aria-labelledby="lesson-video-title">
     <span className="eyebrow">ВИДЕОУРОК · YOUTUBE</span><h2 id="lesson-video-title">Начните с видео по теме</h2>
-    <div className="curated-video"><strong>{video.title}</strong><p><a href={video.source} target="_blank" rel="noreferrer">Источник: {video.sourceName} <FiExternalLink aria-hidden="true" /></a></p>
+    <div className="curated-video"><div className="video-card-heading"><strong>{video.title}</strong><span>Популярное короткое видео · {video.duration || `до ${video.maxDurationMinutes} минут`}</span></div><p><a href={video.source} target="_blank" rel="noreferrer">Источник: {video.sourceName} <FiExternalLink aria-hidden="true" /></a></p>
       <div className="video-frame"><iframe title={`Видео: ${video.title}`} src={`https://www.youtube-nocookie.com/embed/${video.id}?rel=0`} loading="eager" referrerPolicy="strict-origin-when-cross-origin" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen /></div>
       <div className="video-actions"><a className="button" href={`https://www.youtube.com/watch?v=${video.id}`} target="_blank" rel="noreferrer"><FiPlay aria-hidden="true" /> Открыть на YouTube <FiExternalLink aria-hidden="true" /></a></div>
     </div>

@@ -82,6 +82,8 @@ test('every lesson has substantial original detail, a diagram, a quiz, and a sou
     const video = lessonVideos[topic.id];
     assert.match(video.id, /^[A-Za-z0-9_-]{11}$/, topic.id);
     assert.ok(video.title && video.sourceName, topic.id);
+    assert.equal(video.maxDurationMinutes, 15, `${topic.id}: video duration policy`);
+    assert.doesNotMatch(video.title, /full course|less than 2 hours|crash course|technical presentation/i, `${topic.id}: long-form video`);
     assert.equal(new URL(video.source).protocol, 'https:', topic.id);
     const screenshot = detail.example?.screenshot || detail.labScreenshot;
     if (screenshot) assert.ok(existsSync(new URL(`../public/study-images/${screenshot}`, import.meta.url)), topic.id);

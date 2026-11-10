@@ -77,9 +77,6 @@ export default function LandingPage({ tracks, totalCount, nextLesson, theme, onT
         })}</div>
       </section>
 
-      <section className="landing-method"><div className="landing-section-heading"><span className="eyebrow">НЕ КОНСПЕКТ, А ОБУЧЕНИЕ</span><h2>Один урок — полный рабочий цикл</h2></div><div className="landing-method-grid"><article><span>01</span><h3>Поймите систему</h3><p>Цели, необходимые знания, подробная теория, терминология и авторская схема процесса.</p></article><article><span>02</span><h3>Выполните лабораторию</h3><p>Команды с пояснениями, ожидаемый результат, безопасный откат и диагностика ошибок.</p></article><article><span>03</span><h3>Проверьте и углубите</h3><p>Самостоятельные задания, тест с объяснением и минимум два связанных первоисточника.</p></article></div></section>
-
-      <section className="landing-review"><div><span className="eyebrow">ПРОВЕРКА СОДЕРЖАНИЯ</span><h2>Источники встроены в каждый урок</h2><p>Структура AZ‑104 сверена с открытым комплектом MicrosoftLearning от 24.09.2026. Linux и security-уроки опираются на документацию OpenSSH, systemd, Linux Audit, SELinux/AppArmor, OWASP, Nmap и MITRE ATT&CK. Интерфейсы и облачные тарифы меняются, поэтому рядом с практикой остаются прямые ссылки на первоисточники.</p></div><a className="button" href={viewHref('resources')} data-route-link>Открыть учебную библиотеку <FiArrowRight /></a></section>
     </main>
     <footer className="landing-footer"><span><FiCommand /> sysadmin<span className="brand-accent">.</span></span><p>Путь системного администратора 2026 · самостоятельный неофициальный курс</p><a href={viewHref('roadmap')} data-route-link>Начать обучение <FiArrowRight /></a></footer>
   </div>;
