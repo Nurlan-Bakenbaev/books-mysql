@@ -45,6 +45,8 @@ const hashToView = {
   '#azure-admin': 'azure-admin',
   '#linux-security': 'linux-security',
   '#ethical-hacking': 'ethical-hacking',
+  '#security-plus': 'security-plus',
+  '#computer-technologies': 'computer-technologies',
   '#simulators': 'labs',
   '#resources': 'resources',
   '#glossary': 'glossary',

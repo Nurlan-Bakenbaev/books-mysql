@@ -23,5 +23,7 @@ test('legacy dashboard and hash URLs remain compatible', () => {
   assert.deepEqual(routeFromLocation({ search: '?view=book', hash: '' }), { type: 'view', id: 'resources' });
   assert.deepEqual(routeFromLocation({ search: '', hash: '#overview' }), { type: 'view', id: 'overview' });
   assert.deepEqual(routeFromLocation({ search: '', hash: '#roadmap' }), { type: 'view', id: 'roadmap' });
+  assert.deepEqual(routeFromLocation({ search: '', hash: '#security-plus' }), { type: 'view', id: 'security-plus' });
+  assert.deepEqual(routeFromLocation({ search: '', hash: '#computer-technologies' }), { type: 'view', id: 'computer-technologies' });
   assert.deepEqual(routeFromLocation({ search: '', hash: '#book-extra' }), { type: 'view', id: 'resources' });
 });

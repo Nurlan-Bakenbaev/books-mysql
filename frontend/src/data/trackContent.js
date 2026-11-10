@@ -19,9 +19,23 @@ import {
   securityTrackResources,
   securityTrackWalkthroughs,
 } from './securityTracks.js';
+import {
+  securityPlusDetails,
+  securityPlusLessonResources,
+  securityPlusLessons,
+  securityPlusResources,
+  securityPlusWalkthroughs,
+} from './securityPlus.js';
+import {
+  computerTechnologiesDetails,
+  computerTechnologiesLessonResources,
+  computerTechnologiesLessons,
+  computerTechnologiesResources,
+  computerTechnologiesWalkthroughs,
+} from './computerTechnologies.js';
 
-export const trackLessons = { ...azureLessonsA, ...azureCompletionLessons, ...securityTrackLessons };
-export const trackDetails = { ...azureDetailsA1, ...azureDetailsA2, ...azureCompletionDetails, ...securityTrackDetails };
-export const trackWalkthroughs = { ...azureWalkthroughsA1, ...azureWalkthroughsA2, ...azureCompletionWalkthroughs, ...securityTrackWalkthroughs };
-export const trackResources = [...azureResourcesA, ...azureResourcesB, ...securityTrackResources];
-export const trackLessonResources = { ...azureLessonResourcesA, ...azureLessonResourcesB, ...azureCompletionLessonResources, ...securityTrackLessonResources };
+export const trackLessons = { ...azureLessonsA, ...azureCompletionLessons, ...securityTrackLessons, ...securityPlusLessons, ...computerTechnologiesLessons };
+export const trackDetails = { ...azureDetailsA1, ...azureDetailsA2, ...azureCompletionDetails, ...securityTrackDetails, ...securityPlusDetails, ...computerTechnologiesDetails };
+export const trackWalkthroughs = { ...azureWalkthroughsA1, ...azureWalkthroughsA2, ...azureCompletionWalkthroughs, ...securityTrackWalkthroughs, ...securityPlusWalkthroughs, ...computerTechnologiesWalkthroughs };
+export const trackResources = [...azureResourcesA, ...azureResourcesB, ...securityTrackResources, ...securityPlusResources, ...computerTechnologiesResources];
+export const trackLessonResources = { ...azureLessonResourcesA, ...azureLessonResourcesB, ...azureCompletionLessonResources, ...securityTrackLessonResources, ...securityPlusLessonResources, ...computerTechnologiesLessonResources };

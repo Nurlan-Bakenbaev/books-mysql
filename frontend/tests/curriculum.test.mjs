@@ -15,8 +15,10 @@ import { windowsSecurityCourse } from '../src/data/windowsSecurity.js';
 import { azureAdminCourse, azureAdminPlanned } from '../src/data/azureAdmin.js';
 import { azureCurrentSnapshot } from '../src/data/azureAdminComplete.js';
 import { ethicalHackingCourse, linuxSecurityCourse } from '../src/data/securityTracks.js';
+import { securityPlusCourse, securityPlusPhases } from '../src/data/securityPlus.js';
+import { computerTechnologiesCourse, computerTechnologiesPhases } from '../src/data/computerTechnologies.js';
 
-const topics = [...phases.flatMap((phase) => phase.topics), ...windowsSecurityCourse.topics, ...azureAdminCourse.topics, ...linuxSecurityCourse.topics, ...ethicalHackingCourse.topics];
+const topics = [...phases.flatMap((phase) => phase.topics), ...computerTechnologiesCourse.topics, ...windowsSecurityCourse.topics, ...azureAdminCourse.topics, ...linuxSecurityCourse.topics, ...ethicalHackingCourse.topics, ...securityPlusCourse.topics];
 const topicIds = topics.map((topic) => topic.id);
 const sourceIds = resources.map((resource) => resource.id);
 const course = JSON.parse(readFileSync(new URL('../src/data/course.json', import.meta.url), 'utf8'));
@@ -35,6 +37,8 @@ test('every roadmap step has a unique, complete lesson and practical outcome', (
   assert.equal(windowsSecurityCourse.topics.length, 9);
   assert.equal(linuxSecurityCourse.topics.length, 9);
   assert.equal(ethicalHackingCourse.topics.length, 10);
+  assert.equal(securityPlusCourse.topics.length, 10);
+  assert.equal(computerTechnologiesCourse.topics.length, 8);
 
   for (const topic of topics) {
     const lesson = lessons[topic.id];
@@ -107,6 +111,8 @@ test('each roadmap and book module supplies its own assessment questions', () =>
   assert.ok(windowsSecurityCourse.topics.every((topic) => lessonDetails[topic.id].question));
   assert.ok(linuxSecurityCourse.topics.every((topic) => lessonDetails[topic.id].question));
   assert.ok(ethicalHackingCourse.topics.every((topic) => lessonDetails[topic.id].question));
+  assert.ok(securityPlusCourse.topics.every((topic) => lessonDetails[topic.id].question));
+  assert.ok(computerTechnologiesCourse.topics.every((topic) => lessonDetails[topic.id].question));
   assert.equal(course.modules.length, 5);
   assert.deepEqual(Object.keys(chapterVideos).sort(), course.modules.flatMap((module) => module.topics.map((topic) => topic.id)).sort());
   for (const module of course.modules) {
@@ -172,6 +178,30 @@ test('existing topic identifiers remain available for saved progress', () => {
     'zero-trust', 'hardening', 'security-monitoring', 'patch-management',
   ];
   assert.deepEqual(previousIds.filter((id) => !topicIds.includes(id)), []);
+});
+
+test('Security+ follows all five SY0-701 domains and publishes a lab for every lesson', () => {
+  assert.equal(securityPlusCourse.examCode, 'SY0-701');
+  assert.equal(securityPlusCourse.unofficial, true);
+  assert.equal(securityPlusPhases.length, 5);
+  assert.equal(securityPlusPhases.reduce((total, phase) => total + phase.weight, 0), 100);
+  assert.deepEqual(securityPlusPhases.map((phase) => phase.weight), [12, 22, 18, 28, 20]);
+  for (const topic of securityPlusCourse.topics) {
+    assert.ok(lessons[topic.id].lab.steps.length >= 6, topic.id);
+    assert.ok(lessons[topic.id].lab.extraCommands.length >= 1, topic.id);
+    assert.ok(lessonDetails[topic.id].deepDive.length >= 6, topic.id);
+    assert.ok(lessonWalkthroughs[topic.id].steps.length >= 6, topic.id);
+  }
+});
+
+test('computer technologies provides a complete prerequisite path before administration', () => {
+  assert.equal(computerTechnologiesPhases.length, 4);
+  assert.deepEqual(computerTechnologiesPhases.map((phase) => phase.topics.length), [2, 2, 2, 2]);
+  for (const topic of computerTechnologiesCourse.topics) {
+    assert.ok(lessons[topic.id].lab.steps.length >= 6, topic.id);
+    assert.ok(lessonDetails[topic.id].deepDive.length >= 5, topic.id);
+    assert.ok(lessonWalkthroughs[topic.id].steps.length >= 6, topic.id);
+  }
 });
 
 test('every home lab includes preparation, execution, validation, recovery, and sources', () => {

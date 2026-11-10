@@ -6,10 +6,12 @@ const GROUPS_KEY = 'sysadmin-path-2026-sidebar-groups';
 
 const courseItems = [
   { id: 'roadmap', label: 'Путь системного администратора', Icon: FiActivity },
+  { id: 'computer-technologies', label: 'Компьютерные технологии', Icon: FiTool },
   { id: 'windows-security', label: 'Безопасность Windows', Icon: FiShield },
   { id: 'azure-admin', label: 'Azure / AZ-104', Icon: FiCloud },
   { id: 'linux-security', label: 'Безопасность Linux', Icon: FiTerminal },
   { id: 'ethical-hacking', label: 'Этичный хакинг и защита', Icon: FiShield },
+  { id: 'security-plus', label: 'CompTIA Security+', Icon: FiAward },
 ];
 
 const libraryItems = [

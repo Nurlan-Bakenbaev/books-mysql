@@ -2,7 +2,7 @@
 export const phases = [
   {
     id: 'foundation', number: '01', title: 'Фундамент', subtitle: 'Networking & Hardware Essentials',
-    description: 'Разберитесь, как устройства обмениваются данными и из чего состоит надёжная инфраструктура.',
+    description: 'Разберитесь, как устройства обмениваются данными и из чего состоит надёжная инфраструктура.', duration: '6–8 недель', outcome: 'Изолированная лаборатория, адресный план и доказательная диагностика сети и хранилища.',
     topics: [
       { id: 'virtualization', title: 'Подготовка лаборатории: виртуальные машины', description: 'Выберите гипервизор, создайте изолированную VM и разберитесь с виртуальными сетями и снимками.' },
       { id: 'network-models', title: 'Модели OSI и TCP/IP', description: 'Уровни моделей, инкапсуляция, порты и протоколы TCP и UDP. Проследите путь запроса от приложения до сети.' },
@@ -14,7 +14,7 @@ export const phases = [
   },
   {
     id: 'linux', number: '02', title: 'Linux и сервисы', subtitle: 'Linux & Service Operations',
-    description: 'Освойте файловую систему, службы, веб-сервер и безопасную работу с данными в лабораторной VM.',
+    description: 'Освойте файловую систему, службы, веб-сервер и безопасную работу с данными в лабораторной VM.', duration: '5–7 недель', outcome: 'Linux-сервер с SSH, systemd, HTTP/TLS, журналами и проверенным восстановлением данных.',
     topics: [
       { id: 'linux-basics', title: 'Основы администрирования Linux', description: 'Файловая система, пользователи, группы, права, пакеты и безопасный доступ по SSH.' },
       { id: 'linux-services', title: 'Процессы, службы и журналы Linux', description: 'Исследуйте процессы, systemd, журналы и планирование задач; отличайте состояние службы от доступности приложения.' },
@@ -24,7 +24,7 @@ export const phases = [
   },
   {
     id: 'windows', number: '03', title: 'Windows Server', subtitle: 'Core Infrastructure',
-    description: 'Постройте управляемую инфраструктуру идентификации и сетевых служб на Windows Server 2022 / 2025.',
+    description: 'Постройте управляемую инфраструктуру идентификации и сетевых служб на Windows Server 2022 / 2025.', duration: '8–12 недель', outcome: 'Учебный домен AD DS с DNS/DHCP, GPO, делегированием ролей и Windows LAPS.',
     topics: [
       { id: 'server-deployment', title: 'Развёртывание Windows Server', description: 'Установка Windows Server 2022 / 2025, Server Core, роли, обновления и удалённое администрирование.' },
       { id: 'ad-ds', title: 'Active Directory Domain Services', description: 'Домены, леса, OU, контроллеры домена, репликация и жизненный цикл учётных записей.' },
@@ -35,7 +35,7 @@ export const phases = [
   },
   {
     id: 'hybrid', number: '04', title: 'Гибридное облако', subtitle: 'Hybrid & Cloud Ops',
-    description: 'Соедините локальные службы, виртуализацию и облако в устойчивую инфраструктуру.',
+    description: 'Соедините локальные службы, виртуализацию и облако в устойчивую инфраструктуру.', duration: '6–8 недель', outcome: 'Проект гибридной идентификации, модель shared responsibility и проверенный план backup/DR.',
     topics: [
       { id: 'backup-dr', title: 'Резервное копирование и DR', description: 'Применяйте стратегию 3-2-1, изучите Veeam, определите RPO и RTO и регулярно проверяйте восстановление.' },
       { id: 'cloud-foundations', title: 'Основы облачной инфраструктуры', description: 'Вычисления, сети, хранилище, общая ответственность, доступ и контроль расходов в облаке.' },
@@ -45,7 +45,7 @@ export const phases = [
   },
   {
     id: 'automation', number: '05', title: 'Автоматизация и наблюдаемость', subtitle: 'Automation & Observability',
-    description: 'Превращайте повторяемые задачи в понятные и проверяемые сценарии.',
+    description: 'Превращайте повторяемые задачи в понятные и проверяемые сценарии.', duration: '8–10 недель', outcome: 'Репозиторий PowerShell/Bash/Ansible с безопасным dry run, логами, CI-проверкой и мониторингом.',
     topics: [
       { id: 'bash', title: 'Bash и кроссплатформенное управление', description: 'Освойте оболочку, права, процессы, SSH и базовые сценарии для Linux и смешанных сред.' },
       { id: 'powershell', title: 'Продвинутый PowerShell', description: 'Объекты и конвейер, функции, обработка ошибок, работа со службами и удалённое управление.' },
@@ -58,7 +58,7 @@ export const phases = [
   },
   {
     id: 'security', number: '06', title: 'Кибербезопасность и итоговый проект', subtitle: 'Security & Incident Response',
-    description: 'Защищайте доступ, наблюдайте за событиями и готовьтесь к реагированию на инциденты.',
+    description: 'Защищайте доступ, наблюдайте за событиями и готовьтесь к реагированию на инциденты.', duration: '6–8 недель', outcome: 'Hardening baseline, vulnerability cycle, SIEM-use case, incident report и итоговое портфолио.',
     topics: [
       { id: 'zero-trust', title: 'Zero Trust и наименьшие привилегии', description: 'Проверяйте идентичность и контекст каждого запроса, ограничивайте доступ и регулярно пересматривайте привилегии.' },
       { id: 'hardening', title: 'Укрепление Windows и серверов', description: 'Отключайте ненужные службы, настраивайте аудит безопасности, используйте BitLocker и проверенные базовые конфигурации.' },

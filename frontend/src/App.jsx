@@ -6,6 +6,8 @@ import { windowsSecurityCourse } from './data/windowsSecurity';
 import { azureAdminPhases, azureAdminCourse } from './data/azureAdmin';
 import { azureCurrentSnapshot } from './data/azureAdminComplete';
 import { ethicalHackingCourse, ethicalHackingPhases, linuxSecurityCourse, linuxSecurityPhases } from './data/securityTracks';
+import { securityPlusCourse, securityPlusPhases } from './data/securityPlus';
+import { computerTechnologiesCourse, computerTechnologiesPhases } from './data/computerTechnologies';
 import { currentRoute, lessonHref, sectionHref } from './navigation';
 import Roadmap from './components/Roadmap';
 import Glossary from './components/Glossary';
@@ -25,15 +27,19 @@ const PAGE_TITLES = {
   overview: 'Обзор обучения', roadmap: 'Путь системного администратора',
   'windows-security': 'Безопасность Windows', 'azure-admin': 'AZ-104',
   'linux-security': 'Безопасность Linux', 'ethical-hacking': 'Этичный хакинг',
+  'security-plus': 'CompTIA Security+ · SY0-701',
+  'computer-technologies': 'Компьютерные технологии',
   labs: 'Лабораторные работы',
   resources: 'Учебные материалы',
   glossary: 'Словарь IT-терминов', certifications: 'Сертификации',
 };
 const TRACK_COURSES = [
+  { id: 'computer-technologies', topics: computerTechnologiesCourse.topics },
   { id: 'windows-security', topics: windowsSecurityCourse.topics },
   { id: 'azure-admin', topics: azureAdminCourse.topics },
   { id: 'linux-security', topics: linuxSecurityCourse.topics },
   { id: 'ethical-hacking', topics: ethicalHackingCourse.topics },
+  { id: 'security-plus', topics: securityPlusCourse.topics },
 ];
 
 function readStored(key, fallback) {
@@ -114,18 +120,22 @@ export default function App() {
   }
   const tracks = [
     { id: 'roadmap', title: 'Путь системного администратора', description: 'Фундамент, сети, Linux, Windows Server, облако, автоматизация и SecOps.', total: roadmapTopics.length, done: courseProgress(roadmapTopics).done, tone: 'cyan' },
+    { id: 'computer-technologies', title: computerTechnologiesCourse.title, description: 'Устройство ПК и сервера, UEFI, диски, ОС, VM, сеть, драйверы и диагностика.', total: computerTechnologiesCourse.topics.length, done: courseProgress(computerTechnologiesCourse.topics).done, tone: 'slate' },
     { id: 'windows-security', title: windowsSecurityCourse.title, description: 'Учётные записи, Defender, firewall, обновления, BitLocker, SIEM и инциденты.', total: windowsSecurityCourse.topics.length, done: courseProgress(windowsSecurityCourse.topics).done, tone: 'violet' },
     { id: 'azure-admin', title: 'AZ-104 · Azure Administrator', description: 'Идентификация, governance, storage, compute, networking, backup и monitor.', total: azureAdminCourse.topics.length, done: courseProgress(azureAdminCourse.topics).done, tone: 'blue' },
     { id: 'linux-security', title: linuxSecurityCourse.title, description: 'sudo, SSH, firewall, auditd, SELinux/AppArmor, hardening и восстановление.', total: linuxSecurityCourse.topics.length, done: courseProgress(linuxSecurityCourse.topics).done, tone: 'green' },
     { id: 'ethical-hacking', title: ethicalHackingCourse.title, description: 'Разрешённые лаборатории: recon, Nmap, web, privileges, detection и отчёт.', total: ethicalHackingCourse.topics.length, done: courseProgress(ethicalHackingCourse.topics).done, tone: 'orange' },
+    { id: 'security-plus', title: securityPlusCourse.title, description: 'Пять доменов SY0-701: теория, 10 безопасных лабораторий, тесты и открытые источники.', total: securityPlusCourse.topics.length, done: courseProgress(securityPlusCourse.topics).done, tone: 'magenta' },
   ];
   const viewContent = {
     overview: <Dashboard percent={percent} done={done} total={allIds.length} nextTopic={nextTopic} lastCompleted={lastCompleted} tracks={tracks} phases={phases} />,
-    roadmap: <Roadmap phases={phases} completed={completed} onToggle={toggle} />,
+    roadmap: <Roadmap eyebrow="MASTER PLAN · СИСТЕМНЫЙ АДМИНИСТРАТОР 2026" title="Полный учебный план системного администратора" description="31 последовательный урок: лабораторная среда, сети и hardware, Linux, Windows Server, гибридное облако, автоматизация, наблюдаемость, безопасность и итоговое портфолио." startHint="Если вы начинаете с нуля, сначала пройдите курс «Компьютерные технологии». Затем двигайтесь по шести этапам подряд и не переходите дальше без проверяемого результата лаборатории." phases={phases} completed={completed} onToggle={toggle} />,
+    'computer-technologies': <Roadmap id="computer-technologies" eyebrow="БАЗОВЫЙ КУРС · НАЧНИТЕ ДО АДМИНИСТРИРОВАНИЯ" title={computerTechnologiesCourse.title} description={computerTechnologiesCourse.description} startHint="Начните с read-only inventory собственной VM: связывайте hardware, firmware, driver, ОС, службу и пользовательский результат." disclaimer="Не меняйте UEFI, разделы, firmware и драйверы по примеру. Для таких изменений нужны документация точной модели, backup и проверенный recovery path." phases={computerTechnologiesPhases} completed={completed} onToggle={toggle} />,
     'windows-security': <WindowsSecurityCourse completed={completed} onToggle={toggle} />,
     'azure-admin': <><Roadmap id="azure-admin" eyebrow="НЕОФИЦИАЛЬНЫЙ ТРЕК · СВЕРЕНО С MICROSOFTLEARNING" title={azureAdminCourse.title} description={azureAdminCourse.description} startHint="Практику выполняйте в отдельной подписке Azure с бюджетом и обязательной очисткой ресурсов." disclaimer="Структура сверена с открытым комплектом лабораторий MicrosoftLearning от 24.09.2026. Это неофициальный курс; актуальные требования экзамена и цены проверяйте у Microsoft." phases={azureAdminPhases} completed={completed} onToggle={toggle} /><p className="course-source-note"><FiCheckCircle /> Проверено по открытому комплекту: {azureCurrentSnapshot.labs} лабораторий. <a href={azureCurrentSnapshot.source} target="_blank" rel="noreferrer">Открыть официальный репозиторий</a>.</p></>,
     'linux-security': <Roadmap id="linux-security" eyebrow="ОТДЕЛЬНЫЙ ТРЕК · HARDENING И ВОССТАНОВЛЕНИЕ" title={linuxSecurityCourse.title} description={linuxSecurityCourse.description} startHint="Перед SSH, firewall, sudo и MAC сохраните console access, snapshot и вторую административную сессию." disclaimer="Команды зависят от дистрибутива. Перед изменением сверяйте manual, делайте одно изменение и проверяйте откат." phases={linuxSecurityPhases} completed={completed} onToggle={toggle} />,
     'ethical-hacking': <Roadmap id="ethical-hacking" eyebrow="ПРАКТИЧЕСКИЙ CYBER RANGE · RED И BLUE" title={ethicalHackingCourse.title} description={ethicalHackingCourse.description} startHint="Начните с письменных правил и изолированного стенда; каждый шаг завершайте detection, исправлением, retest и очисткой." disclaimer="Активные действия разрешены только на собственном стенде или при явном письменном разрешении владельца." phases={ethicalHackingPhases} completed={completed} onToggle={toggle} />,
+    'security-plus': <Roadmap id="security-plus" eyebrow="НЕОФИЦИАЛЬНЫЙ КУРС · COMPTIA SECURITY+ SY0-701" title={securityPlusCourse.title} description={securityPlusCourse.description} startHint="Идите по пяти доменам по порядку: каждый урок завершайте лабораторией, проверкой защитного сигнала и коротким finding." disclaimer="Курс не связан с CompTIA. Перед регистрацией проверьте действующий код экзамена, официальные цели и правила на сайте CompTIA." phases={securityPlusPhases} completed={completed} onToggle={toggle} />,
     labs: <LabsPage labs={labs} completed={completed} onToggle={toggle} />,
     resources: <ResourceLibrary />, glossary: <Glossary />, certifications: <CertificationsPage certifications={certifications} />,
   };

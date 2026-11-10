@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { FiActivity, FiArrowRight, FiBookOpen, FiCloud, FiCommand, FiMoon, FiPlay, FiShield, FiSun, FiTerminal } from 'react-icons/fi';
+import { FiActivity, FiArrowRight, FiAward, FiBookOpen, FiCloud, FiCommand, FiCpu, FiMoon, FiPlay, FiShield, FiSun, FiTerminal } from 'react-icons/fi';
 import { viewHref } from '../navigation';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -13,6 +13,8 @@ const iconByTrack = {
   'azure-admin': FiCloud,
   'linux-security': FiTerminal,
   'ethical-hacking': FiShield,
+  'security-plus': FiAward,
+  'computer-technologies': FiCpu,
 };
 
 /* eslint-disable react/prop-types */
@@ -67,7 +69,7 @@ export default function LandingPage({ tracks, totalCount, nextLesson, theme, onT
       </section>
 
       <section className="landing-tracks" id="landing-tracks" aria-labelledby="landing-tracks-title">
-        <div className="landing-section-heading"><span className="eyebrow">ВЫБЕРИТЕ НАПРАВЛЕНИЕ</span><h2 id="landing-tracks-title">Пять учебных направлений</h2></div>
+        <div className="landing-section-heading"><span className="eyebrow">ВЫБЕРИТЕ НАПРАВЛЕНИЕ</span><h2 id="landing-tracks-title">Семь учебных направлений</h2></div>
         <div className="landing-track-grid">{tracks.map((track, index) => {
           const Icon = iconByTrack[track.id] || FiBookOpen;
           const trackPercent = track.total ? Math.round(track.done / track.total * 100) : 0;
