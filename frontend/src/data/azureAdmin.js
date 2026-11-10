@@ -17,6 +17,7 @@ const allAzurePhases = [
       { id: 'az-policy', title: 'Azure Policy и инициативы управления', description: 'Определения политик, инициативы, область действия и соответствие требованиям (compliance).' },
       { id: 'az-rbac', title: 'Защита ресурсов с помощью Azure RBAC', description: 'Встроенные и настраиваемые роли, область назначения и принцип минимальных привилегий.' },
       { id: 'az-password-reset', title: 'Самостоятельный сброс пароля (SSPR)', description: 'Настройка методов проверки и политики самостоятельного сброса пароля пользователями.' },
+      { id: 'az-arm-bicep', title: 'ARM, шаблоны и Bicep', description: 'Декларативное развёртывание, параметры, what-if, история deployment и безопасный откат.' },
     ],
   },
   {
@@ -38,6 +39,7 @@ const allAzurePhases = [
       { id: 'az-app-service-plans', title: 'Планы App Service', description: 'Уровни планов, общие вычислительные ресурсы и выбор плана для веб-нагрузки.' },
       { id: 'az-app-services', title: 'Веб-приложения Azure App Service', description: 'Развёртывание и настройка веб-приложений, слотов развёртывания и доменных имён.' },
       { id: 'az-container-instances', title: 'Контейнеры: Azure Container Instances', description: 'Быстрый запуск контейнеров без управления оркестрацией; группы контейнеров.' },
+      { id: 'az-container-apps', title: 'Azure Container Apps', description: 'Управляемые контейнерные приложения, revisions, ingress, масштабирование и canary-релизы.' },
     ],
   },
   {
@@ -60,7 +62,9 @@ const allAzurePhases = [
     topics: [
       { id: 'az-backup-intro', title: 'Основы Azure Backup', description: 'Хранилище Recovery Services, политики резервного копирования и модель затрат.' },
       { id: 'az-vm-backup', title: 'Резервное копирование виртуальных машин', description: 'Настройка защиты ВМ, расписания и восстановление из точки восстановления.' },
+      { id: 'az-site-recovery', title: 'Azure Site Recovery и аварийное восстановление', description: 'Репликация, recovery plans, test failover, RPO/RTO и безопасная проверка восстановления.' },
       { id: 'az-vm-diagnostics', title: 'Мониторинг и диагностика виртуальных машин', description: 'Диагностические данные, метрики, оповещения и базовые запросы Azure Monitor.' },
+      { id: 'az-monitor-alerts', title: 'Azure Monitor: запросы, оповещения и Action Groups', description: 'Metric и log alerts, KQL, каналы уведомлений, подавление шума и проверка реакции.' },
     ],
   },
 ];

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FiArrowRight, FiChevronDown } from 'react-icons/fi';
+import { FiArrowRight, FiCheck, FiChevronDown, FiFlag, FiMapPin } from 'react-icons/fi';
 import { lessonDetails } from '../data/lessonDetails';
 import { lessonHref } from '../navigation';
 import Assessment from './Assessment';
@@ -33,13 +33,18 @@ export default function Roadmap({
       <div><span className="eyebrow">ВАШ СЛЕДУЮЩИЙ ШАГ</span><strong>{nextTopic ? `${String(topicNumbers.get(nextTopic.id)).padStart(2, '0')} / ${nextTopic.title}` : 'Все темы отмечены как изученные'}</strong><p>{startHint}</p></div>
       {nextTopic && <a className="button button-primary" href={lessonHref(nextTopic.id)} data-route-link>Открыть следующий урок <FiArrowRight aria-hidden="true" /></a>}
     </div>
-    <div className="roadmap-list">{phases.map((phase) => {
+    <div className="roadmap-map" aria-label={`Визуальный маршрут: ${title}`}>
+      <div className="roadmap-route" aria-hidden="true"><span /></div>
+      {phases.map((phase, phaseIndex) => {
       const isOpen = openPhases.includes(phase.id);
       const done = phase.topics.filter((topic) => completed.includes(topic.id)).length;
+      const phasePercent = phase.topics.length ? Math.round(done / phase.topics.length * 100) : 0;
+      const isComplete = done === phase.topics.length;
       const panelId = `phase-panel-${id}-${phase.id}`;
-      return <article className={`phase-card${isOpen ? ' is-open' : ''}`} key={phase.id}>
+      return <article className={`phase-card map-stop${isOpen ? ' is-open' : ''}${isComplete ? ' is-complete' : ''}`} key={phase.id} style={{ '--map-index': phaseIndex }}>
+        <div className="map-node" aria-hidden="true">{isComplete ? <FiCheck /> : phaseIndex === phases.length - 1 ? <FiFlag /> : <FiMapPin />}</div>
         <button className="phase-header" type="button" aria-expanded={isOpen} aria-controls={panelId} onClick={() => togglePhase(phase.id)}>
-          <span className="phase-number">{phase.number}</span><span className="phase-heading"><span className="phase-subtitle">ЭТАП {phase.number} · {phase.subtitle}</span><strong>{phase.title}</strong><span className="phase-description">{phase.description}</span></span><span className="phase-meta"><span className="phase-progress">{done} / {phase.topics.length}</span><FiChevronDown className="phase-chevron" aria-hidden="true" /></span>
+          <span className="phase-number">{phase.number}</span><span className="phase-heading"><span className="phase-subtitle">ТОЧКА {phase.number} · {phase.subtitle}</span><strong>{phase.title}</strong><span className="phase-description">{phase.description}</span><span className="map-phase-progress" aria-label={`Прогресс этапа ${phasePercent}%`}><span style={{ width: `${phasePercent}%` }} /></span></span><span className="phase-meta"><span className="phase-progress">{phasePercent}%<small>{done} / {phase.topics.length} шагов</small></span><FiChevronDown className="phase-chevron" aria-hidden="true" /></span>
         </button>
         <div id={panelId} className="phase-body" hidden={!isOpen}><div className="topic-list">{phase.topics.map((topic, index) => <div className={`topic-item${nextTopic?.id === topic.id ? ' is-current' : ''}`} style={{ '--step-index': index }} key={topic.id}>
           <label className="topic-check"><input type="checkbox" checked={completed.includes(topic.id)} onChange={() => onToggle(topic.id)} aria-label={`Отметить тему «${topic.title}» как изученную`} /></label>

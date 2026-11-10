@@ -13,8 +13,9 @@ import { lessonResources, resources } from '../src/data/resources.js';
 import { chapterVideos, lessonVideos } from '../src/data/lessonVideos.js';
 import { windowsSecurityCourse } from '../src/data/windowsSecurity.js';
 import { azureAdminCourse, azureAdminPlanned } from '../src/data/azureAdmin.js';
+import { ethicalHackingCourse, linuxSecurityCourse } from '../src/data/securityTracks.js';
 
-const topics = [...phases.flatMap((phase) => phase.topics), ...windowsSecurityCourse.topics, ...azureAdminCourse.topics];
+const topics = [...phases.flatMap((phase) => phase.topics), ...windowsSecurityCourse.topics, ...azureAdminCourse.topics, ...linuxSecurityCourse.topics, ...ethicalHackingCourse.topics];
 const topicIds = topics.map((topic) => topic.id);
 const sourceIds = resources.map((resource) => resource.id);
 const course = JSON.parse(readFileSync(new URL('../src/data/course.json', import.meta.url), 'utf8'));
@@ -31,6 +32,8 @@ test('every roadmap step has a unique, complete lesson and practical outcome', (
   assert.deepEqual(Object.keys(lessons).sort(), [...topicIds].sort());
   assert.equal(topicIds[0], 'virtualization');
   assert.equal(windowsSecurityCourse.topics.length, 9);
+  assert.equal(linuxSecurityCourse.topics.length, 9);
+  assert.equal(ethicalHackingCourse.topics.length, 10);
 
   for (const topic of topics) {
     const lesson = lessons[topic.id];
@@ -99,6 +102,8 @@ test('every lesson includes a complete, topic-specific step-by-step walkthrough'
 test('each roadmap and book module supplies its own assessment questions', () => {
   assert.ok(phases.every((phase) => phase.topics.length >= 3 && phase.topics.every((topic) => lessonDetails[topic.id].question)));
   assert.ok(windowsSecurityCourse.topics.every((topic) => lessonDetails[topic.id].question));
+  assert.ok(linuxSecurityCourse.topics.every((topic) => lessonDetails[topic.id].question));
+  assert.ok(ethicalHackingCourse.topics.every((topic) => lessonDetails[topic.id].question));
   assert.equal(course.modules.length, 5);
   assert.deepEqual(Object.keys(chapterVideos).sort(), course.modules.flatMap((module) => module.topics.map((topic) => topic.id)).sort());
   for (const module of course.modules) {
@@ -127,18 +132,18 @@ test('self-contained Linux and Python examples produce their documented results'
   assert.match(lessonDetails['powershell-ad'].example.code, /New-ADUser[^\n]+-WhatIf/);
 });
 
-test('AZ-104 track publishes only finished lessons and lists the rest as planned', () => {
+test('AZ-104 track publishes a finished lesson for every current course topic', () => {
   const published = azureAdminCourse.topics.map((topic) => topic.id);
   const planned = azureAdminPlanned.flatMap((phase) => phase.topics.map((topic) => topic.id));
-  assert.ok(published.length >= 6);
+  assert.ok(published.length >= 30);
   assert.equal(new Set([...published, ...planned]).size, published.length + planned.length);
-  assert.equal(published.length + planned.length, 26);
+  assert.equal(published.length + planned.length, 30);
   for (const id of published) {
     assert.ok(lessons[id] && lessonDetails[id] && lessonWalkthroughs[id], id);
     assert.ok(lessons[id].lab.commands.includes('az ') || lessons[id].lab.commands.includes('Mg'), id);
     assert.ok(lessonDetails[id].practiceTasks.length >= 2, id);
   }
-  for (const id of planned) assert.equal(lessons[id], undefined, `${id}: planned topic must not have a half-finished lesson`);
+  assert.deepEqual(planned, []);
 });
 
 test('enriched roadmap lessons carry extended practice material', () => {

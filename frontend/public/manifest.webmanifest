@@ -1,0 +1,19 @@
+{
+  "name": "Путь системного администратора 2026",
+  "short_name": "Sysadmin 2026",
+  "description": "Русскоязычная дорожная карта, уроки и лаборатории системного администратора.",
+  "lang": "ru",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0a1421",
+  "theme_color": "#0a1421",
+  "icons": [
+    {
+      "src": "./favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

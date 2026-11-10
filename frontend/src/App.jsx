@@ -4,8 +4,10 @@ import { phases, labs, certifications } from './data/guide';
 import { lessons } from './data/lessons';
 import { windowsSecurityCourse } from './data/windowsSecurity';
 import { azureAdminPhases, azureAdminPlanned, azureAdminCourse } from './data/azureAdmin';
+import { azureCurrentSnapshot } from './data/azureAdminComplete';
+import { ethicalHackingCourse, ethicalHackingPhases, linuxSecurityCourse, linuxSecurityPhases } from './data/securityTracks';
 import course from './data/course.json';
-import { currentRoute, sectionHref } from './navigation';
+import { currentRoute, lessonHref, sectionHref } from './navigation';
 import Roadmap from './components/Roadmap';
 import Glossary from './components/Glossary';
 import ResourceLibrary from './components/ResourceLibrary';
@@ -26,6 +28,8 @@ const THEME_KEY = 'sysadmin-path-2026-theme';
 const TRACK_COURSES = [
   { id: 'windows-security', topics: windowsSecurityCourse.topics },
   { id: 'azure-admin', topics: azureAdminCourse.topics },
+  { id: 'linux-security', topics: linuxSecurityCourse.topics },
+  { id: 'ethical-hacking', topics: ethicalHackingCourse.topics },
 ];
 
 function readStored(key, fallback) {
@@ -108,6 +112,7 @@ function App() {
   const topicsDone = topicIds.filter((id) => completed.includes(id)).length;
   const labsDone = labs.filter((lab) => completed.includes(lab.id)).length;
   const percent = allIds.length ? Math.round(done / allIds.length * 100) : 0;
+  const nextTopic = [...roadmapTopics, ...TRACK_COURSES.flatMap((item) => item.topics)].find((topic) => !completed.includes(topic.id));
   const toggle = (id) => setCompleted((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
   const activeTrack = TRACK_COURSES.find((item) => item.topics.some((topic) => topic.id === route.id));
   const track = activeTrack ? activeTrack.id : 'roadmap';
@@ -118,20 +123,23 @@ function App() {
   useEffect(() => {
     document.title = route.type === 'lesson' && selectedTopic ? `${selectedTopic.title} — Sysadmin 2026` : route.type === 'chapter' && selectedChapter ? `${selectedChapter.title} — Sysadmin 2026` : 'Путь системного администратора 2026';
   }, [route.type, selectedTopic, selectedChapter]);
+  const courseProgress = (items) => ({ done: items.filter((item) => completed.includes(item.id)).length, total: items.length });
   const navGroups = [
-    { label: 'СТАРТ', items: [['#overview', 'Обзор', FiLayers]] },
-    { label: 'ОБУЧЕНИЕ', items: [
-      ['#roadmap', 'Путь сисадмина', FiActivity],
-      ['#windows-security', 'Безопасность Windows', FiShield],
-      ['#azure-admin', 'Azure AZ-104', FiCloud],
+    { label: 'РАБОЧИЙ СТОЛ', items: [{ href: '#overview', label: 'Обзор обучения', Icon: FiLayers }] },
+    { label: 'УЧЕБНЫЕ МАРШРУТЫ', items: [
+      { href: '#roadmap', label: 'Путь сисадмина', Icon: FiActivity, progress: courseProgress(roadmapTopics), accent: 'cyan' },
+      { href: '#windows-security', label: 'Безопасность Windows', Icon: FiShield, progress: courseProgress(windowsSecurityCourse.topics), accent: 'violet' },
+      { href: '#azure-admin', label: 'Azure · AZ-104', Icon: FiCloud, progress: courseProgress(azureAdminCourse.topics), accent: 'blue' },
+      { href: '#linux-security', label: 'Безопасность Linux', Icon: FiShield, progress: courseProgress(linuxSecurityCourse.topics), accent: 'cyan' },
+      { href: '#ethical-hacking', label: 'Этичный хакинг', Icon: FiTerminal, progress: courseProgress(ethicalHackingCourse.topics), accent: 'violet' },
     ] },
-    { label: 'ПРАКТИКА', items: [['#simulators', 'Тренажёры', FiTerminal], ['#labs', 'Домашние лабы', FiTool]] },
-    { label: 'МАТЕРИАЛЫ', items: [
-      ['#resources', 'Библиотека', FiBookOpen],
-      ['#glossary', 'База знаний', FiBook],
-      ['#book-extra', 'Книга (доп.)', FiArchive],
+    { label: 'ПРАКТИКА', items: [{ href: '#simulators', label: 'Тренажёры', Icon: FiTerminal }, { href: '#labs', label: 'Домашние лабы', Icon: FiTool, badge: `${labsDone}/${labs.length}` }] },
+    { label: 'ЗНАНИЯ', items: [
+      { href: '#resources', label: 'Учебная библиотека', Icon: FiBookOpen },
+      { href: '#glossary', label: 'База терминов', Icon: FiBook },
+      { href: '#book-extra', label: 'Книга · дополнительно', Icon: FiArchive },
+      { href: '#certifications', label: 'Сертификации', Icon: FiAward },
     ] },
-    { label: 'СЕРТИФИКАЦИЯ', items: [['#certifications', 'Сертификации', FiAward]] },
   ];
   const topbar = <header className="topbar">
     <button className="mobile-menu button-icon" type="button" onClick={() => setMenuOpen(!menuOpen)} aria-expanded={menuOpen} aria-label={menuOpen ? 'Закрыть меню' : 'Открыть меню'}>{menuOpen ? <FiX /> : <FiMenu />}</button>
@@ -146,15 +154,26 @@ function App() {
       <aside className={`sidebar ${menuOpen ? 'is-open' : ''}`}>
         <a className="brand" href={sectionHref('#overview')} data-route-link><span className="brand-mark"><FiCommand /></span><span>sysadmin<span className="brand-accent">.</span><small>YOUR LEARNING SPACE</small></span></a>
         <button className="sidebar-close" type="button" aria-label="Закрыть меню" onClick={() => setMenuOpen(false)}><FiX /></button>
+        <div className="sidebar-progress-card">
+          <div className="sidebar-progress-head"><span>ОБЩИЙ МАРШРУТ</span><strong>{percent}%</strong></div>
+          <div className="sidebar-progress-track" role="progressbar" aria-label="Общий прогресс в меню" aria-valuemin="0" aria-valuemax="100" aria-valuenow={percent}><span style={{ width: `${percent}%` }} /></div>
+          <p>{done} из {allIds.length} шагов завершено</p>
+          <a href={nextTopic ? lessonHref(nextTopic.id) : sectionHref('#roadmap')} data-route-link>{nextTopic ? 'Продолжить урок' : 'Открыть карту'} <FiArrowRight /></a>
+        </div>
         <nav className="nav" aria-label="Основная навигация">
           {navGroups.map((group) => <Fragment key={group.label}>
             <div className="sidebar-label">{group.label}</div>
-            {group.items.map(([href, label, Icon]) => <a className={`nav-link ${route.type === 'home' && activeSection === href ? 'active' : ''}`} href={sectionHref(href)} data-route-link key={href} aria-current={route.type === 'home' && activeSection === href ? 'location' : undefined}><Icon aria-hidden="true" /><span>{label}</span>{route.type === 'home' && activeSection === href && <FiChevronRight className="nav-arrow" />}</a>)}
+            {group.items.map(({ href, label, Icon, progress, accent, badge }) => {
+              const active = route.type === 'home' ? activeSection === href : (href === '#roadmap' && track === 'roadmap') || href === `#${track}`;
+              const progressPercent = progress?.total ? Math.round(progress.done / progress.total * 100) : 0;
+              return <a className={`nav-link${active ? ' active' : ''}${progress ? ' nav-course' : ''}`} href={sectionHref(href)} data-route-link key={href} aria-current={active ? 'location' : undefined}>
+                <span className={`nav-icon ${accent || ''}`}><Icon aria-hidden="true" /></span><span className="nav-copy"><strong>{label}</strong>{progress && <small>{progress.done}/{progress.total} уроков · {progressPercent}%</small>}</span>{badge && <span className="nav-badge">{badge}</span>}{active && <FiChevronRight className="nav-arrow" />}
+              </a>;
+            })}
           </Fragment>)}
         </nav>
         <div className="sidebar-footer">
-          <div className="sidebar-note"><span className="sidebar-note-icon"><FiTerminal /></span><strong>Учись на практике</strong><p>Маленькие шаги каждый день приводят к большим результатам.</p><a href={sectionHref('#labs')} data-route-link>Открыть лаборатории <FiArrowRight /></a></div>
-          <div className="sidebar-version"><span className="status-dot" /> СИСТЕМА ГОТОВА <span>v.2026</span></div>
+          <div className="sidebar-version"><span className="status-dot" /> ПРОГРЕСС СОХРАНЯЕТСЯ <span>v.2026.11</span></div>
         </div>
       </aside>
 
@@ -188,6 +207,7 @@ function App() {
             completed={completed}
             onToggle={toggle}
           />
+          <p className="course-source-note"><FiCheckCircle aria-hidden="true" /> Программа дополнительно сверена с открытым комплектом MicrosoftLearning: {azureCurrentSnapshot.labs} лабораторий, снимок от {azureCurrentSnapshot.checkedAt}. <a href={azureCurrentSnapshot.source} target="_blank" rel="noreferrer">Открыть источник</a>.</p>
           {azureAdminPlanned.length > 0 && <details className="planned-topics" id="azure-planned">
             <summary><FiCloud aria-hidden="true" /> Следующие темы AZ-104 — пока в разработке <span className="tag">{azureAdminPlanned.reduce((sum, phase) => sum + phase.topics.length, 0)} тем</span></summary>
             <p className="planned-note">Эти темы входят в программу курса, но подробные уроки для них ещё пишутся и появятся на сайте по мере готовности. До этого их можно изучать по модулям Microsoft Learn.</p>
@@ -196,6 +216,30 @@ function App() {
               <ul>{phase.topics.map((topic) => <li key={topic.id}><strong>{topic.title}</strong> — {topic.description}</li>)}</ul>
             </div>)}
           </details>}
+          <Roadmap
+            id="linux-security"
+            headingLevel="h2"
+            eyebrow="ОТДЕЛЬНЫЙ ТРЕК · HARDENING И ВОССТАНОВЛЕНИЕ"
+            title={linuxSecurityCourse.title}
+            description={linuxSecurityCourse.description}
+            startHint="Работайте на отдельной Linux VM. Перед SSH, firewall, PAM, sudo и MAC сохраните console access, snapshot и вторую административную сессию."
+            disclaimer="Команды отличаются между дистрибутивами. Уроки показывают безопасный порядок: инвентаризация, резервный путь доступа, одно изменение, проверка и откат."
+            phases={linuxSecurityPhases}
+            completed={completed}
+            onToggle={toggle}
+          />
+          <Roadmap
+            id="ethical-hacking"
+            headingLevel="h2"
+            eyebrow="ПРАКТИЧЕСКИЙ CYBER RANGE · RED И BLUE"
+            title={ethicalHackingCourse.title}
+            description={ethicalHackingCourse.description}
+            startHint="Начните с правил и изолированного стенда. Каждый технический шаг связан с журналом защитника, исправлением, retest и очисткой."
+            disclaimer="Все активные действия разрешены только на собственных стендах или при явном письменном разрешении владельца. Техническая доступность системы не является разрешением."
+            phases={ethicalHackingPhases}
+            completed={completed}
+            onToggle={toggle}
+          />
           <Simulators />
           <ResourceLibrary />
           <Glossary />
