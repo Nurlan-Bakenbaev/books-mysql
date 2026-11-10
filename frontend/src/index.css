@@ -1018,12 +1018,18 @@ input[type='checkbox'] { width: 19px; height: 19px; flex: none; margin: 3px 0 0;
 }
 
 /* Keep the skill-map layout above the legacy sequential-map fallbacks. */
-.standalone-view .roadmap-map.skill-map-board { display: grid; grid-template-columns: repeat(var(--phase-count), minmax(245px, 1fr)); max-width: none; padding: 50px 24px 32px; gap: 18px; }
+.standalone-view .roadmap-map.skill-map-board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: none; padding: 50px 24px 32px; gap: 52px 18px; overflow-x: hidden; }
 .standalone-view .map-stop.skill-column,
 .standalone-view .map-stop.skill-column:nth-of-type(even) { width: auto; margin: 0; }
 .standalone-view .map-stop.skill-column::before,
 .standalone-view .map-stop.skill-column:nth-of-type(even)::before { left: 50%; right: auto; top: -50px; width: 3px; height: 50px; transform: translateX(-50%); }
 .standalone-view .map-stop.skill-column .phase-header { min-height: 176px; }
+@media (min-width: 1700px) {
+  .standalone-view .roadmap-map.skill-map-board { grid-template-columns: repeat(var(--phase-count), minmax(0, 1fr)); gap: 18px; }
+}
+@media (min-width: 761px) and (max-width: 1100px) {
+  .standalone-view .roadmap-map.skill-map-board { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 @media (max-width: 760px) {
   .standalone-view .roadmap-map.skill-map-board { grid-template-columns: 1fr; gap: 52px; padding: 52px 14px 24px; }
   .standalone-view .map-stop.skill-column::before,
