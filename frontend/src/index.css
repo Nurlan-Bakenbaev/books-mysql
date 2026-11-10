@@ -80,7 +80,7 @@ code, pre, .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
 .welcome-row p { max-width: 700px; margin: 0; color: var(--muted); font-size: 16px; }
 .welcome-icon { display: grid; place-items: center; gap: 6px; width: 100px; height: 100px; flex: none; border: 1px solid var(--border); border-radius: 20px; color: var(--accent); background: var(--surface); font-size: 30px; box-shadow: var(--shadow); }
 .welcome-icon span { font: 600 9px 'JetBrains Mono', monospace; }
-.eyebrow, .overline, .section-kicker { color: var(--accent); font: 700 11px 'JetBrains Mono', monospace; letter-spacing: .11em; text-transform: uppercase; }
+.eyebrow, .overline, .section-kicker { color: var(--accent); font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12px; font-weight: 750; line-height: 1.45; letter-spacing: .055em; text-transform: uppercase; }
 .hero { position: relative; overflow: hidden; display: grid; grid-template-columns: minmax(0, 1fr) 235px; align-items: center; gap: 30px; min-height: 270px; margin-top: 34px; padding: clamp(27px, 4vw, 48px); border: 1px solid #285b76; border-radius: 20px; color: #f4fbff; background: linear-gradient(120deg, #103555, #104e59); }
 .hero::before { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 85% 26%, rgba(103,230,212,.23), transparent 32%); }
 .hero::after { content: ''; position: absolute; width: 390px; height: 390px; right: -130px; top: -175px; border: 1px solid rgba(210,245,255,.14); border-radius: 50%; box-shadow: 0 0 0 50px rgba(220,255,255,.035), 0 0 0 100px rgba(220,255,255,.025); pointer-events: none; }
@@ -616,9 +616,9 @@ input[type='checkbox'] { width: 19px; height: 19px; flex: none; margin: 3px 0 0;
 .landing-nav-actions { display: flex; align-items: center; gap: 10px; }
 .landing-nav-actions .button { white-space: nowrap; }
 .landing-page main { width: min(100% - 48px, 1440px); margin: 0 auto; }
-.landing-hero { position: relative; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(390px, .9fr); align-items: center; gap: clamp(38px, 7vw, 110px); min-height: 680px; padding: 72px 0 90px; }
+.landing-hero { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); align-items: center; min-height: 650px; padding: 72px 0 90px; }
 .landing-hero::before { content: ''; position: absolute; z-index: 0; width: 680px; height: 680px; right: -180px; top: 20px; pointer-events: none; border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--accent) 18%, transparent), transparent 67%); filter: blur(12px); }
-.landing-hero-copy, .landing-console { position: relative; z-index: 1; }
+.landing-hero-copy { position: relative; z-index: 1; max-width: 1040px; }
 .landing-badge { display: inline-flex; align-items: center; gap: 10px; padding: 8px 12px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); color: var(--muted); font: 700 10px 'JetBrains Mono', monospace; letter-spacing: .08em; }
 .landing-hero h1 { max-width: 900px; margin: 25px 0 22px; font-size: clamp(44px, 5.7vw, 82px); line-height: .99; letter-spacing: -.065em; }
 .landing-hero h1 em { color: var(--accent); font-style: normal; }
@@ -795,7 +795,7 @@ input[type='checkbox'] { width: 19px; height: 19px; flex: none; margin: 3px 0 0;
 .dashboard-welcome { display: flex; align-items: center; justify-content: space-between; gap: 32px; }
 .dashboard-welcome h1 { max-width: 850px; margin: 7px 0 10px; font-size: clamp(30px, 3.5vw, 48px); line-height: 1.12; letter-spacing: -.05em; }
 .dashboard-welcome p { max-width: 760px; margin: 0; color: var(--muted); }
-.dashboard-eyebrow { color: var(--accent); font: 750 10px 'JetBrains Mono', monospace; letter-spacing: .09em; text-transform: uppercase; }
+.dashboard-eyebrow { color: var(--accent); font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12px; font-weight: 750; line-height: 1.45; letter-spacing: .055em; text-transform: uppercase; }
 .dashboard-progress-card { display: grid; grid-template-columns: 150px minmax(0, 1fr); align-items: center; gap: clamp(24px, 4vw, 55px); padding: clamp(26px, 4vw, 42px); border: 1px solid var(--border); border-radius: 20px; background: var(--surface); box-shadow: var(--shadow); }
 .dashboard-progress-ring { display: grid; place-content: center; width: 138px; aspect-ratio: 1; border-radius: 50%; text-align: center; background: radial-gradient(circle at center, var(--surface) 61%, transparent 62%), conic-gradient(var(--accent) calc(var(--progress) * 1%), var(--border) 0); }
 .dashboard-progress-ring strong { font-size: 30px; letter-spacing: -.05em; }

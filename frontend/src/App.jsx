@@ -90,7 +90,6 @@ export default function App() {
   const topicIds = useMemo(() => allTopics.map((topic) => topic.id), [allTopics]);
   const allIds = useMemo(() => [...topicIds, ...labs.map((lab) => lab.id)], [topicIds]);
   const done = allIds.filter((id) => completed.includes(id)).length;
-  const topicsDone = topicIds.filter((id) => completed.includes(id)).length;
   const percent = allIds.length ? Math.round(done / allIds.length * 100) : 0;
   const nextTopic = allTopics.find((topic) => !completed.includes(topic.id));
   const lastCompleted = [...completed].reverse().map((id) => allTopics.find((topic) => topic.id === id)).find(Boolean);
@@ -154,7 +153,7 @@ export default function App() {
     <a className="skip-link" href={route.type === 'landing' ? '#landing-tracks' : '#route-main'}>Перейти к содержимому</a>
     {route.type !== 'landing' && menuOpen && <button className="sidebar-overlay" type="button" aria-label="Закрыть меню" onClick={() => setMenuOpen(false)} />}
     {route.type !== 'landing' && <Sidebar route={route} track={track} menuOpen={menuOpen} collapsed={sidebarCollapsed} onClose={() => setMenuOpen(false)} onToggleCollapsed={() => setSidebarCollapsed((value) => !value)} percent={percent} completedCount={done} totalCount={allIds.length} nextTopic={nextTopic} />}
-    {route.type === 'landing' && <LandingPage tracks={tracks} percent={percent} completedCount={topicsDone} totalCount={topicIds.length} nextLesson={nextTopic ? { title: nextTopic.title, href: lessonHref(nextTopic.id) } : null} theme={theme} onToggleTheme={() => setTheme(theme === 'dark' ? 'light' : 'dark')} />}
+    {route.type === 'landing' && <LandingPage tracks={tracks} totalCount={topicIds.length} nextLesson={nextTopic ? { title: nextTopic.title, href: lessonHref(nextTopic.id) } : null} theme={theme} onToggleTheme={() => setTheme(theme === 'dark' ? 'light' : 'dark')} />}
     {route.type !== 'landing' && <main className="main" id="route-main" tabIndex="-1">{topbar}<div className="content-wrap route-content"><Suspense fallback={<p role="status">Загружаем учебный материал…</p>}>
       {route.type === 'view' && viewContent[route.id] ? <div className="standalone-view" key={route.id}>{viewContent[route.id]}</div>
         : route.type === 'lesson' && selectedTopic && lessons[selectedTopic.id] ? <LessonPage key={selectedTopic.id} topic={selectedTopic} lesson={lessons[selectedTopic.id]} isComplete={completed.includes(selectedTopic.id)} onToggle={toggle} track={track} previous={sequence[topicIndex - 1]} next={sequence[topicIndex + 1]} />

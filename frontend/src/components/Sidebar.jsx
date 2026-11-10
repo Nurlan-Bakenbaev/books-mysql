@@ -15,7 +15,6 @@ const courseItems = [
 
 const libraryItems = [
   { id: 'resources', label: 'Учебные материалы', Icon: FiBookOpen },
-  { id: 'book', label: 'Книги и PDF', Icon: FiArchive },
   { id: 'glossary', label: 'Словарь IT-терминов', Icon: FiBook },
   { id: 'certifications', label: 'Сертификации', Icon: FiAward },
 ];

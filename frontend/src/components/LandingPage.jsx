@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { FiActivity, FiArrowRight, FiBookOpen, FiCheckCircle, FiCloud, FiCommand, FiMoon, FiPlay, FiShield, FiSun, FiTerminal } from 'react-icons/fi';
+import { FiActivity, FiArrowRight, FiBookOpen, FiCloud, FiCommand, FiMoon, FiPlay, FiShield, FiSun, FiTerminal } from 'react-icons/fi';
 import { viewHref } from '../navigation';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -16,7 +16,7 @@ const iconByTrack = {
 };
 
 /* eslint-disable react/prop-types */
-export default function LandingPage({ tracks, percent, completedCount, totalCount, nextLesson, theme, onToggleTheme }) {
+export default function LandingPage({ tracks, totalCount, nextLesson, theme, onToggleTheme }) {
   const pathRef = useRef(null);
   const sectionRef = useRef(null);
   const reduceMotion = useReducedMotion();
@@ -40,7 +40,7 @@ export default function LandingPage({ tracks, percent, completedCount, totalCoun
 
   return <div className="landing-page">
     <header className="landing-nav">
-      <a className="brand" href="./" aria-label="Sysadmin 2026 — главная"><span className="brand-mark"><FiCommand /></span><span>sysadmin<span className="brand-accent">.</span><small>LEARNING PLATFORM · 2026</small></span></a>
+      <a className="brand" href="./" aria-label="Sysadmin 2026 — главная"><span className="brand-mark"><FiCommand /></span><span>sysadmin<span className="brand-accent">.</span></span></a>
       <nav aria-label="Навигация главной страницы"><a href="#landing-tracks">Маршруты</a><a href={viewHref('resources')} data-route-link>Библиотека</a><a href={viewHref('simulators')} data-route-link>Практика</a></nav>
       <div className="landing-nav-actions"><button className="theme-toggle" type="button" onClick={onToggleTheme} aria-label={theme === 'dark' ? 'Включить светлую тему' : 'Включить тёмную тему'}>{theme === 'dark' ? <FiSun /> : <FiMoon />}</button><a className="button button-primary" href={viewHref('roadmap')} data-route-link>Начать путь <FiArrowRight /></a></div>
     </header>
@@ -52,11 +52,6 @@ export default function LandingPage({ tracks, percent, completedCount, totalCoun
           <h1>Станьте системным<br />администратором <em>шаг за шагом.</em></h1>
           <p>Полноценная учебная платформа на русском: теория, схемы, команды с пояснениями, безопасные лаборатории, диагностика, тесты и проверенные первоисточники.</p>
           <div className="landing-hero-actions"><a className="button button-primary landing-primary" href={viewHref('roadmap')} data-route-link><FiPlay /> Открыть путь сисадмина</a>{nextLesson && <a className="landing-text-link" href={nextLesson.href} data-route-link>Продолжить: {nextLesson.title} <FiArrowRight /></a>}</div>
-          <div className="landing-trust"><span><FiCheckCircle /> Прогресс хранится на устройстве</span><span><FiCheckCircle /> Светлая и тёмная темы</span><span><FiCheckCircle /> Работает как PWA</span></div>
-        </motion.div>
-        <motion.div className="landing-console" initial={reduceMotion ? false : { opacity: 0, scale: .94, x: 25 }} animate={{ opacity: 1, scale: 1, x: 0 }} transition={{ duration: .7, delay: .12 }} aria-label="Статистика обучения">
-          <div className="landing-console-bar"><span /><span /><span /><strong>student@sysadmin-2026:~</strong></div>
-          <div className="landing-console-body"><p><span>$</span> learning-path --status</p><dl><div><dt>Общий прогресс</dt><dd>{percent}%</dd></div><div><dt>Завершено</dt><dd>{completedCount} / {totalCount}</dd></div><div><dt>Учебные треки</dt><dd>{tracks.length}</dd></div><div><dt>Режим</dt><dd className="console-ready">READY</dd></div></dl><div className="landing-console-progress"><span style={{ width: `${percent}%` }} /></div><p className="console-cursor"><span>$</span> выберите маршрут и начните практику <i /></p></div>
         </motion.div>
       </section>
 
