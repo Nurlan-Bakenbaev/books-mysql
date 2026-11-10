@@ -1,6 +1,6 @@
-import { FiArrowRight } from 'react-icons/fi';
+import { FiArrowRight, FiBookOpen } from 'react-icons/fi';
 import { lessonDetails } from '../data/lessonDetails';
-import { lessonHref } from '../navigation';
+import { lessonHref, lessonMaterialsHref } from '../navigation';
 import Assessment from './Assessment';
 
 // Generic flat-grid course section, generalized from WindowsSecurityCourse.jsx so the
@@ -20,7 +20,7 @@ export default function TrackCourse({ course, sectionId, eyebrow, disclaimer, ic
     <div className="security-topic-grid">{course.topics.map((topic) => <article className="security-topic-card" key={topic.id}>
       <label className="security-topic-check"><input type="checkbox" checked={completed.includes(topic.id)} onChange={() => onToggle(topic.id)} aria-label={`Отметить тему «${topic.title}» как изученную`} /><span>{completed.includes(topic.id) ? 'Изучено' : 'Не изучено'}</span></label>
       <h3>{topic.title}</h3><p>{topic.description}</p>
-      <a className="topic-open" href={lessonHref(topic.id)} data-route-link>Открыть урок <FiArrowRight aria-hidden="true" /></a>
+      <span className="topic-actions"><a className="topic-open" href={lessonHref(topic.id)} data-route-link>Открыть урок <FiArrowRight aria-hidden="true" /></a><a className="topic-material" href={lessonMaterialsHref(topic.id)} data-route-link><FiBookOpen aria-hidden="true" /> Материалы</a></span>
     </article>)}</div>
     <details className="module-test"><summary>Итоговый тест: {course.title}</summary><Assessment title={`Тест модуля: ${course.title}`} questions={questions} /></details>
   </section>;

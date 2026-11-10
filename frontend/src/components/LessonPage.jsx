@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { FiArrowLeft, FiArrowRight, FiCheckCircle, FiCopy, FiExternalLink, FiPlay } from 'react-icons/fi';
+import { FiArrowLeft, FiArrowRight, FiBookOpen, FiCheckCircle, FiCopy, FiExternalLink, FiPlay } from 'react-icons/fi';
 import { lessonDetails } from '../data/lessonDetails';
 import { lessonWalkthroughs } from '../data/lessonWalkthroughs';
 import { lessonResources, resourcesById } from '../data/resources';
@@ -79,7 +79,13 @@ export default function LessonPage({ topic, lesson, isComplete, onToggle, track,
   const video = lessonVideos[topic.id];
   const meta = getTrackMeta(track);
 
-  useEffect(() => { headingRef.current?.focus(); }, [topic.id]);
+  useEffect(() => {
+    if (window.location.hash === '#lesson-sources') {
+      requestAnimationFrame(() => document.getElementById('lesson-sources')?.scrollIntoView());
+    } else {
+      headingRef.current?.focus();
+    }
+  }, [topic.id]);
 
   return <article className="lesson-page" aria-labelledby="lesson-page-title">
     <header className="lesson-page-header">
@@ -87,7 +93,7 @@ export default function LessonPage({ topic, lesson, isComplete, onToggle, track,
       <span className="eyebrow">{meta.label} · ОТДЕЛЬНЫЙ УРОК</span>
       <h1 id="lesson-page-title" ref={headingRef} tabIndex="-1">{topic.title}</h1>
       <p>{lesson.intro}</p>
-      <nav className="lesson-jump" aria-label="Разделы урока"><a href="#lesson-theory">Теория</a><a href="#lesson-practice">Практика</a><a href="#lesson-check">Тест</a><a href="#lesson-sources">Источники</a></nav>
+      <nav className="lesson-jump" aria-label="Разделы урока"><a href="#lesson-theory">Теория</a><a href="#lesson-practice">Практика</a><a href="#lesson-check">Тест</a><a className="lesson-material-link" href="#lesson-sources"><FiBookOpen aria-hidden="true" /> Учебные материалы · {lessonResources[topic.id].length}</a></nav>
     </header>
     <div className="lesson-page-content">
       <section className="lesson-section" id="lesson-goals"><span className="eyebrow">ЦЕЛИ УРОКА</span><h2>После урока вы сможете</h2><ul className="lesson-goals">{detail.goals.map((goal) => <li key={goal}>{goal}</li>)}</ul></section>
@@ -107,7 +113,7 @@ export default function LessonPage({ topic, lesson, isComplete, onToggle, track,
       <PracticeTasks tasks={detail.practiceTasks} />
       <LessonVideo key={topic.id} video={video} />
       <section className="lesson-section" id="lesson-check"><Assessment key={topic.id} title="Проверьте себя" questions={[detail.question]} /></section>
-      <section className="lesson-section lesson-section-secondary" id="lesson-sources"><span className="eyebrow">ДОПОЛНИТЕЛЬНО · НЕОБЯЗАТЕЛЬНО</span><h2>Если хотите углубиться дальше</h2><p>Урок выше уже даёт полную картину темы — теорию, рабочий пример, терминал, практику и тест. Ссылки ниже нужны, только если хочется более глубокого академического чтения у первоисточников.</p><ol className="lesson-resources">{lessonResources[topic.id].map(({ sourceId, focus, takeaway }) => {
+      <section className="lesson-section lesson-section-secondary" id="lesson-sources"><span className="eyebrow">УЧЕБНЫЕ МАТЕРИАЛЫ · ПЕРВОИСТОЧНИКИ</span><h2>Проверьте тему по документации</h2><p>Каждая ссылка связана с содержанием урока: описание показывает, какой раздел читать и какую идею проверить. Даты интерфейсов, версии и тарифы всегда уточняйте в первоисточнике перед работой.</p><ol className="lesson-resources">{lessonResources[topic.id].map(({ sourceId, focus, takeaway }) => {
         const resource = resourcesById[sourceId];
         return <li key={sourceId}><a href={resource.url} target="_blank" rel="noreferrer">{resource.title} <FiExternalLink aria-hidden="true" /></a><span>{resource.type} · {resource.language} · {resource.access}</span><p>{focus}</p>{takeaway && <p><strong>Ключевая идея источника:</strong> {takeaway}</p>}</li>;
       })}</ol></section>

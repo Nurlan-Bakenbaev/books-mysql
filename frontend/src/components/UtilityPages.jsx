@@ -1,0 +1,11 @@
+import { FiArrowDownRight, FiArrowRight, FiAward, FiCheck, FiShield, FiTerminal } from 'react-icons/fi';
+
+/* eslint-disable react/prop-types */
+export function LabsPage({ labs, completed, onToggle }) {
+  const done = labs.filter((lab) => completed.includes(lab.id)).length;
+  return <section className="section utility-page"><div className="section-heading"><div><div className="section-kicker">Практика на собственном стенде</div><h1>Лабораторные работы <span className="heading-icon"><FiTerminal /></span></h1><p>Выполняйте задания в изолированной виртуальной среде. Перед изменением доступа создавайте snapshot и проверяйте путь отката.</p></div><span className="section-count">{done} / {labs.length} выполнено</span></div><div className="lab-grid">{labs.map((lab, index) => <label className={`lab-card ${completed.includes(lab.id) ? 'is-complete' : ''}`} key={lab.id}><span className="lab-top"><span className="lab-number">LAB / {String(index + 1).padStart(2, '0')}</span><span className="lab-check"><input type="checkbox" checked={completed.includes(lab.id)} onChange={() => onToggle(lab.id)} /><span><FiCheck /></span></span></span><strong>{lab.title}</strong><p>{lab.description}</p><span className="tag">{lab.platform}</span></label>)}</div></section>;
+}
+
+export function CertificationsPage({ certifications }) {
+  return <section className="section utility-page"><div className="section-heading"><div><div className="section-kicker">Профессиональное развитие</div><h1>Сертификации <span className="heading-icon"><FiAward /></span></h1><p>Выберите экзамен после практики по соответствующему треку. Программа и стоимость могут меняться.</p></div></div><div className="certifications-grid">{certifications.map((cert) => <a className="cert-card" key={cert.id} href={cert.url} target="_blank" rel="noreferrer"><span className="cert-top"><span className="tag">{cert.category}</span><FiArrowDownRight /></span><strong>{cert.name}</strong><p>{cert.description}</p><span className="cert-link">Официальная страница <FiArrowRight /></span></a>)}</div><p className="cert-note"><FiShield /> Перед регистрацией проверьте актуальную программу и требования на официальной странице экзамена.</p></section>;
+}

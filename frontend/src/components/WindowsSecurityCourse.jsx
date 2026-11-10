@@ -1,7 +1,7 @@
-import { FiArrowRight, FiShield } from 'react-icons/fi';
+import { FiArrowRight, FiBookOpen, FiShield } from 'react-icons/fi';
 import { windowsSecurityCourse } from '../data/windowsSecurity';
 import { lessonDetails } from '../data/lessonDetails';
-import { lessonHref } from '../navigation';
+import { lessonHref, lessonMaterialsHref } from '../navigation';
 import Assessment from './Assessment';
 
 /* eslint-disable react/prop-types */
@@ -18,7 +18,7 @@ export default function WindowsSecurityCourse({ completed, onToggle }) {
     <div className="security-topic-grid">{windowsSecurityCourse.topics.map((topic) => <article className="security-topic-card" key={topic.id}>
       <label className="security-topic-check"><input type="checkbox" checked={completed.includes(topic.id)} onChange={() => onToggle(topic.id)} aria-label={`Отметить тему «${topic.title}» как изученную`} /><span>{completed.includes(topic.id) ? 'Изучено' : 'Не изучено'}</span></label>
       <h3>{topic.title}</h3><p>{topic.description}</p>
-      <a className="topic-open" href={lessonHref(topic.id)} data-route-link>Открыть урок <FiArrowRight aria-hidden="true" /></a>
+      <span className="topic-actions"><a className="topic-open" href={lessonHref(topic.id)} data-route-link>Открыть урок <FiArrowRight aria-hidden="true" /></a><a className="topic-material" href={lessonMaterialsHref(topic.id)} data-route-link><FiBookOpen aria-hidden="true" /> Материалы</a></span>
     </article>)}</div>
     <details className="module-test"><summary>Итоговый тест: безопасность Windows</summary><Assessment title="Тест модуля: безопасность Windows" questions={questions} /></details>
   </section>;
