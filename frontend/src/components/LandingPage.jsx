@@ -41,7 +41,7 @@ export default function LandingPage({ tracks, totalCount, nextLesson, theme, onT
   return <div className="landing-page">
     <header className="landing-nav">
       <a className="brand" href="./" aria-label="Sysadmin 2026 — главная"><span className="brand-mark"><FiCommand /></span><span>sysadmin<span className="brand-accent">.</span></span></a>
-      <nav aria-label="Навигация главной страницы"><a href="#landing-tracks">Маршруты</a><a href={viewHref('resources')} data-route-link>Библиотека</a><a href={viewHref('simulators')} data-route-link>Практика</a></nav>
+      <nav aria-label="Навигация главной страницы"><a href="#landing-tracks">Маршруты</a><a href={viewHref('resources')} data-route-link>Библиотека</a><a href={viewHref('labs')} data-route-link>Практика</a></nav>
       <div className="landing-nav-actions"><button className="theme-toggle" type="button" onClick={onToggleTheme} aria-label={theme === 'dark' ? 'Включить светлую тему' : 'Включить тёмную тему'}>{theme === 'dark' ? <FiSun /> : <FiMoon />}</button><a className="button button-primary" href={viewHref('roadmap')} data-route-link>Начать путь <FiArrowRight /></a></div>
     </header>
 
@@ -67,7 +67,7 @@ export default function LandingPage({ tracks, totalCount, nextLesson, theme, onT
       </section>
 
       <section className="landing-tracks" id="landing-tracks" aria-labelledby="landing-tracks-title">
-        <div className="landing-section-heading"><span className="eyebrow">ВЫБЕРИТЕ НАПРАВЛЕНИЕ</span><h2 id="landing-tracks-title">Пять отдельных учебных пространств</h2><p>Не нужно прокручивать одну бесконечную страницу. У каждого курса теперь собственная карта, адрес и последовательность уроков.</p></div>
+        <div className="landing-section-heading"><span className="eyebrow">ВЫБЕРИТЕ НАПРАВЛЕНИЕ</span><h2 id="landing-tracks-title">Пять учебных направлений</h2></div>
         <div className="landing-track-grid">{tracks.map((track, index) => {
           const Icon = iconByTrack[track.id] || FiBookOpen;
           const trackPercent = track.total ? Math.round(track.done / track.total * 100) : 0;

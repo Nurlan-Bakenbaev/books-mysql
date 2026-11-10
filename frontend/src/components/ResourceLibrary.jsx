@@ -27,7 +27,7 @@ export default function ResourceLibrary() {
   });
 
   return <section className="section" id="resources" aria-labelledby="resources-heading">
-    <div className="section-heading"><div><span className="section-kicker">УЧЕБНАЯ БИБЛИОТЕКА · НОЯБРЬ 2026</span><h2 id="resources-heading">Что читать, зачем и после какого урока</h2><p>Здесь источник встроен в учебный маршрут: карточка показывает, какие уроки он дополняет, на чём сосредоточиться и какую идею вынести. Сначала проходите урок на сайте, затем открывайте первоисточник для углубления.</p></div><span className="section-count">МАТЕРИАЛЫ: {resources.length}</span></div>
+    <div className="section-heading"><div><span className="section-kicker">УЧЕБНАЯ БИБЛИОТЕКА · НОЯБРЬ 2026</span><h1 id="resources-heading">Материалы по темам</h1></div><span className="section-count">МАТЕРИАЛЫ: {resources.length}</span></div>
     <div className="library-guide" aria-label="Как пользоваться библиотекой"><div><FiCompass /><strong>1. Выберите тему</strong><span>Поиск работает по названию, описанию и урокам.</span></div><div><FiBookOpen /><strong>2. Прочитайте аннотацию</strong><span>Фокус подсказывает нужную главу или раздел.</span></div><div><FiLayers /><strong>3. Вернитесь к практике</strong><span>Ссылка дополняет лабораторию, а не заменяет её.</span></div></div>
     <div className="resource-controls">
       <label className="search-field" htmlFor="resource-search"><FiSearch aria-hidden="true" /><span className="sr-only">Поиск источников</span><input id="resource-search" type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Поиск по названию или теме" /></label>

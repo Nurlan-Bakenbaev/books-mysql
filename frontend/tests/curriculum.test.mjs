@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
-import { phases } from '../src/data/guide.js';
+import { labs, phases } from '../src/data/guide.js';
 import { lessons } from '../src/data/lessons.js';
 import { lessonDetails } from '../src/data/lessonDetails.js';
 import { lessonWalkthroughs } from '../src/data/lessonWalkthroughs.js';
@@ -170,4 +170,18 @@ test('existing topic identifiers remain available for saved progress', () => {
     'zero-trust', 'hardening', 'security-monitoring', 'patch-management',
   ];
   assert.deepEqual(previousIds.filter((id) => !topicIds.includes(id)), []);
+});
+
+test('every home lab includes preparation, execution, validation, recovery, and sources', () => {
+  assert.equal(labs.length, 8);
+  for (const lab of labs) {
+    assert.ok(lab.duration && lab.description && lab.expected, lab.id);
+    assert.ok(lab.prerequisites.length >= 3, `${lab.id}: prerequisites`);
+    assert.ok(lab.steps.length >= 5, `${lab.id}: steps`);
+    assert.ok(lab.verify.length >= 3, `${lab.id}: verification`);
+    assert.ok(lab.troubleshooting.length >= 3, `${lab.id}: troubleshooting`);
+    assert.ok(lab.rollback.length >= 3, `${lab.id}: rollback`);
+    assert.ok(lab.resources.length >= 2, `${lab.id}: resources`);
+    lab.resources.forEach((resource) => assert.equal(new URL(resource.url).protocol, 'https:', `${lab.id}: ${resource.title}`));
+  }
 });

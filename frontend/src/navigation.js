@@ -1,8 +1,11 @@
 export function routeFromLocation({ search = '', hash = '' }) {
   const params = new URLSearchParams(search);
   if (params.has('lesson')) return { type: 'lesson', id: params.get('lesson') };
-  if (params.has('chapter')) return { type: 'chapter', id: params.get('chapter') };
-  if (params.has('view')) return { type: 'view', id: params.get('view') === 'dashboard' ? 'overview' : params.get('view') };
+  if (params.has('chapter')) return { type: 'view', id: 'resources' };
+  if (params.has('view')) {
+    const view = params.get('view');
+    return { type: 'view', id: view === 'dashboard' ? 'overview' : view === 'simulators' ? 'labs' : view === 'book' ? 'resources' : view };
+  }
   const legacyView = hashToView[hash];
   if (legacyView) return { type: 'view', id: legacyView };
   return { type: 'landing', id: null };
@@ -42,12 +45,12 @@ const hashToView = {
   '#azure-admin': 'azure-admin',
   '#linux-security': 'linux-security',
   '#ethical-hacking': 'ethical-hacking',
-  '#simulators': 'simulators',
+  '#simulators': 'labs',
   '#resources': 'resources',
   '#glossary': 'glossary',
   '#labs': 'labs',
   '#certifications': 'certifications',
-  '#book-extra': 'book',
-  '#book': 'book',
-  '#course': 'book',
+  '#book-extra': 'resources',
+  '#book': 'resources',
+  '#course': 'resources',
 };

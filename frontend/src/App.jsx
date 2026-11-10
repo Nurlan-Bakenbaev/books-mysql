@@ -6,24 +6,16 @@ import { windowsSecurityCourse } from './data/windowsSecurity';
 import { azureAdminPhases, azureAdminCourse } from './data/azureAdmin';
 import { azureCurrentSnapshot } from './data/azureAdminComplete';
 import { ethicalHackingCourse, ethicalHackingPhases, linuxSecurityCourse, linuxSecurityPhases } from './data/securityTracks';
-import course from './data/course.json';
 import { currentRoute, lessonHref, sectionHref } from './navigation';
 import Roadmap from './components/Roadmap';
 import Glossary from './components/Glossary';
 import ResourceLibrary from './components/ResourceLibrary';
 import WindowsSecurityCourse from './components/WindowsSecurityCourse';
-import Simulators from './components/Simulators';
 import LandingPage from './components/LandingPage';
 import Sidebar from './components/Sidebar';
 import Dashboard from './components/Dashboard';
 import { CertificationsPage, LabsPage } from './components/UtilityPages';
-import BookGuide from './components/BookGuide';
-import './book-reader.css';
-import './course.css';
 
-const BookReader = lazy(() => import('./components/BookReader'));
-const BookCourse = lazy(() => import('./components/BookCourse'));
-const InteractiveLesson = lazy(() => import('./components/InteractiveLesson'));
 const LessonPage = lazy(() => import('./components/LessonPage'));
 
 const STORAGE_KEY = 'sysadmin-path-2026-progress';
@@ -33,8 +25,8 @@ const PAGE_TITLES = {
   overview: 'Обзор обучения', roadmap: 'Путь системного администратора',
   'windows-security': 'Безопасность Windows', 'azure-admin': 'AZ-104',
   'linux-security': 'Безопасность Linux', 'ethical-hacking': 'Этичный хакинг',
-  labs: 'Лабораторные работы', simulators: 'Интерактивные тренажёры',
-  resources: 'Учебные материалы', book: 'Книги и PDF',
+  labs: 'Лабораторные работы',
+  resources: 'Учебные материалы',
   glossary: 'Словарь IT-терминов', certifications: 'Сертификации',
 };
 const TRACK_COURSES = [
@@ -58,7 +50,6 @@ export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => readStored(SIDEBAR_KEY, false) === true);
   const [route, setRoute] = useState(currentRoute);
-  const [bookPageRequest, setBookPageRequest] = useState(null);
   const menuButtonRef = useRef(null);
   const menuWasOpen = useRef(false);
 
@@ -98,16 +89,14 @@ export default function App() {
   const sequence = activeTrack?.topics || roadmapTopics;
   const topicIndex = sequence.findIndex((topic) => topic.id === route.id);
   const selectedTopic = topicIndex >= 0 ? sequence[topicIndex] : null;
-  const selectedChapter = course.modules.flatMap((module) => module.topics).find((topic) => topic.id === route.id);
   const toggle = (id) => setCompleted((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
   const courseProgress = (items) => ({ done: items.filter((item) => completed.includes(item.id)).length, total: items.length });
 
   useEffect(() => {
     const title = route.type === 'lesson' && selectedTopic ? selectedTopic.title
-      : route.type === 'chapter' && selectedChapter ? selectedChapter.title
-        : route.type === 'view' ? PAGE_TITLES[route.id] : null;
+      : route.type === 'view' ? PAGE_TITLES[route.id] : null;
     document.title = title ? `${title} — Sysadmin 2026` : 'Путь системного администратора 2026';
-  }, [route.type, route.id, selectedTopic, selectedChapter]);
+  }, [route.type, route.id, selectedTopic]);
 
   function navigate(to) {
     const url = new URL(to, window.location.href);
@@ -123,11 +112,6 @@ export default function App() {
     if (url.origin !== window.location.origin || url.pathname !== window.location.pathname) return;
     event.preventDefault(); navigate(url.href);
   }
-  function openBookPage(page) {
-    setBookPageRequest((previous) => ({ page, requestId: (previous?.requestId || 0) + 1 }));
-    navigate(sectionHref('#book'));
-  }
-
   const tracks = [
     { id: 'roadmap', title: 'Путь системного администратора', description: 'Фундамент, сети, Linux, Windows Server, облако, автоматизация и SecOps.', total: roadmapTopics.length, done: courseProgress(roadmapTopics).done, tone: 'cyan' },
     { id: 'windows-security', title: windowsSecurityCourse.title, description: 'Учётные записи, Defender, firewall, обновления, BitLocker, SIEM и инциденты.', total: windowsSecurityCourse.topics.length, done: courseProgress(windowsSecurityCourse.topics).done, tone: 'violet' },
@@ -142,11 +126,10 @@ export default function App() {
     'azure-admin': <><Roadmap id="azure-admin" eyebrow="НЕОФИЦИАЛЬНЫЙ ТРЕК · СВЕРЕНО С MICROSOFTLEARNING" title={azureAdminCourse.title} description={azureAdminCourse.description} startHint="Практику выполняйте в отдельной подписке Azure с бюджетом и обязательной очисткой ресурсов." disclaimer="Структура сверена с открытым комплектом лабораторий MicrosoftLearning от 24.09.2026. Это неофициальный курс; актуальные требования экзамена и цены проверяйте у Microsoft." phases={azureAdminPhases} completed={completed} onToggle={toggle} /><p className="course-source-note"><FiCheckCircle /> Проверено по открытому комплекту: {azureCurrentSnapshot.labs} лабораторий. <a href={azureCurrentSnapshot.source} target="_blank" rel="noreferrer">Открыть официальный репозиторий</a>.</p></>,
     'linux-security': <Roadmap id="linux-security" eyebrow="ОТДЕЛЬНЫЙ ТРЕК · HARDENING И ВОССТАНОВЛЕНИЕ" title={linuxSecurityCourse.title} description={linuxSecurityCourse.description} startHint="Перед SSH, firewall, sudo и MAC сохраните console access, snapshot и вторую административную сессию." disclaimer="Команды зависят от дистрибутива. Перед изменением сверяйте manual, делайте одно изменение и проверяйте откат." phases={linuxSecurityPhases} completed={completed} onToggle={toggle} />,
     'ethical-hacking': <Roadmap id="ethical-hacking" eyebrow="ПРАКТИЧЕСКИЙ CYBER RANGE · RED И BLUE" title={ethicalHackingCourse.title} description={ethicalHackingCourse.description} startHint="Начните с письменных правил и изолированного стенда; каждый шаг завершайте detection, исправлением, retest и очисткой." disclaimer="Активные действия разрешены только на собственном стенде или при явном письменном разрешении владельца." phases={ethicalHackingPhases} completed={completed} onToggle={toggle} />,
-    labs: <LabsPage labs={labs} completed={completed} onToggle={toggle} />, simulators: <Simulators />,
+    labs: <LabsPage labs={labs} completed={completed} onToggle={toggle} />,
     resources: <ResourceLibrary />, glossary: <Glossary />, certifications: <CertificationsPage certifications={certifications} />,
-    book: <section className="section utility-page book-workspace"><div className="section-heading"><div><div className="section-kicker">Дополнительное чтение</div><h1>Книги и PDF</h1><p>Книга дополняет основной учебный путь. Открывайте главы по мере необходимости и связывайте чтение с практическими уроками.</p></div></div><BookCourse /><BookReader pageRequest={bookPageRequest} /><BookGuide onOpenPage={openBookPage} /></section>,
   };
-  const breadcrumb = route.type === 'view' ? PAGE_TITLES[route.id] : route.type === 'lesson' ? selectedTopic?.title : selectedChapter?.title;
+  const breadcrumb = route.type === 'view' ? PAGE_TITLES[route.id] : route.type === 'lesson' ? selectedTopic?.title : null;
   const topbar = <header className="topbar"><button ref={menuButtonRef} className="mobile-menu button-icon" type="button" onClick={() => setMenuOpen(!menuOpen)} aria-expanded={menuOpen} aria-label={menuOpen ? 'Закрыть меню' : 'Открыть меню'}>{menuOpen ? <FiX /> : <FiMenu />}</button><div className="topbar-breadcrumb"><span>Учебная платформа</span><FiChevronRight /><strong>{breadcrumb || 'Материал'}</strong></div><div className="topbar-actions"><span className="topbar-date"><span className="status-dot" /> ПЛАН НА 2026</span><button className="theme-toggle" type="button" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} aria-label={theme === 'dark' ? 'Включить светлую тему' : 'Включить тёмную тему'}>{theme === 'dark' ? <FiSun /> : <FiMoon />}</button><span className="avatar" aria-hidden="true">SA</span></div></header>;
 
   return <div className={`app-shell${route.type === 'landing' ? ' landing-shell' : ''}${sidebarCollapsed && route.type !== 'landing' ? ' sidebar-collapsed' : ''}`} data-theme={theme} onClick={followRouteLink}>
@@ -157,8 +140,7 @@ export default function App() {
     {route.type !== 'landing' && <main className="main" id="route-main" tabIndex="-1">{topbar}<div className="content-wrap route-content"><Suspense fallback={<p role="status">Загружаем учебный материал…</p>}>
       {route.type === 'view' && viewContent[route.id] ? <div className="standalone-view" key={route.id}>{viewContent[route.id]}</div>
         : route.type === 'lesson' && selectedTopic && lessons[selectedTopic.id] ? <LessonPage key={selectedTopic.id} topic={selectedTopic} lesson={lessons[selectedTopic.id]} isComplete={completed.includes(selectedTopic.id)} onToggle={toggle} track={track} previous={sequence[topicIndex - 1]} next={sequence[topicIndex + 1]} />
-          : route.type === 'chapter' && selectedChapter ? <InteractiveLesson key={selectedChapter.id} topic={selectedChapter} onClose={() => navigate(sectionHref('#book'))} onOpenBookPage={openBookPage} />
-            : <section className="route-not-found"><h1>Учебный материал не найден</h1><p>Проверьте ссылку или выберите существующий урок.</p><a className="button" href={sectionHref('#roadmap')} data-route-link>К дорожной карте <FiArrowRight /></a></section>}
+          : <section className="route-not-found"><h1>Учебный материал не найден</h1><p>Проверьте ссылку или выберите существующий урок.</p><a className="button" href={sectionHref('#roadmap')} data-route-link>К дорожной карте <FiArrowRight /></a></section>}
     </Suspense></div></main>}
   </div>;
 }

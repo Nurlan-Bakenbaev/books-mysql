@@ -1,4 +1,4 @@
-import { FiActivity, FiArrowRight, FiAward, FiBookOpen, FiCheckCircle, FiPlay, FiTerminal, FiTool } from 'react-icons/fi';
+import { FiActivity, FiArrowRight, FiAward, FiBook, FiBookOpen, FiCheckCircle, FiPlay, FiTool } from 'react-icons/fi';
 import { lessonHref, viewHref } from '../navigation';
 
 /* eslint-disable react/prop-types */
@@ -21,7 +21,7 @@ export default function Dashboard({ percent, done, total, nextTopic, lastComplet
 
     <section className="dashboard-block" aria-labelledby="path-preview-title"><div className="dashboard-section-head"><div><span className="dashboard-eyebrow">Дорожная карта</span><h2 id="path-preview-title">Основной путь</h2></div><a href={viewHref('roadmap')} data-route-link>Открыть карту <FiArrowRight /></a></div><ol className="dashboard-path-preview">{phases.map((phase, index) => <li key={phase.id}><span>{String(index + 1).padStart(2, '0')}</span><div><strong>{phase.title}</strong><small>{phase.topics.length} уроков</small></div><FiCheckCircle aria-hidden="true" /></li>)}</ol></section>
 
-    <section className="dashboard-block" aria-labelledby="quick-title"><div className="dashboard-section-head"><div><span className="dashboard-eyebrow">Быстрый доступ</span><h2 id="quick-title">Практика и знания</h2></div></div><div className="dashboard-quick-grid"><a href={viewHref('labs')} data-route-link><FiTool /><strong>Лабораторные</strong><span>Практика на собственном стенде</span></a><a href={viewHref('simulators')} data-route-link><FiTerminal /><strong>Тренажёры</strong><span>Безопасные упражнения в браузере</span></a><a href={viewHref('resources')} data-route-link><FiBookOpen /><strong>Материалы</strong><span>Официальная документация и книги</span></a><a href={viewHref('certifications')} data-route-link><FiAward /><strong>Сертификации</strong><span>Следующая профессиональная цель</span></a></div></section>
+    <section className="dashboard-block" aria-labelledby="quick-title"><div className="dashboard-section-head"><div><span className="dashboard-eyebrow">Быстрый доступ</span><h2 id="quick-title">Практика и знания</h2></div></div><div className="dashboard-quick-grid"><a href={viewHref('labs')} data-route-link><FiTool /><strong>Лабораторные</strong><span>Пошаговая практика на собственном стенде</span></a><a href={viewHref('resources')} data-route-link><FiBookOpen /><strong>Материалы</strong><span>Официальная документация и книги</span></a><a href={viewHref('glossary')} data-route-link><FiBook /><strong>Термины</strong><span>Словарь системного администратора</span></a><a href={viewHref('certifications')} data-route-link><FiAward /><strong>Сертификации</strong><span>Следующая профессиональная цель</span></a></div></section>
     <a className="dashboard-roadmap-cta" href={viewHref('roadmap')} data-route-link><FiActivity /><span><strong>Не знаете, с чего начать?</strong><small>Откройте последовательную карту профессии и начните с фундамента.</small></span><FiArrowRight /></a>
   </div>;
 }

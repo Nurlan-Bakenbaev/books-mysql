@@ -8,8 +8,6 @@ import { getTrackMeta } from '../data/tracks';
 import { lessonHref, sectionHref } from '../navigation';
 import Assessment from './Assessment';
 
-const SIMULATOR_TOPIC_IDS = ['ip-addressing', 'routing-vlan', 'network-models', 'linux-basics', 'bash', 'winsec-firewall', 'az-vnet', 'az-nsg', 'az-routes', 'lsec-firewall', 'lsec-ssh-hardening', 'eth-scanning-nmap'];
-
 /* eslint-disable react/prop-types */
 function CodeBlock({ label, code }) {
   const [status, setStatus] = useState('');
@@ -27,8 +25,7 @@ function CodeBlock({ label, code }) {
 function LessonVideo({ video }) {
   return <section className="lesson-section lesson-video-first" id="lesson-video" aria-labelledby="lesson-video-title">
     <span className="eyebrow">ВИДЕОУРОК · YOUTUBE</span><h2 id="lesson-video-title">Начните с видео по теме</h2>
-    <p>Видео дополняет урок и может освещать только одну из его тем. Интерфейс и версии в старых роликах могут отличаться от современной документации.</p>
-    <div className="curated-video"><strong>{video.title}</strong><p>Ссылка подобрана по материалам: <a href={video.source} target="_blank" rel="noreferrer">{video.sourceName} <FiExternalLink aria-hidden="true" /></a>. Доступность ролика зависит от YouTube.</p>
+    <div className="curated-video"><strong>{video.title}</strong><p><a href={video.source} target="_blank" rel="noreferrer">Источник: {video.sourceName} <FiExternalLink aria-hidden="true" /></a></p>
       <div className="video-frame"><iframe title={`Видео: ${video.title}`} src={`https://www.youtube-nocookie.com/embed/${video.id}?rel=0`} loading="eager" referrerPolicy="strict-origin-when-cross-origin" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen /></div>
       <div className="video-actions"><a className="button" href={`https://www.youtube.com/watch?v=${video.id}`} target="_blank" rel="noreferrer"><FiPlay aria-hidden="true" /> Открыть на YouTube <FiExternalLink aria-hidden="true" /></a></div>
     </div>
@@ -98,7 +95,7 @@ export default function LessonPage({ topic, lesson, isComplete, onToggle, track,
       <LessonVideo key={topic.id} video={video} />
       <section className="lesson-section" id="lesson-goals"><span className="eyebrow">ЦЕЛИ УРОКА</span><h2>После урока вы сможете</h2><ul className="lesson-goals">{detail.goals.map((goal) => <li key={goal}>{goal}</li>)}</ul></section>
       <section className="lesson-section" id="lesson-theory"><span className="eyebrow">ТЕОРИЯ ПО ШАГАМ</span><h2>Разбираемся в теме</h2>{lesson.sections.map((section) => <div className="theory-part" key={section.title}><h3>{section.title}</h3>{section.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div>)}<div className="theory-part"><h3>Подробный разбор</h3>{detail.deepDive.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div></section>
-      <figure className="lesson-diagram"><figcaption><strong>Схема процесса</strong><span>Авторская схема для понимания темы, не снимок интерфейса.</span></figcaption><ol>{detail.diagram.map((step, index) => <li key={`${step}-${index}`}><span>{step}</span>{index < detail.diagram.length - 1 && <FiArrowRight aria-hidden="true" />}</li>)}</ol></figure>
+      <figure className="lesson-diagram"><figcaption><strong>Схема процесса</strong></figcaption><ol>{detail.diagram.map((step, index) => <li key={`${step}-${index}`}><span>{step}</span>{index < detail.diagram.length - 1 && <FiArrowRight aria-hidden="true" />}</li>)}</ol></figure>
       <UiMockup mockup={detail.uiMockup} />
       <section className="lesson-section"><span className="eyebrow">ПРИМЕР ИЗ ПРАКТИКИ</span><h2>Разберём ситуацию</h2><p><strong>Ситуация.</strong> {detail.caseStudy.situation}</p><p><strong>Действия.</strong> {detail.caseStudy.action}</p><p><strong>Что должно получиться.</strong> {detail.caseStudy.result}</p></section>
       <section className="lesson-section"><span className="eyebrow">ПОШАГОВЫЙ РАЗБОР</span><h2>{walkthrough.title}</h2><p>{walkthrough.context}</p><ol className="lesson-steps">{walkthrough.steps.map((step) => <li key={step}>{step}</li>)}</ol><div className="lesson-result"><strong>Как проверить результат</strong><p>{walkthrough.verification}</p></div><p><strong>Если результат отличается.</strong> {walkthrough.troubleshooting}</p></section>
@@ -108,11 +105,10 @@ export default function LessonPage({ topic, lesson, isComplete, onToggle, track,
         <div className="lesson-result"><strong>Ожидаемый результат</strong><p>{lesson.lab.expected}</p></div><div className="lesson-warning"><strong>На что обратить внимание</strong><ul>{lesson.lab.pitfalls.map((pitfall) => <li key={pitfall}>{pitfall}</li>)}</ul></div>
         {detail.labScreenshot && <figure className="lesson-screenshot"><img src={`${import.meta.env.BASE_URL}study-images/${detail.labScreenshot}`} alt={`Снимок выполнения лабораторной работы: ${lesson.lab.expected}`} loading="lazy" /><figcaption>Скриншот выполнения лабораторного примера в учебной среде.</figcaption></figure>}
         {!detail.example && <TerminalWindow terminal={detail.terminal} />}
-        {SIMULATOR_TOPIC_IDS.includes(topic.id) && <p><a className="lesson-inline-link" href={sectionHref('#simulators')} data-route-link>Открыть безопасные тренажёры сети и командной строки <FiArrowRight aria-hidden="true" /></a></p>}
       </section>
       <PracticeTasks tasks={detail.practiceTasks} />
       <section className="lesson-section" id="lesson-check"><Assessment key={topic.id} title="Проверьте себя" questions={[detail.question]} /></section>
-      <section className="lesson-section lesson-section-secondary" id="lesson-sources"><span className="eyebrow">УЧЕБНЫЕ МАТЕРИАЛЫ · ПЕРВОИСТОЧНИКИ</span><h2>Проверьте тему по документации</h2><p>Каждая ссылка связана с содержанием урока: описание показывает, какой раздел читать и какую идею проверить. Даты интерфейсов, версии и тарифы всегда уточняйте в первоисточнике перед работой.</p><ol className="lesson-resources">{lessonResources[topic.id].map(({ sourceId, focus, takeaway }) => {
+      <section className="lesson-section lesson-section-secondary" id="lesson-sources"><span className="eyebrow">УЧЕБНЫЕ МАТЕРИАЛЫ · ПЕРВОИСТОЧНИКИ</span><h2>Документация по теме</h2><ol className="lesson-resources">{lessonResources[topic.id].map(({ sourceId, focus, takeaway }) => {
         const resource = resourcesById[sourceId];
         return <li key={sourceId}><a href={resource.url} target="_blank" rel="noreferrer">{resource.title} <FiExternalLink aria-hidden="true" /></a><span>{resource.type} · {resource.language} · {resource.access}</span><p>{focus}</p>{takeaway && <p><strong>Ключевая идея источника:</strong> {takeaway}</p>}</li>;
       })}</ol></section>

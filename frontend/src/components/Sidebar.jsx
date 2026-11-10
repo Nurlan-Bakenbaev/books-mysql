@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { FiActivity, FiArchive, FiArrowRight, FiAward, FiBook, FiBookOpen, FiChevronDown, FiChevronLeft, FiChevronRight, FiCloud, FiCommand, FiGrid, FiLayers, FiShield, FiTerminal, FiTool, FiX } from 'react-icons/fi';
+import { FiActivity, FiArrowRight, FiAward, FiBook, FiBookOpen, FiChevronDown, FiChevronLeft, FiChevronRight, FiCloud, FiCommand, FiGrid, FiLayers, FiShield, FiTerminal, FiTool, FiX } from 'react-icons/fi';
 import { lessonHref, viewHref } from '../navigation';
 
 const GROUPS_KEY = 'sysadmin-path-2026-sidebar-groups';
@@ -10,7 +10,6 @@ const courseItems = [
   { id: 'azure-admin', label: 'Azure / AZ-104', Icon: FiCloud },
   { id: 'linux-security', label: 'Безопасность Linux', Icon: FiTerminal },
   { id: 'ethical-hacking', label: 'Этичный хакинг и защита', Icon: FiShield },
-  { id: 'book', label: 'Курс по книге', Icon: FiArchive },
 ];
 
 const libraryItems = [
@@ -29,7 +28,7 @@ function readGroups() {
 /* eslint-disable react/prop-types */
 export default function Sidebar({ route, track, menuOpen, collapsed, onClose, onToggleCollapsed, percent, completedCount, totalCount, nextTopic }) {
   const [groups, setGroups] = useState(readGroups);
-  const activeView = route.type === 'view' ? route.id : route.type === 'lesson' ? track : route.type === 'chapter' ? 'book' : route.type === 'dashboard' ? 'overview' : null;
+  const activeView = route.type === 'view' ? route.id : route.type === 'lesson' ? track : route.type === 'dashboard' ? 'overview' : null;
   const coursesActive = courseItems.some((item) => item.id === activeView);
   const libraryActive = libraryItems.some((item) => item.id === activeView);
 
@@ -72,7 +71,6 @@ export default function Sidebar({ route, track, menuOpen, collapsed, onClose, on
 
       <div className="academy-nav-divider" />
       {itemLink({ id: 'labs', label: 'Лабораторные работы', Icon: FiTool })}
-      {itemLink({ id: 'simulators', label: 'Интерактивные тренажёры', Icon: FiTerminal })}
 
       <div className={`academy-nav-group${libraryActive ? ' has-active' : ''}`}>
         <button className="academy-nav-group-toggle" type="button" onClick={() => toggleGroup('library')} aria-expanded={groups.library} title={collapsed ? 'Библиотека' : undefined}><span className="academy-nav-icon"><FiBookOpen /></span><span className="academy-nav-label">Библиотека</span>{!collapsed && <FiChevronDown className="academy-group-chevron" />}</button>
