@@ -438,5 +438,5 @@ export const azureCompletionLessonResources = {
 export const azureCurrentSnapshot = {
   checkedAt: '2026-09-24',
   source: 'https://github.com/MicrosoftLearning/AZ-104-MicrosoftAzureAdministrator',
-  labs: 13,
+  labs: 14,
 };

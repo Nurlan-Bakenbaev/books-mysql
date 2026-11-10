@@ -13,6 +13,7 @@ import { lessonResources, resources } from '../src/data/resources.js';
 import { chapterVideos, lessonVideos } from '../src/data/lessonVideos.js';
 import { windowsSecurityCourse } from '../src/data/windowsSecurity.js';
 import { azureAdminCourse, azureAdminPlanned } from '../src/data/azureAdmin.js';
+import { azureCurrentSnapshot } from '../src/data/azureAdminComplete.js';
 import { ethicalHackingCourse, linuxSecurityCourse } from '../src/data/securityTracks.js';
 
 const topics = [...phases.flatMap((phase) => phase.topics), ...windowsSecurityCourse.topics, ...azureAdminCourse.topics, ...linuxSecurityCourse.topics, ...ethicalHackingCourse.topics];
@@ -144,6 +145,8 @@ test('AZ-104 track publishes a finished lesson for every current course topic', 
     assert.ok(lessonDetails[id].practiceTasks.length >= 2, id);
   }
   assert.deepEqual(planned, []);
+  assert.equal(azureCurrentSnapshot.labs, 14);
+  assert.equal(azureCurrentSnapshot.checkedAt, '2026-09-24');
 });
 
 test('enriched roadmap lessons carry extended practice material', () => {

@@ -55,7 +55,7 @@ export default function Sidebar({ route, track, menuOpen, collapsed, onClose, on
 
     <div className="academy-progress" title={collapsed ? `Прогресс ${percent}%` : undefined}>
       <div className="academy-progress-title"><span>Мой прогресс</span><strong>{percent}%</strong></div>
-      <div className="academy-progress-numbers"><span>Пройдено уроков</span><strong>{completedCount} / {totalCount}</strong></div>
+      <div className="academy-progress-numbers"><span>Выполнено шагов</span><strong>{completedCount} / {totalCount}</strong></div>
       <div className="academy-progress-bar" role="progressbar" aria-label="Общий прогресс" aria-valuemin="0" aria-valuemax="100" aria-valuenow={percent}><span style={{ width: `${percent}%` }} /></div>
       {nextTopic && <a href={lessonHref(nextTopic.id)} data-route-link>Продолжить обучение <FiArrowRight /></a>}
       {collapsed && <span className="academy-progress-compact">{percent}</span>}

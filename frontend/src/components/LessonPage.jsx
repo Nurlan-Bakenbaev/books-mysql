@@ -25,13 +25,12 @@ function CodeBlock({ label, code }) {
 }
 
 function LessonVideo({ video }) {
-  const [playing, setPlaying] = useState(false);
-  return <section className="lesson-section" aria-labelledby="lesson-video-title">
-    <span className="eyebrow">ВИДЕО НА АНГЛИЙСКОМ</span><h2 id="lesson-video-title">Посмотрите разбор</h2>
+  return <section className="lesson-section lesson-video-first" id="lesson-video" aria-labelledby="lesson-video-title">
+    <span className="eyebrow">ВИДЕОУРОК · YOUTUBE</span><h2 id="lesson-video-title">Начните с видео по теме</h2>
     <p>Видео дополняет урок и может освещать только одну из его тем. Интерфейс и версии в старых роликах могут отличаться от современной документации.</p>
     <div className="curated-video"><strong>{video.title}</strong><p>Ссылка подобрана по материалам: <a href={video.source} target="_blank" rel="noreferrer">{video.sourceName} <FiExternalLink aria-hidden="true" /></a>. Доступность ролика зависит от YouTube.</p>
-      <div className="video-actions"><button className="button" type="button" onClick={() => setPlaying((current) => !current)}><FiPlay aria-hidden="true" /> {playing ? 'Скрыть плеер' : 'Загрузить плеер YouTube'}</button><a className="button" href={`https://www.youtube.com/watch?v=${video.id}`} target="_blank" rel="noreferrer">Открыть на YouTube <FiExternalLink aria-hidden="true" /></a></div>
-      {playing && <div className="video-frame"><iframe title={`Видео: ${video.title}`} src={`https://www.youtube-nocookie.com/embed/${video.id}`} loading="lazy" referrerPolicy="strict-origin-when-cross-origin" allow="encrypted-media; picture-in-picture" allowFullScreen /></div>}
+      <div className="video-frame"><iframe title={`Видео: ${video.title}`} src={`https://www.youtube-nocookie.com/embed/${video.id}?rel=0`} loading="eager" referrerPolicy="strict-origin-when-cross-origin" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen /></div>
+      <div className="video-actions"><a className="button" href={`https://www.youtube.com/watch?v=${video.id}`} target="_blank" rel="noreferrer"><FiPlay aria-hidden="true" /> Открыть на YouTube <FiExternalLink aria-hidden="true" /></a></div>
     </div>
   </section>;
 }
@@ -93,9 +92,10 @@ export default function LessonPage({ topic, lesson, isComplete, onToggle, track,
       <span className="eyebrow">{meta.label} · ОТДЕЛЬНЫЙ УРОК</span>
       <h1 id="lesson-page-title" ref={headingRef} tabIndex="-1">{topic.title}</h1>
       <p>{lesson.intro}</p>
-      <nav className="lesson-jump" aria-label="Разделы урока"><a href="#lesson-theory">Теория</a><a href="#lesson-practice">Практика</a><a href="#lesson-check">Тест</a><a className="lesson-material-link" href="#lesson-sources"><FiBookOpen aria-hidden="true" /> Учебные материалы · {lessonResources[topic.id].length}</a></nav>
+      <nav className="lesson-jump" aria-label="Разделы урока"><a href="#lesson-video"><FiPlay aria-hidden="true" /> Видео</a><a href="#lesson-theory">Теория</a><a href="#lesson-practice">Практика</a><a href="#lesson-check">Тест</a><a className="lesson-material-link" href="#lesson-sources"><FiBookOpen aria-hidden="true" /> Учебные материалы · {lessonResources[topic.id].length}</a></nav>
     </header>
     <div className="lesson-page-content">
+      <LessonVideo key={topic.id} video={video} />
       <section className="lesson-section" id="lesson-goals"><span className="eyebrow">ЦЕЛИ УРОКА</span><h2>После урока вы сможете</h2><ul className="lesson-goals">{detail.goals.map((goal) => <li key={goal}>{goal}</li>)}</ul></section>
       <section className="lesson-section" id="lesson-theory"><span className="eyebrow">ТЕОРИЯ ПО ШАГАМ</span><h2>Разбираемся в теме</h2>{lesson.sections.map((section) => <div className="theory-part" key={section.title}><h3>{section.title}</h3>{section.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div>)}<div className="theory-part"><h3>Подробный разбор</h3>{detail.deepDive.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div></section>
       <figure className="lesson-diagram"><figcaption><strong>Схема процесса</strong><span>Авторская схема для понимания темы, не снимок интерфейса.</span></figcaption><ol>{detail.diagram.map((step, index) => <li key={`${step}-${index}`}><span>{step}</span>{index < detail.diagram.length - 1 && <FiArrowRight aria-hidden="true" />}</li>)}</ol></figure>
@@ -111,7 +111,6 @@ export default function LessonPage({ topic, lesson, isComplete, onToggle, track,
         {SIMULATOR_TOPIC_IDS.includes(topic.id) && <p><a className="lesson-inline-link" href={sectionHref('#simulators')} data-route-link>Открыть безопасные тренажёры сети и командной строки <FiArrowRight aria-hidden="true" /></a></p>}
       </section>
       <PracticeTasks tasks={detail.practiceTasks} />
-      <LessonVideo key={topic.id} video={video} />
       <section className="lesson-section" id="lesson-check"><Assessment key={topic.id} title="Проверьте себя" questions={[detail.question]} /></section>
       <section className="lesson-section lesson-section-secondary" id="lesson-sources"><span className="eyebrow">УЧЕБНЫЕ МАТЕРИАЛЫ · ПЕРВОИСТОЧНИКИ</span><h2>Проверьте тему по документации</h2><p>Каждая ссылка связана с содержанием урока: описание показывает, какой раздел читать и какую идею проверить. Даты интерфейсов, версии и тарифы всегда уточняйте в первоисточнике перед работой.</p><ol className="lesson-resources">{lessonResources[topic.id].map(({ sourceId, focus, takeaway }) => {
         const resource = resourcesById[sourceId];

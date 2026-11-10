@@ -8,7 +8,7 @@
 
 ### Учебные треки
 
-Неофициальный трек **AZ-104** завершён: идентификация и governance, хранилище, ARM/Bicep, VM и масштабирование, App Service, ACI и Container Apps, VNet/NSG/DNS/peering/routes, балансировка, Network Watcher, Azure Backup, Site Recovery, Azure Monitor и Action Groups. Структура дополнительно сверена с 13 открытыми лабораториями репозитория `MicrosoftLearning/AZ-104-MicrosoftAzureAdministrator`, снимок от 24 сентября 2026 года. Это авторский учебный курс, а не материал Microsoft и не гарантия сдачи экзамена; актуальный study guide, цены и интерфейс нужно сверять у Microsoft.
+Неофициальный трек **AZ-104** завершён: идентификация и governance, хранилище, ARM/Bicep, VM и масштабирование, App Service, ACI и Container Apps, VNet/NSG/DNS/peering/routes, балансировка, Network Watcher, Azure Backup, Site Recovery, Azure Monitor и Action Groups. Структура дополнительно сверена с 14 открытыми лабораториями репозитория `MicrosoftLearning/AZ-104-MicrosoftAzureAdministrator`, снимок от 24 сентября 2026 года. Это авторский учебный курс, а не материал Microsoft и не гарантия сдачи экзамена; актуальный study guide, цены и интерфейс нужно сверять у Microsoft.
 
 Трек **«Безопасность Linux»** проходит пользователей и sudo, SSH с сохранением доступа, firewall, обновления, модель угроз, journald/auditd, SELinux/AppArmor, baseline/hardening и восстановление. Изменения SSH, firewall, sudo и MAC сопровождаются второй сессией, консолью, проверкой синтаксиса и точной процедурой отката.
 
