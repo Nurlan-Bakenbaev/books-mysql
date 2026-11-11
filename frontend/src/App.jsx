@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
-import { FiArrowRight, FiCheckCircle, FiChevronRight, FiMenu, FiMoon, FiSun, FiX } from 'react-icons/fi';
+import { FiArrowRight, FiCheckCircle, FiChevronRight, FiMenu, FiMoon, FiSearch, FiSun, FiX } from 'react-icons/fi';
 import { phases, labs, certifications } from './data/guide';
 import { lessons } from './data/lessons';
 import { windowsSecurityCourse } from './data/windowsSecurity';
@@ -19,6 +19,7 @@ import Sidebar from './components/Sidebar';
 import Dashboard from './components/Dashboard';
 import { CertificationsPage, LabsPage } from './components/UtilityPages';
 
+const CourseSearch = lazy(() => import('./components/CourseSearch'));
 const LessonPage = lazy(() => import('./components/LessonPage'));
 
 const STORAGE_KEY = 'sysadmin-path-2026-progress';
@@ -54,15 +55,27 @@ export default function App() {
     return Array.isArray(saved) ? saved.filter((item) => typeof item === 'string') : [];
   });
   const [theme, setTheme] = useState(() => readStored(THEME_KEY, 'dark') === 'light' ? 'light' : 'dark');
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [mobileNavigation, setMobileNavigation] = useState(() => window.matchMedia('(max-width: 760px)').matches);
   const [menuOpen, setMenuOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => readStored(SIDEBAR_KEY, false) === true);
   const [route, setRoute] = useState(currentRoute);
   const menuButtonRef = useRef(null);
   const menuWasOpen = useRef(false);
+  const compactSidebar = sidebarCollapsed && !mobileNavigation;
+  useEffect(() => {
+    const media = window.matchMedia('(max-width: 760px)');
+    const sync = () => { setMobileNavigation(media.matches); setMenuOpen(false); };
+    media.addEventListener('change', sync);
+    return () => media.removeEventListener('change', sync);
+  }, []);
 
   useEffect(() => {
     const syncRoute = () => { setRoute(currentRoute()); setMenuOpen(false); window.scrollTo({ top: 0, behavior: 'instant' }); };
-    const onKeyDown = (event) => { if (event.key === 'Escape') setMenuOpen(false); };
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') setMenuOpen(false);
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k' && !document.querySelector('dialog[open]')) { event.preventDefault(); setSearchOpen(true); }
+    };
     window.addEventListener('hashchange', syncRoute);
     window.addEventListener('popstate', syncRoute);
     window.addEventListener('keydown', onKeyDown);
@@ -138,16 +151,17 @@ export default function App() {
     'ethical-hacking': <Roadmap id="ethical-hacking" eyebrow="ПРАКТИЧЕСКИЙ CYBER RANGE · RED И BLUE" title={ethicalHackingCourse.title} description={ethicalHackingCourse.description} startHint="Начните с письменных правил и изолированного стенда; каждый шаг завершайте detection, исправлением, retest и очисткой." phases={ethicalHackingPhases} completed={completed} onToggle={toggle} />,
     'security-plus': <><Roadmap id="security-plus" eyebrow="АВТОРСКИЙ КУРС · COMPTIA SECURITY+ SY0-701" title={securityPlusCourse.title} description={securityPlusCourse.description} startHint="Идите по пяти доменам по порядку: каждый урок завершайте лабораторией, проверкой защитного сигнала и коротким finding." phases={securityPlusPhases} completed={completed} onToggle={toggle} /><SecurityPlusExam /></>,
     labs: <LabsPage labs={labs} completed={completed} onToggle={toggle} />,
-    resources: <ResourceLibrary />, glossary: <Glossary />, certifications: <CertificationsPage certifications={certifications} />,
+    resources: <ResourceLibrary />, glossary: <Glossary termId={new URLSearchParams(window.location.search).get('term')} />, certifications: <CertificationsPage certifications={certifications} />,
   };
   const breadcrumb = route.type === 'view' ? PAGE_TITLES[route.id] : route.type === 'lesson' ? selectedTopic?.title : null;
-  const topbar = <header className="topbar"><button ref={menuButtonRef} className="mobile-menu button-icon" type="button" onClick={() => setMenuOpen(!menuOpen)} aria-expanded={menuOpen} aria-label={menuOpen ? 'Закрыть меню' : 'Открыть меню'}>{menuOpen ? <FiX /> : <FiMenu />}</button><div className="topbar-breadcrumb"><span>Учебная платформа</span><FiChevronRight /><strong>{breadcrumb || 'Материал'}</strong></div><div className="topbar-actions"><span className="topbar-date"><span className="status-dot" /> ПЛАН НА 2026</span><button className="theme-toggle" type="button" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} aria-label={theme === 'dark' ? 'Включить светлую тему' : 'Включить тёмную тему'}>{theme === 'dark' ? <FiSun /> : <FiMoon />}</button><span className="avatar" aria-hidden="true">SA</span></div></header>;
+  const topbar = <header className="topbar"><button ref={menuButtonRef} className="navigation-toggle button-icon" type="button" onClick={() => mobileNavigation ? setMenuOpen((value) => !value) : setSidebarCollapsed((value) => !value)} aria-controls="platform-navigation" aria-expanded={mobileNavigation ? menuOpen : !compactSidebar} aria-label={mobileNavigation ? (menuOpen ? 'Закрыть меню' : 'Открыть меню') : (compactSidebar ? 'Развернуть боковое меню' : 'Свернуть боковое меню')}>{mobileNavigation && menuOpen ? <FiX /> : <FiMenu />}</button><div className="topbar-breadcrumb"><span>Учебная платформа</span><FiChevronRight /><strong>{breadcrumb || 'Материал'}</strong></div><div className="topbar-actions"><button className="theme-toggle search-toggle" type="button" aria-label="Поиск по курсу" aria-haspopup="dialog" onClick={() => setSearchOpen(true)}><FiSearch aria-hidden="true" /></button><span className="topbar-date"><span className="status-dot" /> ПЛАН НА 2026</span><button className="theme-toggle" type="button" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} aria-label={theme === 'dark' ? 'Включить светлую тему' : 'Включить тёмную тему'}>{theme === 'dark' ? <FiSun /> : <FiMoon />}</button><span className="avatar" aria-hidden="true">SA</span></div></header>;
 
-  return <div className={`app-shell${route.type === 'landing' ? ' landing-shell' : ''}${sidebarCollapsed && route.type !== 'landing' ? ' sidebar-collapsed' : ''}`} data-theme={theme} onClick={followRouteLink}>
+  return <div className={`app-shell${route.type === 'landing' ? ' landing-shell' : ''}${compactSidebar && route.type !== 'landing' ? ' sidebar-collapsed' : ''}`} data-theme={theme} onClick={followRouteLink}>
+    {searchOpen && <Suspense fallback={<span className="sr-only" role="status">Загружаем поиск…</span>}><CourseSearch onClose={() => setSearchOpen(false)} /></Suspense>}
     <a className="skip-link" href={route.type === 'landing' ? '#landing-tracks' : '#route-main'}>Перейти к содержимому</a>
     {route.type !== 'landing' && menuOpen && <button className="sidebar-overlay" type="button" aria-label="Закрыть меню" onClick={() => setMenuOpen(false)} />}
-    {route.type !== 'landing' && <Sidebar route={route} track={track} menuOpen={menuOpen} collapsed={sidebarCollapsed} onClose={() => setMenuOpen(false)} onToggleCollapsed={() => setSidebarCollapsed((value) => !value)} percent={percent} completedCount={done} totalCount={allIds.length} nextTopic={nextTopic} />}
-    {route.type === 'landing' && <LandingPage tracks={tracks} totalCount={topicIds.length} nextLesson={nextTopic ? { title: nextTopic.title, href: lessonHref(nextTopic.id) } : null} theme={theme} onToggleTheme={() => setTheme(theme === 'dark' ? 'light' : 'dark')} />}
+    {route.type !== 'landing' && <Sidebar route={route} track={track} menuOpen={menuOpen} collapsed={compactSidebar} onClose={() => setMenuOpen(false)} percent={percent} completedCount={done} totalCount={allIds.length} nextTopic={nextTopic} />}
+    {route.type === 'landing' && <LandingPage onSearch={() => setSearchOpen(true)} tracks={tracks} totalCount={topicIds.length} nextLesson={nextTopic ? { title: nextTopic.title, href: lessonHref(nextTopic.id) } : null} theme={theme} onToggleTheme={() => setTheme(theme === 'dark' ? 'light' : 'dark')} />}
     {route.type !== 'landing' && <main className="main" id="route-main" tabIndex="-1">{topbar}<div className="content-wrap route-content"><Suspense fallback={<p role="status">Загружаем учебный материал…</p>}>
       {route.type === 'view' && viewContent[route.id] ? <div className="standalone-view" key={route.id}>{viewContent[route.id]}</div>
         : route.type === 'lesson' && selectedTopic && lessons[selectedTopic.id] ? <LessonPage key={selectedTopic.id} topic={selectedTopic} lesson={lessons[selectedTopic.id]} isComplete={completed.includes(selectedTopic.id)} onToggle={toggle} track={track} previous={sequence[topicIndex - 1]} next={sequence[topicIndex + 1]} />

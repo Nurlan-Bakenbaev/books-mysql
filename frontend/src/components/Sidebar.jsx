@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { FiActivity, FiArrowRight, FiAward, FiBook, FiBookOpen, FiChevronDown, FiChevronLeft, FiChevronRight, FiCloud, FiCommand, FiGrid, FiLayers, FiShield, FiTerminal, FiTool, FiX } from 'react-icons/fi';
+import { FiActivity, FiArrowRight, FiAward, FiBook, FiBookOpen, FiChevronDown, FiCloud, FiCommand, FiGrid, FiLayers, FiShield, FiTerminal, FiTool, FiX } from 'react-icons/fi';
 import { lessonHref, viewHref } from '../navigation';
 
 const GROUPS_KEY = 'sysadmin-path-2026-sidebar-groups';
@@ -28,7 +28,7 @@ function readGroups() {
 }
 
 /* eslint-disable react/prop-types */
-export default function Sidebar({ route, track, menuOpen, collapsed, onClose, onToggleCollapsed, percent, completedCount, totalCount, nextTopic }) {
+export default function Sidebar({ route, track, menuOpen, collapsed, onClose, percent, completedCount, totalCount, nextTopic }) {
   const [groups, setGroups] = useState(readGroups);
   const activeView = route.type === 'view' ? route.id : route.type === 'lesson' ? track : route.type === 'dashboard' ? 'overview' : null;
   const coursesActive = courseItems.some((item) => item.id === activeView);
@@ -51,7 +51,7 @@ export default function Sidebar({ route, track, menuOpen, collapsed, onClose, on
     </a>;
   };
 
-  return <aside className={`sidebar academy-sidebar${menuOpen ? ' is-open' : ''}${collapsed ? ' is-collapsed' : ''}`} aria-label="Навигация платформы">
+  return <aside id="platform-navigation" className={`sidebar academy-sidebar${menuOpen ? ' is-open' : ''}${collapsed ? ' is-collapsed' : ''}`} aria-label="Навигация платформы">
     <div className="academy-brand-row"><a className="academy-brand" href="./" title={collapsed ? 'Sysadmin Academy' : undefined}><span className="academy-brand-icon"><FiCommand /></span><span className="academy-brand-copy"><strong>SYSADMIN ACADEMY</strong><small>Учебная платформа</small></span></a><button className="sidebar-close" type="button" aria-label="Закрыть меню" onClick={onClose}><FiX /></button></div>
 
     <div className="academy-progress" title={collapsed ? `Прогресс ${percent}%` : undefined}>
@@ -80,6 +80,6 @@ export default function Sidebar({ route, track, menuOpen, collapsed, onClose, on
       </div>
     </nav>
 
-    <div className="academy-sidebar-footer"><button type="button" className="academy-collapse" onClick={onToggleCollapsed} aria-label={collapsed ? 'Развернуть боковое меню' : 'Свернуть боковое меню'} title={collapsed ? 'Развернуть меню' : 'Свернуть меню'}>{collapsed ? <FiChevronRight /> : <FiChevronLeft />}<span>{collapsed ? '' : 'Свернуть меню'}</span></button><span className="academy-system"><span className="status-dot" /> <span>Прогресс сохраняется</span></span></div>
+    <div className="academy-sidebar-footer"><span className="academy-system"><span className="status-dot" /> <span>Прогресс сохраняется</span></span></div>
   </aside>;
 }

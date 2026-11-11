@@ -1,16 +1,22 @@
 import { useEffect, useRef, useState } from 'react';
 import { FiArrowUpRight, FiSearch, FiX } from 'react-icons/fi';
+import { createFuzzySearch } from '../lib/search';
 import { terms } from '../data/guide';
 
 const categories = ['Все', 'Сети', 'Безопасность', 'Windows', 'Облако'];
 
-export default function Glossary() {
+const searchTerms = createFuzzySearch(terms, ['name', 'short', 'description', 'how', 'when', 'example', 'check', 'caution', 'category']);
+
+/* eslint-disable react/prop-types */
+export default function Glossary({ termId }) {
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('Все');
   const [selectedTerm, setSelectedTerm] = useState(null);
   const dialogRef = useRef(null);
   const closeRef = useRef(null);
   const triggerRef = useRef(null);
+
+  useEffect(() => { if (termId) setSelectedTerm(terms.find((term) => term.id === termId) || null); }, [termId]);
 
   useEffect(() => {
     if (selectedTerm && dialogRef.current && !dialogRef.current.open) {
@@ -19,14 +25,7 @@ export default function Glossary() {
     }
   }, [selectedTerm]);
 
-  const normalizedQuery = query.trim().toLocaleLowerCase('ru');
-  const filteredTerms = terms.filter((term) => {
-    const matchesCategory = category === 'Все' || term.category === category;
-    const searchableText = [term.name, term.short, term.description, term.how, term.when, term.example, term.check, term.caution, term.category]
-      .join(' ')
-      .toLocaleLowerCase('ru');
-    return matchesCategory && searchableText.includes(normalizedQuery);
-  });
+  const filteredTerms = searchTerms(query).filter((term) => category === 'Все' || term.category === category);
 
   function openTerm(term, event) {
     triggerRef.current = event.currentTarget;

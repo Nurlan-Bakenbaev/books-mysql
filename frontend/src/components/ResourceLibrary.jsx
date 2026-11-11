@@ -2,29 +2,25 @@ import { useState } from 'react';
 import { FiExternalLink, FiSearch } from 'react-icons/fi';
 import { FiBookOpen, FiCompass, FiLayers } from 'react-icons/fi';
 import { lessonResources, resources } from '../data/resources';
-import { phases } from '../data/guide';
-import { windowsSecurityCourse } from '../data/windowsSecurity';
-import { azureAdminCourse } from '../data/azureAdmin';
-import { ethicalHackingCourse, linuxSecurityCourse } from '../data/securityTracks';
+import { topicById } from '../data/catalog';
+import { createFuzzySearch } from '../lib/search';
 import { lessonHref } from '../navigation';
 
 const types = ['Все', ...new Set(resources.map((resource) => resource.type))];
-const topicById = new Map([...phases.flatMap((phase) => phase.topics), ...windowsSecurityCourse.topics, ...azureAdminCourse.topics, ...linuxSecurityCourse.topics, ...ethicalHackingCourse.topics].map((topic) => [topic.id, topic]));
 const usageBySource = Object.entries(lessonResources).reduce((index, [lessonId, references]) => {
   references.forEach((reference) => index.set(reference.sourceId, [...(index.get(reference.sourceId) || []), { lessonId, ...reference }]));
   return index;
 }, new Map());
 
+const searchResources = createFuzzySearch(resources.map((resource) => ({
+  ...resource,
+  lessonNames: (usageBySource.get(resource.id) || []).map((item) => topicById.get(item.lessonId)?.title || '').join(' '),
+})), ['title', 'description', 'language', 'type', 'lessonNames']);
+
 export default function ResourceLibrary() {
   const [query, setQuery] = useState('');
   const [type, setType] = useState('Все');
-  const search = query.trim().toLocaleLowerCase('ru');
-  const visible = resources.filter((resource) => {
-    const matchesType = type === 'Все' || resource.type === type;
-    const lessonNames = (usageBySource.get(resource.id) || []).map((item) => topicById.get(item.lessonId)?.title || '').join(' ');
-    const text = `${resource.title} ${resource.description} ${resource.language} ${resource.type} ${lessonNames}`.toLocaleLowerCase('ru');
-    return matchesType && text.includes(search);
-  });
+  const visible = searchResources(query).filter((resource) => type === 'Все' || resource.type === type);
 
   return <section className="section" id="resources" aria-labelledby="resources-heading">
     <div className="section-heading"><div><span className="section-kicker">УЧЕБНАЯ БИБЛИОТЕКА · НОЯБРЬ 2026</span><h1 id="resources-heading">Материалы по темам</h1></div><span className="section-count">МАТЕРИАЛЫ: {resources.length}</span></div>

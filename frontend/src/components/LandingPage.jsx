@@ -1,5 +1,5 @@
 import { motion, useReducedMotion } from 'motion/react';
-import { FiActivity, FiArrowRight, FiAward, FiBookOpen, FiCloud, FiCommand, FiCpu, FiMoon, FiPlay, FiShield, FiSun, FiTerminal } from 'react-icons/fi';
+import { FiActivity, FiArrowRight, FiAward, FiBookOpen, FiCloud, FiCommand, FiCpu, FiMoon, FiPlay, FiSearch, FiShield, FiSun, FiTerminal } from 'react-icons/fi';
 import { viewHref } from '../navigation';
 
 
@@ -15,14 +15,14 @@ const iconByTrack = {
 };
 
 /* eslint-disable react/prop-types */
-export default function LandingPage({ tracks, totalCount, nextLesson, theme, onToggleTheme }) {
+export default function LandingPage({ tracks, totalCount, nextLesson, theme, onToggleTheme, onSearch }) {
   const reduceMotion = useReducedMotion();
 
   return <div className="landing-page">
     <header className="landing-nav">
       <a className="brand" href="./" aria-label="Sysadmin 2026 — главная"><span className="brand-mark"><FiCommand /></span><span>sysadmin<span className="brand-accent">.</span></span></a>
       <nav aria-label="Навигация главной страницы"><a href="#landing-tracks">Маршруты</a><a href={viewHref('resources')} data-route-link>Библиотека</a><a href={viewHref('labs')} data-route-link>Практика</a></nav>
-      <div className="landing-nav-actions"><button className="theme-toggle" type="button" onClick={onToggleTheme} aria-label={theme === 'dark' ? 'Включить светлую тему' : 'Включить тёмную тему'}>{theme === 'dark' ? <FiSun /> : <FiMoon />}</button><a className="button button-primary" href={viewHref('roadmap')} data-route-link>Начать путь <FiArrowRight /></a></div>
+      <div className="landing-nav-actions"><button className="theme-toggle search-toggle" type="button" aria-label="Поиск по курсу" aria-haspopup="dialog" onClick={onSearch}><FiSearch aria-hidden="true" /></button><button className="theme-toggle" type="button" onClick={onToggleTheme} aria-label={theme === 'dark' ? 'Включить светлую тему' : 'Включить тёмную тему'}>{theme === 'dark' ? <FiSun /> : <FiMoon />}</button><a className="button button-primary" href={viewHref('roadmap')} data-route-link>Начать путь <FiArrowRight /></a></div>
     </header>
 
     <main>

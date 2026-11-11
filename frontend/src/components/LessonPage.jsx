@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import { FiArrowLeft, FiArrowRight, FiBookOpen, FiCheckCircle, FiCopy, FiExternalLink, FiPlay } from 'react-icons/fi';
+import { useEffect, useRef } from 'react';
+import { FiArrowLeft, FiArrowRight, FiBookOpen, FiCheckCircle, FiExternalLink, FiPlay } from 'react-icons/fi';
 import { lessonDetails } from '../data/lessonDetails';
 import { lessonWalkthroughs } from '../data/lessonWalkthroughs';
 import { lessonResources, resourcesById } from '../data/resources';
@@ -7,21 +7,9 @@ import { lessonVideos } from '../data/lessonVideos';
 import { getTrackMeta } from '../data/tracks';
 import { lessonHref, sectionHref } from '../navigation';
 import Assessment from './Assessment';
+import CodeBlock from './CodeBlock';
 
 /* eslint-disable react/prop-types */
-function CodeBlock({ label, code }) {
-  const [status, setStatus] = useState('');
-  async function copy() {
-    try {
-      await navigator.clipboard.writeText(code);
-      setStatus('Скопировано');
-    } catch {
-      setStatus('Выделите код и скопируйте его вручную');
-    }
-  }
-  return <div className="lesson-code"><div className="lesson-code-heading"><span>{label}</span><button type="button" aria-label={`Копировать: ${label}`} onClick={copy}><FiCopy aria-hidden="true" /> Копировать</button></div><pre><code>{code}</code></pre><span role="status">{status}</span></div>;
-}
-
 function LessonVideo({ video }) {
   return <section className="lesson-section lesson-video-first" id="lesson-video" aria-labelledby="lesson-video-title">
     <span className="eyebrow">ВИДЕОУРОК · YOUTUBE</span><h2 id="lesson-video-title">Начните с видео по теме</h2>
