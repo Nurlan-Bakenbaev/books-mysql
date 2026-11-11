@@ -1,3 +1,4 @@
+import { accuracyResources, accuracyLessonResources } from './accuracyResources.js';
 import { trackResources, trackLessonResources } from './trackContent.js';
 
 // Ссылки ведут к открытым материалам авторов; объяснения уроков написаны самостоятельно.
@@ -239,7 +240,7 @@ const baseResources = [
   },
 ];
 
-export const resources = [...baseResources, ...trackResources];
+export const resources = [...baseResources, ...trackResources, ...accuracyResources];
 
 export const resourcesById = Object.fromEntries(resources.map((resource) => [resource.id, resource]));
 
@@ -416,4 +417,4 @@ const baseLessonResources = {
   ],
 };
 
-export const lessonResources = { ...baseLessonResources, ...trackLessonResources };
+export const lessonResources = Object.fromEntries(Object.entries({ ...baseLessonResources, ...trackLessonResources }).map(([id, references]) => [id, [...references, ...(accuracyLessonResources[id] || [])]]));

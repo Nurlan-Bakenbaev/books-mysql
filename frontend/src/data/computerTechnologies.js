@@ -35,7 +35,7 @@ const profiles = [
       'SMART и журналы дают ранние признаки, но не предсказывают каждый отказ. Контроль включает свободное место, latency, ошибки I/O, состояние массива, scrub и тест restore. Любая операция partition/format выполняется только на отдельном учебном виртуальном диске после проверки имени устройства.',
     ],
     commands: "lsblk -o NAME,MODEL,SIZE,TYPE,FSTYPE,MOUNTPOINTS\ndf -hT\nfindmnt\ncat /proc/mdstat 2>/dev/null || true",
-    exercise: "mkdir -p storage-lab\nprintf 'recoverable lab data' > storage-lab/source.txt\nsha256sum storage-lab/source.txt > storage-lab/source.sha256\ncp storage-lab/source.txt storage-lab/backup.txt\nsha256sum -c storage-lab/source.sha256\nrm -rf storage-lab",
+    exercise: "mkdir -p storage-lab\nprintf 'recoverable lab data' > storage-lab/source.txt\nsha256sum storage-lab/source.txt > storage-lab/source.sha256\ncp storage-lab/source.txt storage-lab/backup.txt\ncmp storage-lab/source.txt storage-lab/backup.txt\nsha256sum storage-lab/source.txt storage-lab/backup.txt\nrm -rf storage-lab",
     expected: 'Различены device, partition, filesystem и mount; создана и проверена копия тестового файла, затем учебный каталог удалён без операций над реальным разделом.',
     sources: ['ct-linux-docs', 'storage-docs', 'backup-docs'],
     question: ['Почему RAID не является резервной копией?', ['Он повторяет логические изменения и не даёт независимой истории', 'Он всегда медленнее', 'Он не виден ОС', 'Он работает только в облаке'], 0, 'Массив повышает доступность, но удаление или повреждение может затронуть все его члены.'],

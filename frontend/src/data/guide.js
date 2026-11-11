@@ -281,7 +281,7 @@ export const labs = [
       { title: 'Проверьте результат', text: 'Получите созданные объекты из Lab-Users и выполните тестовый вход одной учётной записью.' },
     ],
     expected: 'В Lab-Users созданы только строки CSV; имена уникальны, пароль требуется сменить при первом входе.',
-    verify: ['Количество объектов совпадает с CSV.', 'Повторный dry run выявляет существующие имена.', 'Секрет не записан в CSV, скрипт или журнал.'],
+    verify: ['Количество объектов совпадает с CSV.', 'Перед повторным запуском существующие SamAccountName отдельно проверены через Get-ADUser; -WhatIf сам по себе не гарантирует обнаружение серверных конфликтов.', 'Секрет не записан в CSV, скрипт или журнал.'],
     troubleshooting: ['Проверьте DN OU и права выполняющей учётной записи.', 'Валидируйте SamAccountName до изменений.', 'Обрабатывайте ошибку каждой строки отдельно и ведите журнал без паролей.'],
     rollback: ['Получите точный список созданных SamAccountName из CSV.', 'Удалите только эти объекты после ручной проверки пути.', 'Верните snapshot, если лаборатория использовала одноразовый DC.'],
     resources: [{ title: 'New-ADUser', url: 'https://learn.microsoft.com/powershell/module/activedirectory/new-aduser' }, { title: 'PowerShell WhatIf', url: 'https://learn.microsoft.com/powershell/scripting/learn/deep-dives/everything-about-shouldprocess' }],
