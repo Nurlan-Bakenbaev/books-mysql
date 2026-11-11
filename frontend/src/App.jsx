@@ -147,7 +147,7 @@ export default function App() {
     { id: 'azure-admin', title: 'AZ-104 · Azure Administrator', description: 'Идентификация, governance, storage, compute, networking, backup и monitor.', total: azureAdminCourse.topics.length, done: courseProgress(azureAdminCourse.topics).done, tone: 'blue' },
     { id: 'linux-security', title: linuxSecurityCourse.title, description: 'sudo, SSH, firewall, auditd, SELinux/AppArmor, hardening и восстановление.', total: linuxSecurityCourse.topics.length, done: courseProgress(linuxSecurityCourse.topics).done, tone: 'green' },
     { id: 'ethical-hacking', title: ethicalHackingCourse.title, description: 'Разрешённые лаборатории: recon, Nmap, web, privileges, detection и отчёт.', total: ethicalHackingCourse.topics.length, done: courseProgress(ethicalHackingCourse.topics).done, tone: 'orange' },
-    { id: 'security-plus', title: securityPlusCourse.title, description: 'Пять доменов SY0-701: теория, 10 безопасных лабораторий, тесты и открытые источники.', total: securityPlusCourse.topics.length, done: courseProgress(securityPlusCourse.topics).done, tone: 'magenta' },
+    { id: 'security-plus', title: securityPlusCourse.title, description: 'Введение и пять доменов SY0-701: 37 уроков с безопасными лабораториями, тестами и открытыми источниками.', total: securityPlusCourse.topics.length, done: courseProgress(securityPlusCourse.topics).done, tone: 'magenta' },
   ];
   const viewContent = {
     overview: <Dashboard percent={percent} done={done} total={allIds.length} nextTopic={nextTopic} lastCompleted={lastCompleted} tracks={tracks} phases={phases} />,
