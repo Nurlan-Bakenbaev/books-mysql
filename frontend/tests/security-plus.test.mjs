@@ -7,7 +7,7 @@ import { join } from 'node:path';
 import { lessons } from '../src/data/lessons.js';
 import { securityPlusExam, gradeSecurityPlus } from '../src/data/securityPlusExam.js';
 import { securityPlusDepth } from '../src/data/securityPlusDepth.js';
-import { securityPlusCourse, securityPlusLessons, securityPlusDetails, securityPlusWalkthroughs } from '../src/data/securityPlus.js';
+import { securityPlusCourse, securityPlusPhases, securityPlusLessons, securityPlusDetails, securityPlusWalkthroughs, securityPlusLessonResources, securityPlusDepthById } from '../src/data/securityPlus.js';
 
 test('original Security+ exam has exact domain coverage and valid unique options', () => {
   assert.equal(securityPlusExam.length, 30);
@@ -32,11 +32,12 @@ test('exam grading respects 24/30 boundary and missing or incorrect answers', ()
   assert.deepEqual(gradeSecurityPlus(answerCount(23)), { correct: 23, percent: 77, passed: false });
 });
 
-test('all ten Security+ lessons have distinct depth, terminology, diagnosis and runnable practice', () => {
-  assert.equal(securityPlusDepth.length, 10);
-  assert.equal(securityPlusCourse.topics.length, 10);
-  for (const [i, topic] of securityPlusCourse.topics.entries()) {
-    const depth = securityPlusDepth[i];
+test('all Security+ syllabus lessons have distinct depth, terminology, diagnosis and runnable practice', () => {
+  assert.equal(securityPlusDepth.length, 37);
+  assert.equal(securityPlusCourse.topics.length, 37);
+  assert.deepEqual(securityPlusPhases.map((phase) => phase.topics.length), [1, 7, 7, 7, 10, 5]);
+  for (const topic of securityPlusCourse.topics) {
+    const depth = securityPlusDepthById[topic.id];
     assert.equal(securityPlusDetails[topic.id].caseStudy.situation, depth.situation);
     assert.ok(depth.terms.length >= 4);
     assert.ok(depth.theory.length >= 3 && depth.theory.every((p) => p.length > 200));
@@ -47,6 +48,26 @@ test('all ten Security+ lessons have distinct depth, terminology, diagnosis and 
       const output = execFileSync('bash', ['-e', '-c', depth.lab], { cwd, encoding: 'utf8', timeout: 10000 });
       assert.ok(output.trim().length > 0, topic.id);
     } finally { rmSync(cwd, { recursive: true, force: true }); }
+  }
+});
+
+test('Security+ lessons cover the supplied SY0-701 syllabus and link Professor Messer course', () => {
+  const content = securityPlusCourse.topics.map((topic) => {
+    const lesson = securityPlusLessons[topic.id];
+    const detail = securityPlusDetails[topic.id];
+    return [topic.title, topic.description, lesson.intro, ...lesson.sections.flatMap((section) => section.paragraphs), ...detail.deepDive].join(' ');
+  }).join(' ').toLocaleLowerCase();
+  for (const term of [
+    'cia', 'aaa', 'изменениями', 'deception', 'disruption', 'pki', 'hsm', 'tpm', 'secure enclave',
+    'watering-hole', 'malware', 'account lockouts', 'impossible travel', 'resource consumption',
+    'serverless', 'микросервисы', 'data lifecycle', 'носителей', 'secure baseline', 'asset',
+    'nvd', 'ids', 'ips', 'mdm', 'sso', 'federation', 'soar', 'forensics', 'sla',
+    'risk appetite', 'tolerance', 'compliance', 'audit', 'awareness', 'phishing', 'gdpr', 'hipaa',
+  ]) assert.ok(content.includes(term), `Missing syllabus term: ${term}`);
+  for (const topic of securityPlusCourse.topics) {
+    assert.ok(securityPlusDetails[topic.id].practiceTasks.length >= 3, topic.id);
+    assert.ok(securityPlusDetails[topic.id].deepDive.length >= 6, topic.id);
+    assert.ok(securityPlusLessonResources[topic.id].some((source) => source.sourceId === 'sp-messer'), topic.id);
   }
 });
 

@@ -37,7 +37,7 @@ test('every roadmap step has a unique, complete lesson and practical outcome', (
   assert.equal(windowsSecurityCourse.topics.length, 9);
   assert.equal(linuxSecurityCourse.topics.length, 9);
   assert.equal(ethicalHackingCourse.topics.length, 10);
-  assert.equal(securityPlusCourse.topics.length, 10);
+  assert.equal(securityPlusCourse.topics.length, 37);
   assert.equal(computerTechnologiesCourse.topics.length, 8);
 
   for (const topic of topics) {
@@ -75,7 +75,8 @@ test('every lesson has at least two specific, resolvable learning resources', ()
 
 test('every lesson has substantial original detail, a diagram, a quiz, and a sourced video', () => {
   assert.deepEqual(Object.keys(lessonDetails).sort(), [...topicIds].sort());
-  assert.deepEqual(topicIds.filter((id) => !lessonVideos[id]), []);
+  const noCuratedVideo = new Set(['secplus-exam-orientation']);
+  assert.deepEqual(topicIds.filter((id) => !lessonVideos[id]), [...noCuratedVideo]);
   for (const topic of topics) {
     const detail = lessonDetails[topic.id];
     assert.ok(detail.goals.length >= 3 && detail.goals.every(Boolean), topic.id);
@@ -84,6 +85,11 @@ test('every lesson has substantial original detail, a diagram, a quiz, and a sou
     assert.ok(detail.diagram.length >= 3 && detail.diagram.every(Boolean), topic.id);
     assertQuestion(detail.question, topic.id);
     const video = lessonVideos[topic.id];
+    if (!video) {
+      assert.ok(noCuratedVideo.has(topic.id), topic.id);
+      assert.ok(lessonResources[topic.id].some((reference) => reference.sourceId === 'sp-messer'), topic.id);
+      continue;
+    }
     assert.match(video.id, /^[A-Za-z0-9_-]{11}$/, topic.id);
     assert.ok(video.title && video.sourceName, topic.id);
     assert.equal(video.maxDurationMinutes, 15, `${topic.id}: video duration policy`);
@@ -183,9 +189,9 @@ test('existing topic identifiers remain available for saved progress', () => {
 test('Security+ follows all five SY0-701 domains and publishes a lab for every lesson', () => {
   assert.equal(securityPlusCourse.examCode, 'SY0-701');
   assert.equal(securityPlusCourse.unofficial, true);
-  assert.equal(securityPlusPhases.length, 5);
+  assert.equal(securityPlusPhases.length, 6);
   assert.equal(securityPlusPhases.reduce((total, phase) => total + phase.weight, 0), 100);
-  assert.deepEqual(securityPlusPhases.map((phase) => phase.weight), [12, 22, 18, 28, 20]);
+  assert.deepEqual(securityPlusPhases.map((phase) => phase.weight), [0, 12, 22, 18, 28, 20]);
   for (const topic of securityPlusCourse.topics) {
     assert.ok(lessons[topic.id].lab.steps.length >= 6, topic.id);
     assert.ok(lessons[topic.id].lab.extraCommands.length >= 1, topic.id);

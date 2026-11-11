@@ -2,6 +2,12 @@
 
 Baseline: `cc41fef7446004ca6ca3126ff9eb6d3b2294c2e0` (remote main checked before editing).
 
+## Curriculum expansion · 2026-11-11
+
+The course now contains 37 original lessons across an exam-orientation section and all five SY0-701 domains, following the topic outline supplied by the site owner. Each lesson has a local lab, practice, review material, and a link to the Professor Messer course page plus a topic-specific YouTube search. Direct per-video URLs were not independently verified because the Professor Messer site and YouTube were blocked from this environment; the lessons are original study material, not video transcripts. Current project totals are 134 lessons and 142 sources.
+
+After the expansion, `npm test` passes (36 tests), as do `npm run lint`, `npm run typecheck`, `npm run build`, and the content validator. These checks do not claim a browser-by-browser audit of all 27 new lesson pages.
+
 ## Navbar follow-up
 
 Cursor-following illumination has been removed at the user’s request. The landing navbar now spans the viewport, and the workspace topbar spans the full content area beside the sidebar. Chromium checks pass at 320, 390, 768, 1440 and 1920 px: header edges match the available width, sidebar matches viewport height, mobile menu opens/closes, no horizontal overflow or browser runtime errors. The four project checks below were rerun successfully after this change. The cursor-specific observations below describe the earlier implementation only.
@@ -10,7 +16,7 @@ Cursor-following illumination has been removed at the user’s request. The land
 
 In `frontend`: `npm test` (20 passed), `npm run lint`, `npm run typecheck`, `npm run build` all pass. Node 24.22.1 / npm 11.9.0 were used locally; Pages CI uses Node 22. Build reports advisory warnings for the existing large bundle and outdated Browserslist data. Lockfiles are unchanged.
 
-The regression fixture records all 107 lesson IDs from the baseline. Tests preserve those IDs, verify ten topic-specific runnable Security+ examples, and check the final exam's 30 unique questions, four unique options, answer indices, domain counts 4/7/5/8/6, and the 24/30 passing boundary.
+The regression fixture records the original 107 lesson IDs from the baseline. Tests preserve those IDs, verify 37 runnable Security+ examples, confirm the expanded syllabus topics and per-lesson source links, and check the final exam's 30 unique questions, four unique options, answer indices, domain counts 4/7/5/8/6, and the 24/30 passing boundary.
 
 Headless Chromium functional validation: submit a 24/30 attempt (80%, six errors); review all explanations; retry with cleared selections; answers hidden before submit; incomplete attempt blocked. Saved progress includes old roadmap, Security+ and computer-technology IDs plus an unknown future ID, and survives navigation/reload. Existing completion state remains visible. No browser runtime errors. Landing, course, roadmap and lesson routes have no horizontal overflow at 320, 390, 768 and 1440 px. Cursor layer ignores pointer events, appears for a precise mouse, and is hidden on touch/mobile and with reduced motion.
 

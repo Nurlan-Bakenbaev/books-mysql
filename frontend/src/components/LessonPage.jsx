@@ -11,19 +11,20 @@ import Assessment from './Assessment';
 import CodeBlock from './CodeBlock';
 
 /* eslint-disable react/prop-types */
-function LessonVideo({ video: englishVideo, russianVideo }) {
+function LessonVideo({ video: englishVideo, russianVideo, professorMesserResource, topicTitle }) {
   // Deliberately not persisted: every lesson opening/reload starts in English.
   const [language, setLanguage] = useState('en');
   const video = language === 'en' ? englishVideo : russianVideo;
   const urls = video ? videoUrls(video) : null;
   return <section className="lesson-section lesson-video-first" id="lesson-video" aria-labelledby="lesson-video-title">
     <span className="eyebrow">ВИДЕОУРОК · YOUTUBE</span><h2 id="lesson-video-title">Начните с видео по теме</h2>
-    <div className="video-language-switch" role="group" aria-label="Язык видео">{[['en', 'English'], ['ru', 'Русский']].map(([id, label]) => <button type="button" className="button" key={id} aria-pressed={language === id} onClick={() => setLanguage(id)}>{label}</button>)}</div>
-    <p className="video-language-note">По умолчанию — English. Русский материал — отдельное объяснение или курс по теме.</p>
+    {(englishVideo || russianVideo) && <div className="video-language-switch" role="group" aria-label="Язык видео">{[['en', 'English'], ['ru', 'Русский']].map(([id, label]) => <button type="button" className="button" key={id} aria-pressed={language === id} onClick={() => setLanguage(id)}>{label}</button>)}</div>}
+    {(englishVideo || russianVideo) && <p className="video-language-note">По умолчанию — English. Русский материал — отдельное объяснение или курс по теме.</p>}
+    {professorMesserResource && <p className="video-language-note"><a href={professorMesserResource.url} target="_blank" rel="noreferrer">Видеокурс Professor Messer · SY0-701 <FiExternalLink aria-hidden="true" /></a>{' · '}<a href={`https://www.youtube.com/results?search_query=${encodeURIComponent(`Professor Messer SY0-701 ${topicTitle}`)}`} target="_blank" rel="noreferrer">Найти видео по теме «{topicTitle}» <FiExternalLink aria-hidden="true" /></a></p>}
     {video ? <div className="curated-video" key={language}><div className="video-card-heading"><strong>{video.title}</strong><span>{language === 'en' ? 'English' : 'Русский'} · {video.playlistId ? 'Видеокурс' : video.duration || 'Видео'}</span></div>{video.focus && <p>{video.focus}</p>}<p><a href={video.source} target="_blank" rel="noreferrer">Источник: {video.sourceName} <FiExternalLink aria-hidden="true" /></a></p>
       <div className="video-frame"><iframe title={`Видео (${language === 'en' ? 'English' : 'Русский'}): ${video.title}`} src={urls.embed} loading="eager" referrerPolicy="strict-origin-when-cross-origin" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen /></div>
       <div className="video-actions"><a className="button" href={urls.watch} target="_blank" rel="noreferrer"><FiPlay aria-hidden="true" /> {video.playlistId ? 'Открыть курс на YouTube' : 'Открыть на YouTube'} <FiExternalLink aria-hidden="true" /></a></div>
-    </div> : <p className="video-unavailable" role="status">Русское видео для этого урока пока не подобрано. Доступны английское видео, русскоязычный текст урока и учебные материалы ниже.</p>}
+    </div> : <p className="video-unavailable" role="status">{englishVideo || russianVideo ? 'Видео на выбранном языке для этого урока пока не подобрано. Доступны текст урока и учебные материалы ниже.' : 'Отдельное встроенное видео для этого урока не подобрано. Откройте видеокурс выше и найдите соответствующую тему.'}</p>}
   </section>;
 }
 
@@ -87,7 +88,7 @@ export default function LessonPage({ topic, lesson, isComplete, onToggle, track,
       <nav className="lesson-jump" aria-label="Разделы урока"><a href="#lesson-video"><FiPlay aria-hidden="true" /> Видео</a><a href="#lesson-theory">Теория</a><a href="#lesson-practice">Практика</a><a href="#lesson-check">Тест</a><a className="lesson-material-link" href="#lesson-sources"><FiBookOpen aria-hidden="true" /> Учебные материалы · {lessonResources[topic.id].length}</a></nav>
     </header>
     <div className="lesson-page-content">
-      <LessonVideo key={topic.id} video={video} russianVideo={russianLessonVideos[topic.id]} />
+      <LessonVideo key={topic.id} video={video} russianVideo={russianLessonVideos[topic.id]} professorMesserResource={track === 'security-plus' ? resourcesById['sp-messer'] : null} topicTitle={topic.title} />
       <section className="lesson-section" id="lesson-goals"><span className="eyebrow">ЦЕЛИ УРОКА</span><h2>После урока вы сможете</h2><ul className="lesson-goals">{detail.goals.map((goal) => <li key={goal}>{goal}</li>)}</ul></section>
       <section className="lesson-section" id="lesson-theory"><span className="eyebrow">ТЕОРИЯ ПО ШАГАМ</span><h2>Разбираемся в теме</h2>{lesson.sections.map((section) => <div className="theory-part" key={section.title}><h3>{section.title}</h3>{section.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div>)}<div className="theory-part"><h3>Подробный разбор</h3>{detail.deepDive.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div></section>
       <figure className="lesson-diagram"><figcaption><strong>Схема процесса</strong></figcaption><ol>{detail.diagram.map((step, index) => <li key={`${step}-${index}`}><span>{step}</span>{index < detail.diagram.length - 1 && <FiArrowRight aria-hidden="true" />}</li>)}</ol></figure>

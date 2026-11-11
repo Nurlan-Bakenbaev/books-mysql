@@ -6,7 +6,7 @@ import { curriculumSchema, questionSchema } from '../src/lib/contentSchema.js';
 import { highlightCode } from '../src/lib/highlight.js';
 
 test('course search covers every published lesson and finds misspellings across content kinds', () => {
-  assert.equal(courseSearchItems.filter((item) => item.kind === 'Урок').length, 107);
+  assert.equal(courseSearchItems.filter((item) => item.kind === 'Урок').length, 134);
   assert.ok(searchCourse('криптогрфия').some((item) => item.id === 'lesson:secplus-crypto-pki'));
   assert.ok(searchCourse('USB').some((item) => item.id === 'lesson:ct-interfaces-peripherals'));
   assert.ok(searchCourse('MFA').some((item) => item.kind === 'Термин'));

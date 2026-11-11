@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { allTopics } from '../src/data/catalog.js';
 import { lessonVideos } from '../src/data/lessonVideos.js';
+import { securityPlusLessonResources } from '../src/data/securityPlus.js';
 import { russianLessonVideos, videoUrls } from '../src/data/russianLessonVideos.js';
 import { russianVideoSchema, russianVideosSchema } from '../src/lib/videoSchema.js';
 
@@ -14,7 +15,11 @@ test('Russian alternatives have explicit lesson associations and sourced media I
     assert.ok(media.focus, `${id}: explain the alternative's scope`);
     assert.notEqual(videoUrls(media).embed, videoUrls(lessonVideos[id]).embed, id);
   }
-  for (const topic of allTopics) assert.ok(lessonVideos[topic.id], topic.id);
+  for (const topic of allTopics) {
+    if (lessonVideos[topic.id]) continue;
+    assert.equal(topic.id, 'secplus-exam-orientation');
+    assert.ok(securityPlusLessonResources[topic.id].some((resource) => resource.sourceId === 'sp-messer'));
+  }
 });
 
 test('media URLs distinguish individual videos from playlists without autoplay', () => {
