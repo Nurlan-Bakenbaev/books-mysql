@@ -4,13 +4,13 @@ import { readFileSync } from 'node:fs';
 import { topicById } from '../src/data/catalog.js';
 import { lessons } from '../src/data/lessons.js';
 import { routeFromLocation } from '../src/navigation.js';
-import { sysadminRoadmapSource, sysadminRoadmapNodes, sysadminRoadmapLevels } from '../src/data/sysadminRoadmap.js';
+import { sysadminRoadmapSource, sysadminRoadmapNodes, sysadminRoadmapLevels, sysadminRoadmapStageSources } from '../src/data/sysadminRoadmap.js';
 
 const documentSource = readFileSync(new URL('../../docs/sysadmin-roadmap-2026.mmd', import.meta.url), 'utf8');
 
 test('published Mermaid source exactly matches the reusable roadmap document', () => {
   assert.equal(sysadminRoadmapSource, documentSource);
-  assert.match(sysadminRoadmapSource, /^flowchart TD\b/m);
+  assert.match(sysadminRoadmapSource, /^flowchart (?:TD|LR)\b/m);
   assert.doesNotMatch(sysadminRoadmapSource, /```/);
 });
 
@@ -64,5 +64,19 @@ test('the roadmap covers the requested technologies and career outcomes', () => 
   ];
   for (const keyword of required) {
     assert.ok(sysadminRoadmapSource.includes(keyword), `Missing requested topic: ${keyword}`);
+  }
+});
+
+
+test('each level has a compact diagram with exactly its own nodes and links', () => {
+  for (const level of sysadminRoadmapLevels) {
+    const source = sysadminRoadmapStageSources[level.id];
+    const expectedNodes = sysadminRoadmapNodes.filter((node) => node.level === level.id);
+    const declaredIds = [...source.matchAll(/^\s*(\w+)\s*\["/gm)].map((match) => match[1]);
+    const clickIds = [...source.matchAll(/^\s*click\s+(\w+)\s+href/gm)].map((match) => match[1]);
+    assert.deepEqual(declaredIds.sort(), expectedNodes.map((node) => node.id).sort());
+    assert.deepEqual(clickIds.sort(), expectedNodes.map((node) => node.id).sort());
+    assert.ok(level.description && level.outcome && level.shortTitle, `Level ${level.id}: learning context`);
+    assert.match(source, /^flowchart TD\b/m);
   }
 });

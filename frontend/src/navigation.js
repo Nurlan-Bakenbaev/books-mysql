@@ -39,6 +39,9 @@ export function viewHref(view) {
 }
 
 const hashToView = {
+  '#network-engineer': 'network-engineer',
+  '#career-map': 'career-map',
+  '#landing-map': 'career-map',
   '#overview': 'overview',
   '#roadmap': 'roadmap',
   '#windows-security': 'windows-security',

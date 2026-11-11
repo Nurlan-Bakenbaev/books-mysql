@@ -22,6 +22,15 @@ export const russianVideoLibrary = {
 // Explicit lesson associations keep broad courses from becoming silent fallbacks
 // for unrelated Windows/Azure/product-specific topics.
 export const russianLessonVideos = {
+  'ne-foundations': { ...russianVideoLibrary.networks, focus: 'Вводные занятия по компьютерным сетям и моделям OSI/TCP/IP.' },
+  'ne-media-ethernet': { ...russianVideoLibrary.networks, focus: 'Общий курс по сетям дополняет тему Ethernet. Параметры оптики и кабеля сверяйте с источниками урока.' },
+  'ne-ipv4-subnetting': { ...russianVideoLibrary.networks, focus: 'Выберите разделы IPv4, адресации и подсетей; затем проверьте расчёты в лаборатории.' },
+  'ne-services-dns-dhcp-ntp': { ...russianVideoLibrary.networks, focus: 'Базовые сетевые службы. Детали NTP дополнительно разобраны в тексте и RFC урока.' },
+  'ne-transport-applications': { ...russianVideoLibrary.tls, focus: 'Материал о защищённых протоколах дополняет часть урока про TLS/HTTPS; это отдельный видеокурс.' },
+  'ne-linux-packet-analysis': { ...russianVideoLibrary.networkPractice, focus: 'Практические занятия по сетям дополняют анализ пакетов; фильтры Wireshark сверяйте с руководством урока.' },
+  'ne-monitoring-telemetry': { ...russianVideoLibrary.prometheus, focus: 'Введение в метрики Prometheus; SNMP и потоковая телеметрия дополнительно разбираются в тексте.' },
+  'ne-cloud-sdn': { ...russianVideoLibrary.aws, focus: 'Облачные основы на примере AWS. Это общий курс, а не полный разбор SDN, VNet или гибридной сети.' },
+  'ne-automation': { ...russianVideoLibrary.ansible, focus: 'Основы Ansible дополняют автоматизацию. NETCONF, RESTCONF и другие API разобраны в тексте урока.' },
   'network-models': { ...russianVideoLibrary.networks, focus: 'В курсе выберите разбор моделей OSI и TCP/IP.' },
   'ip-addressing': { ...russianVideoLibrary.networks, focus: 'В курсе выберите IP-адресацию и подсети.' },
   'routing-vlan': { ...russianVideoLibrary.networks, focus: 'Дополнительный курс по сетям; найдите разделы коммутации и маршрутизации.' },

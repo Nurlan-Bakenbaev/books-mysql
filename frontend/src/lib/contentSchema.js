@@ -16,6 +16,7 @@ const sourceSchema = z.object({
 const labSchema = z.object({
   steps: z.array(text).min(1), commands: z.string(), expected: text, pitfalls: z.array(text).min(1),
   extraCommands: z.array(z.object({ label: text, commands: text })).optional(),
+  prerequisites: z.array(text).min(1).optional(), troubleshooting: z.array(text).min(1).optional(), cleanup: z.array(text).min(1).optional(), limitations: text.optional(),
 });
 const lessonSchema = z.object({
   intro: text, sections: z.array(z.object({ title: text, paragraphs: z.array(text).min(1) })).min(1), lab: labSchema,

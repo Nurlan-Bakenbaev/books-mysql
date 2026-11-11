@@ -1,4 +1,5 @@
-// Единая точка подключения материалов отдельных учебных треков (пока — AZ-104).
+import { networkEngineerLessons, networkEngineerDetails, networkEngineerWalkthroughs, networkEngineerResources, networkEngineerLessonResources } from './networkEngineer.js';
+// Единая точка подключения материалов отдельных учебных треков.
 // Базовые агрегаторы (lessons.js, lessonDetails.js, lessonWalkthroughs.js, resources.js) берут данные отсюда,
 // поэтому для нового трека достаточно добавить его модули в этот файл.
 import { azureLessonsA } from './azureAdminLessonsA.js';
@@ -34,8 +35,8 @@ import {
   computerTechnologiesWalkthroughs,
 } from './computerTechnologies.js';
 
-export const trackLessons = { ...azureLessonsA, ...azureCompletionLessons, ...securityTrackLessons, ...securityPlusLessons, ...computerTechnologiesLessons };
-export const trackDetails = { ...azureDetailsA1, ...azureDetailsA2, ...azureCompletionDetails, ...securityTrackDetails, ...securityPlusDetails, ...computerTechnologiesDetails };
-export const trackWalkthroughs = { ...azureWalkthroughsA1, ...azureWalkthroughsA2, ...azureCompletionWalkthroughs, ...securityTrackWalkthroughs, ...securityPlusWalkthroughs, ...computerTechnologiesWalkthroughs };
-export const trackResources = [...azureResourcesA, ...azureResourcesB, ...securityTrackResources, ...securityPlusResources, ...computerTechnologiesResources];
-export const trackLessonResources = { ...azureLessonResourcesA, ...azureLessonResourcesB, ...azureCompletionLessonResources, ...securityTrackLessonResources, ...securityPlusLessonResources, ...computerTechnologiesLessonResources };
+export const trackLessons = { ...azureLessonsA, ...azureCompletionLessons, ...securityTrackLessons, ...securityPlusLessons, ...computerTechnologiesLessons, ...networkEngineerLessons };
+export const trackDetails = { ...azureDetailsA1, ...azureDetailsA2, ...azureCompletionDetails, ...securityTrackDetails, ...securityPlusDetails, ...computerTechnologiesDetails, ...networkEngineerDetails };
+export const trackWalkthroughs = { ...azureWalkthroughsA1, ...azureWalkthroughsA2, ...azureCompletionWalkthroughs, ...securityTrackWalkthroughs, ...securityPlusWalkthroughs, ...computerTechnologiesWalkthroughs, ...networkEngineerWalkthroughs };
+export const trackResources = [...azureResourcesA, ...azureResourcesB, ...securityTrackResources, ...securityPlusResources, ...computerTechnologiesResources, ...networkEngineerResources];
+export const trackLessonResources = { ...azureLessonResourcesA, ...azureLessonResourcesB, ...azureCompletionLessonResources, ...securityTrackLessonResources, ...securityPlusLessonResources, ...computerTechnologiesLessonResources, ...networkEngineerLessonResources };

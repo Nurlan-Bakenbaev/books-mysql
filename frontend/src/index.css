@@ -1247,3 +1247,19 @@ input[type='checkbox'] { width: 19px; height: 19px; flex: none; margin: 3px 0 0;
   .roadmap-viewport { height: 540px; }
   .roadmap-level-list { grid-template-columns: 1fr; padding: 0 18px 18px; }
 }
+
+.network-route-source, .network-certifications { margin-block: 28px; padding: 24px; border: 1px solid var(--border); border-radius: 18px; background: var(--surface); }
+.network-route-source p, .network-certifications > p, .network-certification-card p { color: var(--muted); line-height: 1.75; }
+.network-route-source a, .network-certification-card a { color: var(--accent); text-decoration: underline; text-underline-offset: 4px; }
+.network-certification-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 24px; }
+.network-certification-card { min-width: 0; padding: 22px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface-soft); }
+.network-certification-card:hover { border-color: var(--accent); box-shadow: 0 0 20px var(--accent-soft); }
+.network-certification-card h3 { margin: 12px 0; }
+@media (max-width: 680px) { .network-certification-grid { grid-template-columns: 1fr; } .network-route-source, .network-certifications { padding: 18px; } }
+
+.landing-brand-group { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.landing-brand-group .navigation-toggle { flex: none; }
+.landing-nav > .landing-menu { position: absolute; top: calc(100% + 8px); left: 24px; display: grid; align-items: stretch; justify-content: stretch; width: min(340px, calc(100vw - 48px)); padding: 10px; gap: 4px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); box-shadow: var(--shadow); font-size: 14px; z-index: 30; }
+.landing-menu a { display: block; padding: 12px 14px; border: 1px solid transparent; border-radius: 9px; color: var(--text); }
+.landing-menu a:hover, .landing-menu a:focus-visible { color: var(--accent); background: var(--accent-soft); border-color: var(--border); }
+@media (max-width: 680px) { .landing-nav { flex-wrap: nowrap; gap: 10px; } .landing-brand-group { gap: 9px; } .landing-brand-group .brand-mark { display: none; } .landing-brand-group .brand { gap: 0; } .landing-nav > .landing-menu { left: 15px; width: calc(100vw - 30px); } }

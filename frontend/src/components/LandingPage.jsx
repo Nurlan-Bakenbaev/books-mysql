@@ -1,11 +1,12 @@
+import { useEffect, useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
-import { FiActivity, FiArrowRight, FiAward, FiBookOpen, FiCloud, FiCommand, FiCpu, FiMoon, FiPlay, FiSearch, FiShield, FiSun, FiTerminal } from 'react-icons/fi';
-import InteractiveRoadmap from './InteractiveRoadmap';
+import { FiActivity, FiArrowRight, FiAward, FiBookOpen, FiCloud, FiCommand, FiCpu, FiMoon, FiMenu, FiX, FiPlay, FiSearch, FiShare2, FiShield, FiSun, FiTerminal } from 'react-icons/fi';
 import { viewHref } from '../navigation';
 
 
 
 const iconByTrack = {
+  'network-engineer': FiShare2,
   roadmap: FiActivity,
   'windows-security': FiShield,
   'azure-admin': FiCloud,
@@ -18,18 +19,30 @@ const iconByTrack = {
 /* eslint-disable react/prop-types */
 export default function LandingPage({ tracks, totalCount, nextLesson, theme, onToggleTheme, onSearch }) {
   const reduceMotion = useReducedMotion();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const headerRef = useRef(null);
+  const menuButton = useRef(null);
+  useEffect(() => {
+    if (!menuOpen) return undefined;
+    const closeOutside = (event) => { if (!headerRef.current?.contains(event.target)) setMenuOpen(false); };
+    const closeEscape = (event) => { if (event.key === 'Escape') { setMenuOpen(false); menuButton.current?.focus(); } };
+    document.addEventListener('pointerdown', closeOutside);
+    document.addEventListener('keydown', closeEscape);
+    return () => { document.removeEventListener('pointerdown', closeOutside); document.removeEventListener('keydown', closeEscape); };
+  }, [menuOpen]);
 
   return <div className="landing-page">
-    <header className="landing-nav">
-      <a className="brand" href="./" aria-label="Sysadmin 2026 — главная"><span className="brand-mark"><FiCommand /></span><span>sysadmin<span className="brand-accent">.</span></span></a>
-      <nav aria-label="Навигация главной страницы"><a href="#landing-map">Карта</a><a href="#landing-tracks">Маршруты</a><a href={viewHref('resources')} data-route-link>Библиотека</a><a href={viewHref('labs')} data-route-link>Практика</a></nav>
+    <header className="landing-nav" ref={headerRef}>
+      <div className="landing-brand-group"><button ref={menuButton} className="navigation-toggle button-icon" type="button" aria-label={menuOpen ? 'Закрыть меню главной страницы' : 'Открыть меню главной страницы'} aria-expanded={menuOpen} aria-controls="landing-navigation" onClick={() => setMenuOpen((value) => !value)}>{menuOpen ? <FiX aria-hidden="true" /> : <FiMenu aria-hidden="true" />}</button>
+      <a className="brand" href="./" aria-label="Sysadmin 2026 — главная"><span className="brand-mark"><FiCommand /></span><span>sysadmin<span className="brand-accent">.</span></span></a></div>
+      {menuOpen && <nav className="landing-menu" id="landing-navigation" aria-label="Навигация главной страницы" onClick={() => setMenuOpen(false)}><a href={viewHref('career-map')} data-route-link>Карта</a><a href={viewHref('network-engineer')} data-route-link>Network Engineer</a><a href="#landing-tracks">Все учебные направления</a><a href={viewHref('resources')} data-route-link>Библиотека</a><a href={viewHref('labs')} data-route-link>Практика</a><a href={viewHref('overview')} data-route-link>Обзор обучения</a></nav>}
       <div className="landing-nav-actions"><button className="theme-toggle search-toggle" type="button" aria-label="Поиск по курсу" aria-haspopup="dialog" onClick={onSearch}><FiSearch aria-hidden="true" /></button><button className="theme-toggle" type="button" onClick={onToggleTheme} aria-label={theme === 'dark' ? 'Включить светлую тему' : 'Включить тёмную тему'}>{theme === 'dark' ? <FiSun /> : <FiMoon />}</button><a className="button button-primary" href={viewHref('roadmap')} data-route-link>Начать путь <FiArrowRight /></a></div>
     </header>
 
     <main>
       <section className="landing-hero">
         <motion.div className="landing-hero-copy" initial={reduceMotion ? false : { opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .65 }}>
-          <span className="landing-badge"><span className="status-dot" /> {totalCount} ПОДРОБНЫХ УРОКОВ · ОБНОВЛЕНО 10.11.2026</span>
+          <span className="landing-badge"><span className="status-dot" /> {totalCount} ПОДРОБНЫХ УРОКОВ · ОБНОВЛЕНО 11.11.2026</span>
           <h1>Станьте системным<br />администратором <em>шаг за шагом.</em></h1>
           <p>Полноценная учебная платформа на русском: теория, схемы, команды с пояснениями, безопасные лаборатории, диагностика, тесты и проверенные первоисточники.</p>
           <div className="landing-hero-actions"><a className="button button-primary landing-primary" href={viewHref('roadmap')} data-route-link><FiPlay /> Открыть путь сисадмина</a>{nextLesson && <a className="landing-text-link" href={nextLesson.href} data-route-link>Продолжить: {nextLesson.title} <FiArrowRight /></a>}</div>
@@ -38,10 +51,8 @@ export default function LandingPage({ tracks, totalCount, nextLesson, theme, onT
 
       <section className="landing-proof" aria-label="Состав курса"><div><strong>{totalCount}</strong><span>отдельных уроков</span></div><div><strong>{tracks.length}</strong><span>учебных маршрутов</span></div><div><strong>100%</strong><span>уроков с практикой</span></div><div><strong>2+</strong><span>источника к уроку</span></div></section>
 
-      <InteractiveRoadmap />
-
       <section className="landing-tracks" id="landing-tracks" aria-labelledby="landing-tracks-title">
-        <div className="landing-section-heading"><span className="eyebrow">ВЫБЕРИТЕ НАПРАВЛЕНИЕ</span><h2 id="landing-tracks-title">Семь учебных направлений</h2></div>
+        <div className="landing-section-heading"><span className="eyebrow">ВЫБЕРИТЕ НАПРАВЛЕНИЕ</span><h2 id="landing-tracks-title">Выберите учебное направление</h2></div>
         <div className="landing-track-grid">{tracks.map((track, index) => {
           const Icon = iconByTrack[track.id] || FiBookOpen;
           const trackPercent = track.total ? Math.round(track.done / track.total * 100) : 0;

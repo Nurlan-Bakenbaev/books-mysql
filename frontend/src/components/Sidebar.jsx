@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
-import { FiActivity, FiArrowRight, FiAward, FiBook, FiBookOpen, FiChevronDown, FiCloud, FiCommand, FiGrid, FiLayers, FiShield, FiTerminal, FiTool, FiX } from 'react-icons/fi';
+import { FiActivity, FiArrowRight, FiAward, FiBook, FiBookOpen, FiChevronDown, FiCloud, FiCommand, FiGrid, FiLayers, FiMap, FiShare2, FiShield, FiTerminal, FiTool, FiX } from 'react-icons/fi';
 import { lessonHref, viewHref } from '../navigation';
 
 const GROUPS_KEY = 'sysadmin-path-2026-sidebar-groups';
 
 const courseItems = [
+  { id: 'network-engineer', label: 'Network Engineer', Icon: FiShare2 },
   { id: 'roadmap', label: 'Путь системного администратора', Icon: FiActivity },
   { id: 'computer-technologies', label: 'Компьютерные технологии', Icon: FiTool },
   { id: 'windows-security', label: 'Безопасность Windows', Icon: FiShield },
@@ -64,6 +65,7 @@ export default function Sidebar({ route, track, menuOpen, collapsed, onClose, pe
 
     <nav className="academy-nav" aria-label="Основная навигация">
       {itemLink({ id: 'overview', label: 'Обзор', Icon: FiGrid })}
+      {itemLink({ id: 'career-map', label: 'Карта', Icon: FiMap })}
       {itemLink({ id: 'roadmap', label: 'Мой учебный путь', Icon: FiActivity })}
 
       <div className={`academy-nav-group${coursesActive ? ' has-active' : ''}`}>

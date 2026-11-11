@@ -1,3 +1,5 @@
+import { networkEngineerVideos } from './networkEngineerVideos.js';
+
 const linuxVideo = (id, title, day) => ({
   id, title,
   source: `https://github.com/livialima/linuxupskillchallenge/blob/master/docs/${day}.md`,
@@ -107,6 +109,7 @@ const videos = {
 
 // Some videos cover a related foundational concept, not the entire lesson.
 export const lessonVideos = {
+  ...networkEngineerVideos,
   virtualization: videos.vm,
   'network-models': videos.tcp,
   'ip-addressing': videos.cidr,

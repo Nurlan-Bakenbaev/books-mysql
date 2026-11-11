@@ -1,3 +1,4 @@
+import { networkEngineerCourse } from './data/networkEngineer';
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { FiArrowRight, FiCheckCircle, FiChevronRight, FiMenu, FiMoon, FiSearch, FiSun, FiX } from 'react-icons/fi';
 import { phases, labs, certifications } from './data/guide';
@@ -19,6 +20,8 @@ import Sidebar from './components/Sidebar';
 import Dashboard from './components/Dashboard';
 import { CertificationsPage, LabsPage } from './components/UtilityPages';
 
+const InteractiveRoadmap = lazy(() => import('./components/InteractiveRoadmap'));
+const NetworkEngineerPage = lazy(() => import('./components/NetworkEngineerPage'));
 const CourseSearch = lazy(() => import('./components/CourseSearch'));
 const LessonPage = lazy(() => import('./components/LessonPage'));
 
@@ -26,6 +29,7 @@ const STORAGE_KEY = 'sysadmin-path-2026-progress';
 const THEME_KEY = 'sysadmin-path-2026-theme';
 const SIDEBAR_KEY = 'sysadmin-path-2026-sidebar-collapsed';
 const PAGE_TITLES = {
+  'career-map': 'Карта профессии 2026', 'network-engineer': 'Network Engineer',
   overview: 'Обзор обучения', roadmap: 'Путь системного администратора',
   'windows-security': 'Безопасность Windows', 'azure-admin': 'AZ-104',
   'linux-security': 'Безопасность Linux', 'ethical-hacking': 'Этичный хакинг',
@@ -36,6 +40,7 @@ const PAGE_TITLES = {
   glossary: 'Словарь IT-терминов', certifications: 'Сертификации',
 };
 const TRACK_COURSES = [
+  { id: 'network-engineer', topics: networkEngineerCourse.topics },
   { id: 'computer-technologies', topics: computerTechnologiesCourse.topics },
   { id: 'windows-security', topics: windowsSecurityCourse.topics },
   { id: 'azure-admin', topics: azureAdminCourse.topics },
@@ -141,6 +146,7 @@ export default function App() {
     event.preventDefault(); navigate(url.href);
   }
   const tracks = [
+    { id: 'network-engineer', title: networkEngineerCourse.title, description: 'Ethernet, IP, VLAN, OSPF/BGP, Wi-Fi, VPN, облачные сети, телеметрия и автоматизация.', total: networkEngineerCourse.topics.length, done: courseProgress(networkEngineerCourse.topics).done, tone: 'cyan' },
     { id: 'roadmap', title: 'Путь системного администратора', description: 'Фундамент, сети, Linux, Windows Server, облако, автоматизация и SecOps.', total: roadmapTopics.length, done: courseProgress(roadmapTopics).done, tone: 'cyan' },
     { id: 'computer-technologies', title: computerTechnologiesCourse.title, description: 'Устройство ПК и сервера, UEFI, диски, ОС, VM, сеть, драйверы и диагностика.', total: computerTechnologiesCourse.topics.length, done: courseProgress(computerTechnologiesCourse.topics).done, tone: 'slate' },
     { id: 'windows-security', title: windowsSecurityCourse.title, description: 'Учётные записи, Defender, firewall, обновления, BitLocker, SIEM и инциденты.', total: windowsSecurityCourse.topics.length, done: courseProgress(windowsSecurityCourse.topics).done, tone: 'violet' },
@@ -150,6 +156,8 @@ export default function App() {
     { id: 'security-plus', title: securityPlusCourse.title, description: 'Введение и пять доменов SY0-701: 37 уроков с безопасными лабораториями, тестами и открытыми источниками.', total: securityPlusCourse.topics.length, done: courseProgress(securityPlusCourse.topics).done, tone: 'magenta' },
   ];
   const viewContent = {
+    'career-map': <InteractiveRoadmap />,
+    'network-engineer': <NetworkEngineerPage completed={completed} onToggle={toggle} />,
     overview: <Dashboard percent={percent} done={done} total={allIds.length} nextTopic={nextTopic} lastCompleted={lastCompleted} tracks={tracks} phases={phases} />,
     roadmap: <Roadmap eyebrow="MASTER PLAN · СИСТЕМНЫЙ АДМИНИСТРАТОР 2026" title="Авторский учебный план системного администратора 2026" description="31 последовательный урок: лабораторная среда, сети и hardware, Linux, Windows Server, гибридное облако, автоматизация, наблюдаемость, безопасность и итоговое портфолио." startHint="Если вы начинаете с нуля, сначала пройдите курс «Компьютерные технологии». Затем двигайтесь по шести этапам подряд и не переходите дальше без проверяемого результата лаборатории." phases={phases} completed={completed} onToggle={toggle} />,
     'computer-technologies': <Roadmap id="computer-technologies" eyebrow="БАЗОВЫЙ КУРС · НАЧНИТЕ ДО АДМИНИСТРИРОВАНИЯ" title={computerTechnologiesCourse.title} description={computerTechnologiesCourse.description} startHint="Начните с read-only inventory собственной VM: связывайте hardware, firmware, driver, ОС, службу и пользовательский результат." phases={computerTechnologiesPhases} completed={completed} onToggle={toggle} />,

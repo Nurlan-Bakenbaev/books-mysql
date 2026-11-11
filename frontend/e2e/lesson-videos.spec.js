@@ -53,3 +53,13 @@ test('language controls work by keyboard and pass accessibility checks in both t
   }
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });
+
+
+test('an uncurated English video stays explicit and links to the Security+ course', async ({ page }) => {
+  await page.goto('/?lesson=secplus-exam-orientation');
+  const section = page.locator('#lesson-video');
+  await expect(section.locator('iframe')).toHaveCount(0);
+  await expect(section.getByRole('status')).toContainText('Отдельное встроенное видео для этого урока не подобрано');
+  await expect(section.getByRole('group', { name: 'Язык видео' })).toHaveCount(0);
+  await expect(section.getByRole('link', { name: 'Видеокурс Professor Messer · SY0-701', exact: true })).toHaveAttribute('href', /professormesser\.com/);
+});
