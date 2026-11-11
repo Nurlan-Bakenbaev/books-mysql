@@ -11,7 +11,6 @@ import { computerTechnologiesCourse, computerTechnologiesPhases } from './data/c
 import { currentRoute, lessonHref, sectionHref } from './navigation';
 import Roadmap from './components/Roadmap';
 import SecurityPlusExam from './components/SecurityPlusExam';
-import CursorGlow from './components/CursorGlow';
 import Glossary from './components/Glossary';
 import ResourceLibrary from './components/ResourceLibrary';
 import WindowsSecurityCourse from './components/WindowsSecurityCourse';
@@ -145,7 +144,6 @@ export default function App() {
   const topbar = <header className="topbar"><button ref={menuButtonRef} className="mobile-menu button-icon" type="button" onClick={() => setMenuOpen(!menuOpen)} aria-expanded={menuOpen} aria-label={menuOpen ? 'Закрыть меню' : 'Открыть меню'}>{menuOpen ? <FiX /> : <FiMenu />}</button><div className="topbar-breadcrumb"><span>Учебная платформа</span><FiChevronRight /><strong>{breadcrumb || 'Материал'}</strong></div><div className="topbar-actions"><span className="topbar-date"><span className="status-dot" /> ПЛАН НА 2026</span><button className="theme-toggle" type="button" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} aria-label={theme === 'dark' ? 'Включить светлую тему' : 'Включить тёмную тему'}>{theme === 'dark' ? <FiSun /> : <FiMoon />}</button><span className="avatar" aria-hidden="true">SA</span></div></header>;
 
   return <div className={`app-shell${route.type === 'landing' ? ' landing-shell' : ''}${sidebarCollapsed && route.type !== 'landing' ? ' sidebar-collapsed' : ''}`} data-theme={theme} onClick={followRouteLink}>
-    <CursorGlow />
     <a className="skip-link" href={route.type === 'landing' ? '#landing-tracks' : '#route-main'}>Перейти к содержимому</a>
     {route.type !== 'landing' && menuOpen && <button className="sidebar-overlay" type="button" aria-label="Закрыть меню" onClick={() => setMenuOpen(false)} />}
     {route.type !== 'landing' && <Sidebar route={route} track={track} menuOpen={menuOpen} collapsed={sidebarCollapsed} onClose={() => setMenuOpen(false)} onToggleCollapsed={() => setSidebarCollapsed((value) => !value)} percent={percent} completedCount={done} totalCount={allIds.length} nextTopic={nextTopic} />}

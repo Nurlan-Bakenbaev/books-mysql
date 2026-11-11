@@ -2,6 +2,10 @@
 
 Baseline: `cc41fef7446004ca6ca3126ff9eb6d3b2294c2e0` (remote main checked before editing).
 
+## Navbar follow-up
+
+Cursor-following illumination has been removed at the user’s request. The landing navbar now spans the viewport, and the workspace topbar spans the full content area beside the sidebar. Chromium checks pass at 320, 390, 768, 1440 and 1920 px: header edges match the available width, sidebar matches viewport height, mobile menu opens/closes, no horizontal overflow or browser runtime errors. The four project checks below were rerun successfully after this change. The cursor-specific observations below describe the earlier implementation only.
+
 ## Local checks
 
 In `frontend`: `npm test` (20 passed), `npm run lint`, `npm run typecheck`, `npm run build` all pass. Node 24.22.1 / npm 11.9.0 were used locally; Pages CI uses Node 22. Build reports advisory warnings for the existing large bundle and outdated Browserslist data. Lockfiles are unchanged.
