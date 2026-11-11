@@ -71,7 +71,11 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const syncRoute = () => { setRoute(currentRoute()); setMenuOpen(false); window.scrollTo({ top: 0, behavior: 'instant' }); };
+    const syncRoute = () => {
+      const next = currentRoute();
+      setRoute(next); setMenuOpen(false);
+      if (next.type !== 'landing' || !window.location.hash.startsWith('#landing-')) window.scrollTo({ top: 0, behavior: 'instant' });
+    };
     const onKeyDown = (event) => {
       if (event.key === 'Escape') setMenuOpen(false);
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k' && !document.querySelector('dialog[open]')) { event.preventDefault(); setSearchOpen(true); }
@@ -127,8 +131,12 @@ export default function App() {
   function followRouteLink(event) {
     if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || !(event.target instanceof Element)) return;
     const link = event.target.closest('a[data-route-link]');
-    if (!link || link.target || link.hasAttribute('download')) return;
-    const url = new URL(link.href);
+    if (!link || link.hasAttribute('download')) return;
+    const target = link.getAttribute('target');
+    if (target && target !== '_self') return;
+    const href = link.getAttribute('href') || link.getAttribute('xlink:href');
+    if (!href) return;
+    const url = new URL(href, window.location.href);
     if (url.origin !== window.location.origin || url.pathname !== window.location.pathname) return;
     event.preventDefault(); navigate(url.href);
   }

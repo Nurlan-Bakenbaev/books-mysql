@@ -561,6 +561,10 @@ input[type='checkbox'] { width: 19px; height: 19px; flex: none; margin: 3px 0 0;
 .lesson-video-first .video-frame { position: relative; width: 100%; aspect-ratio: 16 / 9; min-height: 420px; overflow: hidden; margin: 18px 0; border: 1px solid var(--border); border-radius: 14px; background: #07111a; box-shadow: 0 18px 48px rgba(3, 15, 26, .2); }
 .lesson-video-first .video-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 .video-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.video-language-switch { display: flex; flex-wrap: wrap; gap: 10px; }
+.video-language-switch [aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); color: var(--text); box-shadow: 0 0 14px var(--accent-soft); }
+.video-language-note { color: var(--muted); font-size: 13px; }
+.video-unavailable { padding: 20px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-soft); }
 .lesson-completion { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px; padding: 26px 0; }
 .lesson-completion > span { color: var(--muted); font-size: 14px; }
 .lesson-neighbors { display: flex; justify-content: space-between; gap: 18px; padding-top: 20px; border-top: 1px solid var(--border); }
@@ -1201,4 +1205,45 @@ input[type='checkbox'] { width: 19px; height: 19px; flex: none; margin: 3px 0 0;
   .topbar-actions .avatar { display: none; }
   .landing-nav { gap: 14px; }
   .course-search .modal-body, .course-search .modal-header { padding: 16px; }
+}
+
+.landing-roadmap { margin: 64px 0 88px; scroll-margin-top: 24px; }
+.landing-roadmap .landing-section-heading p { max-width: 780px; color: var(--muted); }
+.roadmap-panel { overflow: hidden; border: 1px solid var(--border); border-radius: 22px; background: var(--surface); box-shadow: var(--shadow); }
+.roadmap-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; padding: 16px 20px; border-bottom: 1px solid var(--border); }
+.roadmap-zoom { display: flex; align-items: center; gap: 10px; }
+.roadmap-zoom output { min-width: 50px; text-align: center; font: 600 12px 'JetBrains Mono', monospace; }
+.roadmap-toolbar .button { font-size: 13px; gap: 8px; }
+.roadmap-help, .roadmap-path-note { padding-inline: 20px; color: var(--muted); font-size: 13px; }
+.roadmap-viewport { position: relative; overflow: auto; height: 640px; max-height: 72dvh; padding: 16px; background-color: #0b1220; background-image: radial-gradient(#263447 1px, transparent 1px); background-size: 22px 22px; scrollbar-color: #61758d #0b1220; overscroll-behavior: contain; }
+.roadmap-viewport:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; }
+.roadmap-diagram { min-width: 0; margin-inline: auto; }
+.roadmap-diagram svg { display: block; }
+.roadmap-diagram a { cursor: pointer; }
+.roadmap-diagram a:hover { filter: brightness(1.17); }
+.roadmap-diagram a:focus-visible { outline: 3px solid #f8fafc; outline-offset: 4px; }
+.roadmap-loading { padding: 56px 20px; color: #e2e8f0; text-align: center; }
+.roadmap-copy-status { min-height: 1.5em; margin: 0; padding: 6px 20px; color: var(--muted); font-size: 12px; }
+.roadmap-path-note { margin-block: 16px 24px; padding: 0; }
+.roadmap-alternative, .roadmap-source { margin-top: 12px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); }
+.roadmap-alternative summary, .roadmap-source summary { padding: 15px 18px; cursor: pointer; font-weight: 700; }
+.roadmap-level-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; padding: 0 24px 24px; }
+.roadmap-level-list h3 { font-size: 16px; }
+.roadmap-level-list ul { padding-left: 20px; }
+.roadmap-level-list a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.roadmap-level-list p { margin: 4px 0 14px; font-size: 13px; color: var(--muted); }
+.roadmap-source pre { max-height: 420px; margin: 0; padding: 18px; overflow: auto; background: var(--code-bg); color: var(--code-text); font-size: 12px; }
+@media (max-width: 1050px) {
+  .landing-nav { flex-wrap: wrap; row-gap: 0; }
+  .landing-nav > nav { display: flex; order: 3; flex-basis: 100%; justify-content: center; padding-block: 14px; gap: 28px; }
+}
+@media (max-width: 680px) {
+  .landing-nav > nav { gap: 12px; justify-content: space-between; font-size: 12px; }
+  .landing-roadmap { margin-block: 48px 60px; }
+  .roadmap-toolbar { padding: 12px; gap: 10px; }
+  .roadmap-fit { flex: 1; }
+  .roadmap-toolbar > .button:last-child { width: 100%; justify-content: center; }
+  .roadmap-help { padding-inline: 12px; }
+  .roadmap-viewport { height: 540px; }
+  .roadmap-level-list { grid-template-columns: 1fr; padding: 0 18px 18px; }
 }
