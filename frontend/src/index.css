@@ -1167,3 +1167,21 @@ input[type='checkbox'] { width: 19px; height: 19px; flex: none; margin: 3px 0 0;
   .standalone-view .skill-sequence-step, .standalone-view .skill-sequence-step::after { animation: none; }
   .standalone-view .skill-sequence-step::after { transform: translateY(-50%) scaleX(1); }
 }
+
+/* Light is layered above the surface without changing text colours. */
+.cursor-glow { display: none; pointer-events: none; position: fixed; left: 0; top: 0; width: 0; height: 0; z-index: 100; opacity: 0; }
+.cursor-glow::before { content: ''; position: absolute; width: 420px; height: 420px; left: -210px; top: -210px; border-radius: 50%; background: radial-gradient(circle, rgba(57,224,208,.065), rgba(154,107,255,.045) 40%, rgba(245,113,193,.025) 58%, transparent 72%); }
+@media (hover: hover) and (pointer: fine) {
+  .app-shell :is(a, button, summary, .assessment-option, [role="button"]):hover { box-shadow: 0 0 14px rgba(70,218,209,.14), 0 0 26px rgba(167,113,237,.09), inset 0 0 12px rgba(244,127,196,.035); }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .cursor-glow { display: block; }
+  .app-shell :is(a, button, summary, .assessment-option) { transition: box-shadow .18s ease, border-color .18s ease; }
+}
+.security-exam { margin-top: 36px; scroll-margin-top: 30px; }
+.security-exam fieldset { min-width: 0; }
+.security-exam legend { font-weight: 600; line-height: 1.65; }
+.security-exam .assessment-option { align-items: start; }
+.security-exam .assessment-option input { margin-top: 6px; }
+.security-exam-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 20px; }
+.security-exam-result { padding: 20px; border: 1px solid var(--border); border-radius: 16px; margin: 20px 0; }

@@ -1,3 +1,5 @@
+import { securityPlusDepth } from './securityPlusDepth.js';
+
 // Неофициальный учебный маршрут по открытой структуре CompTIA Security+ SY0-701.
 // Материал написан для платформы; внешние источники используются для проверки терминов и практики.
 
@@ -164,11 +166,19 @@ const profiles = [
   },
 ];
 
+profiles.forEach((profile, index) => {
+  const depth = securityPlusDepth[index];
+  profile.depth = depth;
+  profile.theory.push(...depth.theory);
+  profile.sources = [...new Set([...profile.sources, 'sp-messer', ...depth.sources.map(([id]) => id)])];
+});
+
 const makeLesson = (profile) => ({
-  intro: `${profile.title} — самостоятельный урок неофициального маршрута CompTIA Security+ SY0-701. Он связывает экзаменационные понятия с задачами администратора, безопасной лабораторией, ожидаемым результатом, обнаружением и защитой. Перед регистрацией на экзамен проверьте действующий код и цели на сайте CompTIA.`,
+  intro: `${profile.title}. Авторский курс CompTIA Security+ · SY0-701: от модели угроз до проверяемого решения и практики.`,
   sections: [
     { title: 'Модель и основные понятия', paragraphs: profile.theory.slice(0, 2) },
-    { title: 'Применение в инфраструктуре', paragraphs: profile.theory.slice(2) },
+    { title: 'Применение в инфраструктуре', paragraphs: profile.theory.slice(2, 4) },
+    { title: 'Термины и границы понятий', paragraphs: profile.depth.terms },
     { title: 'Обнаружение и защита', paragraphs: [profile.detection, profile.defense] },
   ],
   lab: {
@@ -180,15 +190,16 @@ const makeLesson = (profile) => ({
       'Сопоставьте результат с защитной телеметрией: какой журнал, alert или контроль подтвердил действие. Запишите один факт, одно ограничение и одно исправление с владельцем.',
       'Проведите отрицательный retest, удалите временные файлы и повторите inventory. Убедитесь, что лаборатория не оставила ключи, правила, процессы, открытые порты или чувствительное evidence.',
     ],
-    commands: profile.inventory,
+    commands: `umask 077\n${profile.inventory}`,
     commandsLabel: 'БЕЗОПАСНАЯ ИНВЕНТАРИЗАЦИЯ · СОБСТВЕННЫЙ СТЕНД',
-    extraCommands: [{ label: 'УЧЕБНОЕ УПРАЖНЕНИЕ И ОЧИСТКА', commands: profile.exercise }],
-    expected: profile.expected,
+    extraCommands: [{ label: 'УЧЕБНОЕ УПРАЖНЕНИЕ И ОЧИСТКА', commands: profile.exercise }, { label: 'ПРЕДМЕТНЫЙ РАЗБОР · СИНТЕТИЧЕСКАЯ МОДЕЛЬ', commands: profile.depth.lab }],
+    expected: `${profile.expected} ${profile.depth.expected}`,
     pitfalls: [
       'Не запускайте команды автоматически: сначала прочитайте их и замените только учебные пути, адреса и имена. Внешняя доступность цели не означает разрешение.',
       'Не используйте реальные пароли, токены, private keys, клиентские данные или рабочие журналы. Для курса достаточно синтетических событий и вымышленных активов.',
       'Успешная команда не доказывает эффективность контроля. Проверьте ожидаемое пользовательское поведение, защитный сигнал и отрицательный сценарий.',
-      'Материал следует структуре SY0-701, но является неофициальным. Актуальный код экзамена, веса доменов и правила регистрации сверяйте у CompTIA.',
+      `Диагностика: ${profile.depth.troubleshooting}`,
+      `Очистка стенда: ${profile.depth.cleanup}`,
     ],
   },
 });
@@ -200,13 +211,13 @@ const makeDetail = (profile) => ({
     'Выполнить безопасную лабораторию на синтетических данных с проверкой и очисткой.',
     'Связать finding с конкретным исправлением, владельцем и повторным тестом.',
   ],
-  deepDive: [...profile.theory, profile.detection, profile.defense],
+  deepDive: [...profile.depth.theory, `План проверки: ${profile.depth.action}`, `Критерий результата: ${profile.depth.expected}`, `Самостоятельное продолжение: ${profile.depth.task} До выполнения запишите ожидаемое разрешённое и запрещённое поведение, затем сравните фактический результат и объясните ограничения модели.`],
   caseStudy: {
-    situation: `В учебной организации нужно проверить тему «${profile.title}», не создавая риск для рабочей инфраструктуры и не подменяя понимание списком терминов.`,
-    action: 'Администратор определяет scope и актив, выполняет read-only inventory, запускает синтетическое упражнение, находит защитный сигнал, документирует ограничение и назначает узкое исправление.',
-    result: 'Получен воспроизводимый вывод с evidence без секретов; нормальный сценарий сохранён, запрещённый проверен отдельно, а временные артефакты удалены.',
+    situation: profile.depth.situation,
+    action: profile.depth.action,
+    result: profile.depth.result,
   },
-  diagram: ['Актив и бизнес-цель', 'Угроза и проверяемый сценарий', 'Prevent / Detect / Recover', 'Безопасная лаборатория и evidence', 'Исправление, owner и retest'],
+  diagram: profile.depth.diagram,
   uiMockup: {
     breadcrumb: `SECURITY+ / SY0-701 › ${profile.title}`,
     panelTitle: 'Карточка практики · учебный макет',
@@ -229,6 +240,7 @@ const makeDetail = (profile) => ({
     ],
   },
   practiceTasks: [
+    { task: profile.depth.task, hint: profile.depth.troubleshooting, solution: profile.depth.solution },
     { task: 'Составьте таблицу «актив → угроза → preventive → detective → recovery» для своего учебного сценария.', hint: 'Каждый контроль должен отвечать на конкретный риск и иметь наблюдаемый тест.', solution: `Используйте ожидаемый результат урока: ${profile.expected}` },
     { task: 'Напишите finding из пяти строк: факт, влияние, evidence, исправление, retest.', hint: 'Не называйте предположение фактом и не включайте секреты.', solution: `Защитная основа: ${profile.defense} Сигнал для проверки: ${profile.detection}` },
   ],
@@ -239,6 +251,8 @@ const makeWalkthrough = (profile) => ({
   title: `Пошаговая лаборатория Security+: ${profile.title}`,
   context: 'Лаборатория переводит экзаменационное понятие в полный рабочий цикл администратора: scope, исходное состояние, синтетическое действие, evidence, защитный сигнал, исправление, retest и очистка. Все данные вымышлены, а команды запускаются только на собственной учебной машине.',
   steps: [
+    `Сценарий: ${profile.depth.situation}`,
+    `Решение перед выполнением: ${profile.depth.action}`,
     'Создайте отдельную папку лаборатории и запишите scope: одна собственная VM, синтетические пользователи и события, отсутствие внешних целей. Зафиксируйте версию ОС, время начала и способ вернуть snapshot или удалить созданные файлы.',
     'Разберите команды inventory построчно и предскажите результат. Запустите их без повышения привилегий, если это возможно, затем отделите факты вывода от интерпретации и сохраните только минимально необходимое evidence без секретов.',
     'Сформулируйте одну проверяемую гипотезу по теме урока: какое разрешённое действие произойдёт, какой запрет должен сработать и какое событие увидит защитник. Запишите критерии успеха до запуска упражнения.',
@@ -246,8 +260,8 @@ const makeWalkthrough = (profile) => ({
     'Найдите или опишите ожидаемый defensive signal, предложите узкое исправление и выполните тот же отрицательный тест. Разрешённый сценарий должен сохраниться, а рискованный путь — блокироваться или становиться наблюдаемым.',
     'Удалите временные файлы и ключи, повторите inventory и оформите finding: факт, влияние, evidence, ограничение, remediation, owner, срок и результат retest. Непроверенные предположения пометьте явно.',
   ],
-  verification: `${profile.expected} Дополнительно подтверждены защитный сигнал, отсутствие секретов в evidence и полная очистка временных артефактов.`,
-  troubleshooting: `Если результат отличается, проверьте версию утилиты, оболочку, текущий каталог, права и наличие зависимостей. ${profile.detection} Не отключайте защиту и не переходите к внешней цели: вернитесь к синтетическим данным и локальной VM.`,
+  verification: `${profile.expected} ${profile.depth.expected} Результат модели не доказывает наличие реального enforcement: для инфраструктуры отдельно проверьте настройку, телеметрию и очистку.`,
+  troubleshooting: `${profile.depth.troubleshooting} Очистка: ${profile.depth.cleanup} Если результат отличается, проверьте версию утилиты, оболочку, текущий каталог, права и наличие зависимостей. ${profile.detection} Не отключайте защиту и не переходите к внешней цели: вернитесь к синтетическим данным и локальной VM.`,
 });
 
 export const securityPlusLessons = Object.fromEntries(profiles.map((profile) => [profile.id, makeLesson(profile)]));
@@ -267,12 +281,22 @@ export const securityPlusPhases = [
 ];
 
 export const securityPlusCourse = {
-  id: 'security-plus', title: 'CompTIA Security+ · SY0-701', examCode: 'SY0-701', unofficial: true,
-  description: 'Неофициальный русскоязычный маршрут по пяти доменам SY0-701: десять подробных уроков, десять безопасных лабораторий, тесты и открытые первоисточники. Перед экзаменом сверяйте действующий код и цели у CompTIA.',
+  id: 'security-plus', title: 'Авторский курс CompTIA Security+ · SY0-701', examCode: 'SY0-701', unofficial: true,
+  description: 'Пять доменов SY0-701: десять углублённых уроков, лаборатории, открытые источники и авторский итоговый экзамен на 30 вопросов.',
   topics: securityPlusPhases.flatMap((item) => item.topics),
 };
 
 export const securityPlusResources = [
+{"id": "sp-messer", "title": "Professor Messer · SY0-701", "url": "https://www.professormesser.com/security-plus/sy0-701/sy0-701-video/sy0-701-comptia-security-plus-course/", "description": "Бесплатные видео по темам SY0-701; используйте раздел, соответствующий уроку.", "type": "Открытый материал", "language": "EN", "access": "Бесплатно"},
+{"id": "sp-cisa-kev", "title": "CISA Known Exploited Vulnerabilities", "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog", "description": "Каталог подтверждённо эксплуатируемых уязвимостей для приоритизации.", "type": "Открытый материал", "language": "EN", "access": "Бесплатно"},
+{"id": "sp-wstg", "title": "OWASP Web Security Testing Guide", "url": "https://owasp.org/www-project-web-security-testing-guide/", "description": "Методики проверки веб-безопасности и оформления evidence.", "type": "Открытый материал", "language": "EN", "access": "Бесплатно"},
+{"id": "sp-juice-shop", "title": "OWASP Juice Shop", "url": "https://github.com/juice-shop/juice-shop", "description": "Намеренно уязвимое приложение для изолированной учебной практики.", "type": "Открытый материал", "language": "EN", "access": "Бесплатно"},
+{"id": "sp-webgoat", "title": "OWASP WebGoat", "url": "https://github.com/WebGoat/WebGoat", "description": "Локальные учебные упражнения с объяснением защиты.", "type": "Открытый материал", "language": "EN", "access": "Бесплатно"},
+{"id": "sp-ms-zerotrust", "title": "Microsoft Learn · Zero Trust", "url": "https://learn.microsoft.com/en-us/security/zero-trust/zero-trust-overview", "description": "Явная проверка, минимальные привилегии и предположение компрометации.", "type": "Открытый материал", "language": "EN", "access": "Бесплатно"},
+{"id": "sp-ms-resilience", "title": "Microsoft Learn · Reliability", "url": "https://learn.microsoft.com/en-us/azure/well-architected/reliability/", "description": "Failure modes, восстановление и архитектура надёжности.", "type": "Открытый материал", "language": "EN", "access": "Бесплатно"},
+{"id": "sp-ms-shared", "title": "Microsoft Learn · Shared responsibility", "url": "https://learn.microsoft.com/en-us/azure/security/fundamentals/shared-responsibility", "description": "Границы ответственности в облачных моделях.", "type": "Открытый материал", "language": "EN", "access": "Бесплатно"},
+{"id": "sp-ms-identity", "title": "Microsoft Learn · Identity fundamentals", "url": "https://learn.microsoft.com/en-us/entra/fundamentals/whatis", "description": "Identity, authentication и управление доступом.", "type": "Открытый материал", "language": "EN", "access": "Бесплатно"},
+{"id": "sp-sigma", "title": "SigmaHQ · Sigma rules", "url": "https://github.com/SigmaHQ/sigma", "description": "Открытые правила обнаружения с logsource и false positives.", "type": "Открытый материал", "language": "EN", "access": "Бесплатно"},
   { id: 'sp-comptia-objectives', title: 'CompTIA: Exam Objectives', type: 'Официальная программа', language: 'EN', access: 'Бесплатно', description: 'Страница загрузки официальных exam objectives. Используйте её для проверки действующего кода экзамена и структуры доменов перед регистрацией.', url: 'https://www.comptia.org/training/resources/exam-objectives' },
   { id: 'sp-developer-roadmap', title: 'Developer Roadmap: Cyber Security', type: 'Карта', language: 'EN', access: 'Бесплатно', description: 'Открытые материалы по основам cyber security, IAM, hardening, SIEM, vulnerability management и incident response.', url: 'https://github.com/nilbuild/developer-roadmap/tree/master/roadmaps/cyber-security' },
   { id: 'sp-owasp-cheats', title: 'OWASP Cheat Sheet Series', type: 'Справочник', language: 'EN', access: 'Бесплатно', description: 'Открытые практические рекомендации по authentication, cryptography, secrets, logging, incident response и другим защитным задачам.', url: 'https://github.com/OWASP/CheatSheetSeries' },
@@ -284,6 +308,6 @@ export const securityPlusResources = [
 
 export const securityPlusLessonResources = Object.fromEntries(profiles.map((profile) => [profile.id, profile.sources.map((sourceId, index) => ({
   sourceId,
-  focus: index === 0 ? `Сверьте терминологию и границы домена для темы «${profile.title}» с официальными целями SY0-701; перед экзаменом проверьте актуальный код.` : `Используйте открытый материал для углубления темы «${profile.title}» и проверки защитной лаборатории.`,
+  focus: profile.depth.sources.find(([id]) => id === sourceId)?.[1] || (index === 0 ? `Сверьте терминологию и границы домена для темы «${profile.title}» с официальными целями SY0-701; перед экзаменом проверьте актуальный код.` : `Используйте открытый материал для углубления темы «${profile.title}» и проверки защитной лаборатории.`),
   ...(index === 0 ? { takeaway: profile.defense } : {}),
 }))]));

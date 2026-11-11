@@ -1,11 +1,8 @@
-import { useEffect, useRef } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { FiActivity, FiArrowRight, FiAward, FiBookOpen, FiCloud, FiCommand, FiCpu, FiMoon, FiPlay, FiShield, FiSun, FiTerminal } from 'react-icons/fi';
 import { viewHref } from '../navigation';
 
-gsap.registerPlugin(ScrollTrigger);
+
 
 const iconByTrack = {
   roadmap: FiActivity,
@@ -19,26 +16,7 @@ const iconByTrack = {
 
 /* eslint-disable react/prop-types */
 export default function LandingPage({ tracks, totalCount, nextLesson, theme, onToggleTheme }) {
-  const pathRef = useRef(null);
-  const sectionRef = useRef(null);
   const reduceMotion = useReducedMotion();
-
-  useEffect(() => {
-    if (reduceMotion || !pathRef.current || !sectionRef.current) return undefined;
-    const length = pathRef.current.getTotalLength();
-    const context = gsap.context(() => {
-      gsap.fromTo(pathRef.current, { strokeDasharray: length, strokeDashoffset: length }, {
-        strokeDashoffset: 0,
-        ease: 'none',
-        scrollTrigger: { trigger: sectionRef.current, start: 'top 72%', end: 'bottom 70%', scrub: .7 },
-      });
-      gsap.from('.landing-map-node', {
-        scale: .55, opacity: 0, stagger: .12, duration: .45, ease: 'back.out(1.8)',
-        scrollTrigger: { trigger: sectionRef.current, start: 'top 68%' },
-      });
-    }, sectionRef);
-    return () => context.revert();
-  }, [reduceMotion]);
 
   return <div className="landing-page">
     <header className="landing-nav">
@@ -59,15 +37,6 @@ export default function LandingPage({ tracks, totalCount, nextLesson, theme, onT
 
       <section className="landing-proof" aria-label="Состав курса"><div><strong>{totalCount}</strong><span>отдельных уроков</span></div><div><strong>{tracks.length}</strong><span>учебных маршрутов</span></div><div><strong>100%</strong><span>уроков с практикой</span></div><div><strong>2+</strong><span>источника к уроку</span></div></section>
 
-      <section className="landing-path-preview" ref={sectionRef} aria-labelledby="landing-path-title">
-        <div className="landing-section-heading"><span className="eyebrow">ГЛАВНЫЙ МАРШРУТ</span><h2 id="landing-path-title">Настоящая карта профессии</h2><p>Шесть последовательных этапов: от базовой инфраструктуры до автоматизации и SecOps. Каждый узел открывает отдельные уроки, лаборатории и модульный тест.</p></div>
-        <div className="landing-path-canvas">
-          <svg viewBox="0 0 1100 330" role="img" aria-label="Путь от фундамента до SecOps"><path className="landing-map-base" d="M70 250 C190 250 175 85 315 85 S440 255 565 255 S690 70 815 85 S930 235 1030 120" /><path ref={pathRef} className="landing-map-line" d="M70 250 C190 250 175 85 315 85 S440 255 565 255 S690 70 815 85 S930 235 1030 120" /></svg>
-          {['Фундамент', 'Сети и сервисы', 'Windows Server', 'Cloud & DevOps', 'Автоматизация', 'SecOps'].map((label, index) => <div className={`landing-map-node node-${index + 1}`} key={label}><span>{String(index + 1).padStart(2, '0')}</span><strong>{label}</strong></div>)}
-        </div>
-        <a className="button landing-map-button" href={viewHref('roadmap')} data-route-link>Исследовать карту из 31 урока <FiArrowRight /></a>
-      </section>
-
       <section className="landing-tracks" id="landing-tracks" aria-labelledby="landing-tracks-title">
         <div className="landing-section-heading"><span className="eyebrow">ВЫБЕРИТЕ НАПРАВЛЕНИЕ</span><h2 id="landing-tracks-title">Семь учебных направлений</h2></div>
         <div className="landing-track-grid">{tracks.map((track, index) => {
@@ -80,6 +49,6 @@ export default function LandingPage({ tracks, totalCount, nextLesson, theme, onT
       </section>
 
     </main>
-    <footer className="landing-footer"><span><FiCommand /> sysadmin<span className="brand-accent">.</span></span><p>Путь системного администратора 2026 · самостоятельный неофициальный курс</p><a href={viewHref('roadmap')} data-route-link>Начать обучение <FiArrowRight /></a></footer>
+    <footer className="landing-footer"><span><FiCommand /> sysadmin<span className="brand-accent">.</span></span><p>Авторский учебный план системного администратора 2026</p><a href={viewHref('roadmap')} data-route-link>Начать обучение <FiArrowRight /></a></footer>
   </div>;
 }
