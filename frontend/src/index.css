@@ -1263,3 +1263,41 @@ input[type='checkbox'] { width: 19px; height: 19px; flex: none; margin: 3px 0 0;
 .landing-menu a { display: block; padding: 12px 14px; border: 1px solid transparent; border-radius: 9px; color: var(--text); }
 .landing-menu a:hover, .landing-menu a:focus-visible { color: var(--accent); background: var(--accent-soft); border-color: var(--border); }
 @media (max-width: 680px) { .landing-nav { flex-wrap: nowrap; gap: 10px; } .landing-brand-group { gap: 9px; } .landing-brand-group .brand-mark { display: none; } .landing-brand-group .brand { gap: 0; } .landing-nav > .landing-menu { left: 15px; width: calc(100vw - 30px); } }
+
+.global-navbar { display:flex; flex-wrap:wrap; gap:8px 18px; padding:14px 22px; align-items:center; background:var(--surface); color:var(--text); }
+.global-navbar a { font-size:14px; font-weight:700; text-decoration:none; padding:6px 0; }
+.global-navbar a:hover { text-decoration:underline; }
+.landing-nav { flex-wrap:wrap; }
+.landing-nav .global-navbar { flex:1; background:transparent; }
+.app-shell[data-theme="light"] .video-card-heading > strong { color:#18283c; }
+.lesson-page { font-size:17px; }
+.lesson-section, [id^="security-topic-"] { scroll-margin-top:150px; }
+@media (max-width:760px) { .landing-nav .global-navbar { order:3; flex-basis:100%; } .global-navbar { gap:5px 14px; padding:10px 12px; } }
+@media print { .academy-sidebar,.topbar,.global-navbar,.lesson-video-first,.lesson-jump,button { display:none!important; } .main { margin:0!important; } .lesson-page { color:#111; background:white; } pre { white-space:pre-wrap; } }
+.technology-sphere { width:320px; max-width:100%; margin:20px auto; perspective:850px; text-align:center; }
+.sphere-rotation { position:relative; width:280px; height:280px; margin:35px auto; transform-style:preserve-3d; animation:sphere-turn 35s linear infinite; }
+.sphere-rotation > span { position:absolute; top:50%; left:50%; width:34px; height:34px; color:var(--text); }
+.sphere-rotation svg { width:30px; height:30px; }
+@keyframes sphere-turn { to { transform:rotateY(360deg); } }
+.standalone-view .skill-sequence-step::after { background:linear-gradient(90deg,#38bdf8 0%,#8b5cf6 35%,#fff 48%,#38bdf8 58%,#8b5cf6 100%); background-size:250% 100%; animation:rail-flow 2.6s linear infinite; transform:translateY(-50%) scaleX(1); }
+.standalone-view .skill-column::before { background:linear-gradient(180deg,var(--lane-color),#fff,var(--lane-color)); background-size:100% 250%; animation:branch-flow 3s linear infinite; }
+.map-paused .skill-sequence-step::after,.map-paused .skill-column::before { animation-play-state:paused!important; }
+@keyframes rail-flow { from { background-position:250% 0; } to { background-position:0 0; } }
+@keyframes branch-flow { from { background-position:0 250%; } to { background-position:0 0; } }
+@media (prefers-reduced-motion:reduce) { .sphere-rotation,.standalone-view .skill-sequence-step::after,.standalone-view .skill-column::before { animation:none!important; } }
+.lesson-section textarea { display:block; box-sizing:border-box; width:100%; margin:12px 0; border:1px solid var(--border); border-radius:8px; padding:12px; color:var(--text); background:var(--surface); font:inherit; }
+.lesson-section select { max-width:100%; padding:8px; color:var(--text); background:var(--surface); }
+.course-brand { position:absolute; right:20px; top:65px; opacity:.16; color:var(--text); font-size:64px; pointer-events:none; }
+.lab-flow ol { display:flex; flex-wrap:wrap; gap:20px; padding:20px; list-style:none; }
+.lab-flow li { padding:14px; border-bottom:4px solid var(--accent); background-image:linear-gradient(90deg,transparent,var(--accent-soft),transparent); background-size:250% 100%; animation:rail-flow 3s linear infinite; }
+.lab-flow.is-paused li { animation-play-state:paused; }
+@media (prefers-reduced-motion:reduce) { .app-shell { transition:none; } .lab-flow li { animation:none; } }
+.app-shell[data-theme='light'] .academy-sidebar { --text:#12263c; --muted:#53667b; color:#12263c; }
+.app-shell[data-theme='light'] .academy-brand-copy strong { color:#12263c; }
+.storage-error { grid-column:1 / -1; margin:0; padding:14px; background:#7d1727; color:white; }
+.landing-hero { grid-template-columns:minmax(0,1fr) 320px; gap:40px; }
+.landing-hero-copy { min-width:0; max-width:100%; }
+.landing-hero h1 { overflow-wrap:anywhere; }
+.technology-sphere { min-width:0; }
+@media (max-width:900px) { .landing-hero { grid-template-columns:minmax(0,1fr); } .landing-hero-copy > p { max-width:100%; } }
+@media (max-width:760px) { .landing-hero h1 { font-size:clamp(34px,10vw,46px); } }

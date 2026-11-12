@@ -1,10 +1,11 @@
+import { orderCourses } from '../data/courseOrder';
 import { useEffect, useState } from 'react';
 import { FiActivity, FiArrowRight, FiAward, FiBook, FiBookOpen, FiChevronDown, FiCloud, FiCommand, FiGrid, FiLayers, FiMap, FiShare2, FiShield, FiTerminal, FiTool, FiX } from 'react-icons/fi';
 import { lessonHref, viewHref } from '../navigation';
 
 const GROUPS_KEY = 'sysadmin-path-2026-sidebar-groups';
 
-const courseItems = [
+const courseItems = orderCourses([
   { id: 'network-engineer', label: 'Network Engineer', Icon: FiShare2 },
   { id: 'roadmap', label: 'Путь системного администратора', Icon: FiActivity },
   { id: 'computer-technologies', label: 'Компьютерные технологии', Icon: FiTool },
@@ -13,7 +14,7 @@ const courseItems = [
   { id: 'linux-security', label: 'Безопасность Linux', Icon: FiTerminal },
   { id: 'ethical-hacking', label: 'Этичный хакинг и защита', Icon: FiShield },
   { id: 'security-plus', label: 'CompTIA Security+', Icon: FiAward },
-];
+]);
 
 const libraryItems = [
   { id: 'resources', label: 'Учебные материалы', Icon: FiBookOpen },
@@ -29,7 +30,7 @@ function readGroups() {
 }
 
 /* eslint-disable react/prop-types */
-export default function Sidebar({ route, track, menuOpen, collapsed, onClose, percent, completedCount, totalCount, nextTopic }) {
+export default function Sidebar({ route, track, selectedCourse, menuOpen, collapsed, onExpand, onClose, percent, completedCount, totalCount, nextTopic }) {
   const [groups, setGroups] = useState(readGroups);
   const activeView = route.type === 'view' ? route.id : route.type === 'lesson' ? track : route.type === 'dashboard' ? 'overview' : null;
   const coursesActive = courseItems.some((item) => item.id === activeView);
@@ -44,7 +45,7 @@ export default function Sidebar({ route, track, menuOpen, collapsed, onClose, pe
     try { localStorage.setItem(GROUPS_KEY, JSON.stringify(groups)); } catch { /* Storage may be unavailable. */ }
   }, [groups]);
 
-  const toggleGroup = (id) => setGroups((current) => ({ ...current, [id]: !current[id] }));
+  const toggleGroup = (id) => { if (collapsed) { onExpand(); setGroups(current => ({ ...current, [id]: true })); } else setGroups(current => ({ ...current, [id]: !current[id] })); };
   const itemLink = (item, nested = false) => {
     const active = activeView === item.id;
     return <a className={`academy-nav-link${nested ? ' is-nested' : ''}${active ? ' active' : ''}`} href={viewHref(item.id)} data-route-link key={item.id} aria-current={active ? 'page' : undefined} title={collapsed ? item.label : undefined}>
@@ -64,9 +65,10 @@ export default function Sidebar({ route, track, menuOpen, collapsed, onClose, pe
     </div>
 
     <nav className="academy-nav" aria-label="Основная навигация">
-      {itemLink({ id: 'overview', label: 'Обзор', Icon: FiGrid })}
+      {itemLink({ id: 'overview', label: 'Мой кабинет', Icon: FiGrid })}
+      {itemLink({ id: 'careers', label: 'Профессии', Icon: FiGrid })}
       {itemLink({ id: 'career-map', label: 'Карта', Icon: FiMap })}
-      {itemLink({ id: 'roadmap', label: 'Мой учебный путь', Icon: FiActivity })}
+      {itemLink({ id: selectedCourse, label: 'Мой маршрут', Icon: FiActivity })}
 
       <div className={`academy-nav-group${coursesActive ? ' has-active' : ''}`}>
         <button className="academy-nav-group-toggle" type="button" onClick={() => toggleGroup('courses')} aria-expanded={groups.courses} title={collapsed ? 'Все курсы' : undefined}><span className="academy-nav-icon"><FiLayers /></span><span className="academy-nav-label">Все курсы</span>{!collapsed && <FiChevronDown className="academy-group-chevron" />}</button>
@@ -82,6 +84,6 @@ export default function Sidebar({ route, track, menuOpen, collapsed, onClose, pe
       </div>
     </nav>
 
-    <div className="academy-sidebar-footer"><span className="academy-system"><span className="status-dot" /> <span>Прогресс сохраняется</span></span></div>
+    <div className="academy-sidebar-footer"><span className="academy-system"><span className="status-dot" /> <span>Прогресс на устройстве</span></span></div>
   </aside>;
 }

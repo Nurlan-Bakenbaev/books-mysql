@@ -1,3 +1,4 @@
+import { ASSESSMENT_KEY, readAssessment, readJson, saveJson, fingerprint } from '../lib/studyProgress';
 import { useId, useRef, useState } from 'react';
 import { gradeSecurityPlus, securityPlusExam, securityPlusPassPercent } from '../data/securityPlusExam';
 
@@ -5,7 +6,10 @@ export default function SecurityPlusExam() {
   const instance = useId();
   const heading = useRef(null);
   const result = useRef(null);
-  const [answers, setAnswers] = useState({});
+  const examId='exam:security-plus';
+  const [error,setError]=useState('');
+  const [answers, setAnswers] = useState(() => readAssessment(examId,securityPlusExam).answers);
+  const persist=(next,attempt)=>{const all=readJson(ASSESSMENT_KEY,{});const saved=readAssessment(examId,securityPlusExam);if(!saveJson(ASSESSMENT_KEY,{...all,[examId]:{answers:next,fingerprint:fingerprint(securityPlusExam),attempts:attempt?[...saved.attempts,attempt]:saved.attempts}}))setError('Экзамен не сохранён: хранилище недоступно.');else setError('');};
   const [submitted, setSubmitted] = useState(false);
   const answered = Object.keys(answers).length;
   const grade = gradeSecurityPlus(answers);
@@ -13,15 +17,17 @@ export default function SecurityPlusExam() {
     event.preventDefault();
     if (answered !== securityPlusExam.length) return;
     setSubmitted(true);
+    persist(answers,{title:'Итоговый экзамен Security+',date:new Date().toISOString(),score:grade.correct,total:30});
     requestAnimationFrame(() => result.current?.focus());
   };
   const retry = () => {
-    setAnswers({}); setSubmitted(false);
+    setAnswers({}); setSubmitted(false); persist({});
     requestAnimationFrame(() => heading.current?.focus());
   };
   return <section className="security-exam assessment" id="security-plus-exam" aria-labelledby={`${instance}-title`}>
     <h2 id={`${instance}-title`} ref={heading} tabIndex="-1">Итоговый экзамен Security+ · 30 вопросов</h2>
     <p>Оригинальные учебные сценарии по пяти доменам: 4 / 7 / 5 / 8 / 6. Один лучший ответ в каждом вопросе. Учебный порог — {securityPlusPassPercent}% (24 из 30); это не шкала официального экзамена CompTIA. Ответы и объяснения появятся после отправки всей попытки.</p>
+    <p role="alert">{error}</p>
     <form onSubmit={finish}>
       {submitted && <div className="security-exam-result" ref={result} tabIndex="-1" role="status">
         <h3>Результат: {grade.correct} из 30 · {grade.percent}%</h3>
@@ -32,7 +38,7 @@ export default function SecurityPlusExam() {
       {securityPlusExam.map((item, index) => <fieldset className="assessment-question" key={item.question} disabled={submitted}>
         <legend><span className="assessment-context">Домен {item.domain}</span>{index + 1}. {item.question}</legend>
         {item.options.map((option, optionIndex) => <label className="assessment-option" key={option}>
-          <input required type="radio" name={`${instance}-${index}`} value={optionIndex} checked={answers[index] === optionIndex} onChange={() => setAnswers((current) => ({ ...current, [index]: optionIndex }))} />
+          <input required type="radio" name={`${instance}-${index}`} value={optionIndex} checked={answers[index] === optionIndex} onChange={() => {const next={...answers,[index]:optionIndex};setAnswers(next);persist(next);}} />
           <span>{option}</span>
         </label>)}
         {submitted && <div className="assessment-feedback" data-correct={answers[index] === item.answer}>

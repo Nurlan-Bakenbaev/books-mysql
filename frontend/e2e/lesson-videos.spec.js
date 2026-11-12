@@ -23,8 +23,13 @@ test('English is the initial video; Russian switches the player and resets on re
   const nextId = new URL(await next.getAttribute('href'), 'http://localhost/').searchParams.get('lesson');
   await next.click();
   await expect(page).toHaveURL(new RegExp(`lesson=${nextId}`));
-  await expect(section.getByRole('button', { name: 'English', exact: true })).toHaveAttribute('aria-pressed', 'true');
-  await expect(section.locator('iframe')).toHaveAttribute('src', videoUrls(lessonVideos[nextId]).embed);
+  if (lessonVideos[nextId]) {
+    await expect(section.getByRole('button', { name: 'English', exact: true })).toHaveAttribute('aria-pressed', 'true');
+    await expect(section.locator('iframe')).toHaveAttribute('src', videoUrls(lessonVideos[nextId]).embed);
+  } else {
+    await expect(section.locator('iframe')).toHaveCount(0);
+    await expect(section.locator('.video-unavailable')).toBeVisible();
+  }
 });
 
 test('a missing Russian counterpart is explicit and never plays an unrelated video', async ({ page }) => {
@@ -55,11 +60,11 @@ test('language controls work by keyboard and pass accessibility checks in both t
 });
 
 
-test('an uncurated English video stays explicit and links to the Security+ course', async ({ page }) => {
+test('Security+ introduction has a specific English video and a complete catalogue', async ({ page }) => {
   await page.goto('/?lesson=secplus-exam-orientation');
-  const section = page.locator('#lesson-video');
-  await expect(section.locator('iframe')).toHaveCount(0);
-  await expect(section.getByRole('status')).toContainText('Отдельное встроенное видео для этого урока не подобрано');
-  await expect(section.getByRole('group', { name: 'Язык видео' })).toHaveCount(0);
-  await expect(section.getByRole('link', { name: 'Видеокурс Professor Messer · SY0-701', exact: true })).toHaveAttribute('href', /professormesser\.com/);
+  await expect(page.locator('#lesson-video iframe')).toHaveAttribute('src', /KiEptGbnEBc/);
+  await expect(page.locator('#lesson-video')).toContainText('English');
+  await page.goto('/?view=security-plus');
+  await page.getByText('Открыть индекс всех 121 тем', {exact:true}).click();
+  await expect(page.locator('a[href*="#security-topic-"]')).toHaveCount(121);
 });

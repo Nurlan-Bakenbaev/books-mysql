@@ -1,13 +1,13 @@
+import { moduleQuestions } from '../data/moduleAssessments';
 import { FiArrowRight, FiBookOpen, FiShield } from 'react-icons/fi';
 import { windowsSecurityCourse } from '../data/windowsSecurity';
-import { lessonDetails } from '../data/lessonDetails';
 import { lessonHref, lessonMaterialsHref } from '../navigation';
 import Assessment from './Assessment';
 
 /* eslint-disable react/prop-types */
 export default function WindowsSecurityCourse({ completed, onToggle }) {
   const done = windowsSecurityCourse.topics.filter((topic) => completed.includes(topic.id)).length;
-  const questions = windowsSecurityCourse.topics.map((topic) => ({ ...lessonDetails[topic.id].question, context: topic.title }));
+  const questions = moduleQuestions(windowsSecurityCourse.topics);
 
   return <section className="section security-course" id="windows-security" aria-labelledby="security-course-heading">
     <div className="section-heading">

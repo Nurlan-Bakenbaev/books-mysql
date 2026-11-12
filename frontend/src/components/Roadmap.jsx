@@ -1,7 +1,7 @@
+import { moduleQuestions } from '../data/moduleAssessments';
 import { useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { FiArrowRight, FiBookOpen, FiCheck, FiChevronDown, FiCloud, FiCode, FiCpu, FiFlag, FiServer, FiShield } from 'react-icons/fi';
-import { lessonDetails } from '../data/lessonDetails';
 import { lessonHref, lessonMaterialsHref } from '../navigation';
 import Assessment from './Assessment';
 
@@ -25,6 +25,7 @@ export default function Roadmap({
     return activePhase ? [activePhase.id] : phases[0] ? [phases[0].id] : [];
   });
   const reduceMotion = useReducedMotion();
+  const [paused,setPaused] = useState(false);
   const Heading = headingLevel;
   const headingId = `${id}-heading`;
 
@@ -38,7 +39,8 @@ export default function Roadmap({
       <div><span className="eyebrow">ВАШ СЛЕДУЮЩИЙ ШАГ</span><strong>{nextTopic ? `${String(topicNumbers.get(nextTopic.id)).padStart(2, '0')} / ${nextTopic.title}` : 'Все темы отмечены как изученные'}</strong><p>{startHint}</p></div>
       {nextTopic && <a className="button button-primary" href={lessonHref(nextTopic.id)} data-route-link>Открыть следующий урок <FiArrowRight aria-hidden="true" /></a>}
     </div>
-    <div className="roadmap-map skill-map-board" style={{ '--phase-count': phases.length }} aria-label={`Интерактивная карта навыков: ${title}. Этапы соединены в порядке прохождения.`} tabIndex="0">
+    <button className="button" aria-pressed={paused} onClick={()=>setPaused(!paused)}>{paused ? 'Продолжить движение линий' : 'Остановить движение линий'}</button>
+    <div className={`roadmap-map skill-map-board${paused ? ' map-paused' : ''}`} style={{ '--phase-count': phases.length }} aria-label={`Интерактивная карта навыков: ${title}. Этапы соединены в порядке прохождения.`} tabIndex="0">
       <div className="roadmap-route" aria-hidden="true"><span /></div>
       <div className="skill-sequence-rail" aria-label={`Порядок этапов: ${phases.map((phase) => phase.title).join(', ')}`}>
         {phases.map((phase, index) => <div className="skill-sequence-step" style={{ '--map-index': index }} key={phase.id}><span>{String(index + 1).padStart(2, '0')}</span>{index < phases.length - 1 && <FiArrowRight aria-hidden="true" />}</div>)}
@@ -59,7 +61,7 @@ export default function Roadmap({
         <AnimatePresence initial={false}>{isOpen && <motion.div id={panelId} className="phase-body" initial={reduceMotion ? false : { height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={reduceMotion ? { opacity: 0 } : { height: 0, opacity: 0 }} transition={{ duration: reduceMotion ? 0 : .28, ease: [0.22, 1, 0.36, 1] }}><div className="topic-list skill-node-list">{phase.topics.map((topic, index) => <div className={`topic-item skill-node${nextTopic?.id === topic.id ? ' is-current' : ''}${completed.includes(topic.id) ? ' is-complete' : ''}`} style={{ '--step-index': index }} key={topic.id}>
           <label className="topic-check"><input type="checkbox" checked={completed.includes(topic.id)} onChange={() => onToggle(topic.id)} aria-label={`Отметить тему «${topic.title}» как изученную`} /></label>
           <div className="topic-details"><span className="topic-step">{completed.includes(topic.id) ? 'ЗАВЕРШЕНО' : nextTopic?.id === topic.id ? 'СЛЕДУЮЩИЙ УРОК' : `УРОК ${String(topicNumbers.get(topic.id)).padStart(2, '0')}`}</span><strong>{topic.title}</strong><small>{topic.description}</small><span className="topic-actions"><a className="topic-open" href={lessonHref(topic.id)} data-route-link>Открыть <FiArrowRight aria-hidden="true" /></a><a className="topic-material" href={lessonMaterialsHref(topic.id)} data-route-link><FiBookOpen aria-hidden="true" /> Источники</a></span></div>
-        </div>)}</div><details className="module-test"><summary>Пройти тест этапа «{phase.title}»</summary><Assessment title={`Тест модуля: ${phase.title}`} questions={phase.topics.map((topic) => ({ ...lessonDetails[topic.id].question, context: topic.title }))} /></details></motion.div>}</AnimatePresence>
+        </div>)}</div><details className="module-test"><summary>Пройти тест этапа «{phase.title}»</summary><Assessment title={`Тест модуля: ${phase.title}`} questions={moduleQuestions(phase.topics)} /></details></motion.div>}</AnimatePresence>
       </motion.article>;
     })}</div>
   </section>;

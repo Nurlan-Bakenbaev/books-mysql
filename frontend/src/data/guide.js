@@ -1,5 +1,8 @@
+import { foundationTerms } from './foundationTerms.js';
+import { linuxLab } from './linuxLab.js';
+import { corePhases, coreById } from './coreCurriculum.js';
 // Stable identifiers keep saved progress intact when the presentation changes.
-export const phases = [
+const legacyPhases = [
   {
     id: 'foundation', number: '01', title: 'Фундамент', subtitle: 'Networking & Hardware Essentials',
     description: 'Разберитесь, как устройства обмениваются данными и из чего состоит надёжная инфраструктура.', duration: '6–8 недель', outcome: 'Изолированная лаборатория, адресный план и доказательная диагностика сети и хранилища.',
@@ -208,7 +211,7 @@ export const labs = [
       { title: 'Подготовьте сервер', text: 'Переименуйте сервер в DC01, задайте статический адрес 192.0.2.10/24 и укажите собственный адрес как предпочитаемый DNS после установки роли.' },
       { title: 'Установите роль', text: 'Запустите PowerShell от администратора и установите AD DS с инструментами управления.', command: 'Install-WindowsFeature AD-Domain-Services -IncludeManagementTools' },
       { title: 'Создайте лес', text: 'Создайте только учебный домен lab.example. Задайте отдельный пароль DSRM и дождитесь перезагрузки.', command: 'Install-ADDSForest -DomainName "lab.example" -DomainNetbiosName "LAB" -InstallDNS' },
-      { title: 'Создайте структуру', text: 'После входа создайте OU Workstations и пользователя lab.user. Не используйте реальные имена или пароли.' },
+      { title: 'Создайте структуру', text: 'После входа откройте Active Directory Users and Computers: создайте OU Workstations и Lab-Users под корнем lab.example; в Lab-Users создайте lab.user с отдельным временным паролем. Переместите тестовый client computer в Workstations. Не используйте реальные данные.' },
       { title: 'Подготовьте клиент', text: 'На клиенте укажите DNS 192.0.2.10, проверьте разрешение имени DC01.lab.example и присоедините компьютер к домену.', command: 'Resolve-DnsName DC01.lab.example\nAdd-Computer -DomainName lab.example -Credential LAB\\Administrator -Restart' },
       { title: 'Проверьте вход', text: 'После перезагрузки войдите как LAB\\lab.user и убедитесь, что клиент появился в каталоге.' },
     ],
@@ -226,7 +229,7 @@ export const labs = [
       { title: 'Создайте объект', text: 'В GPMC создайте GPO Lab-User-Policy и свяжите только с OU Lab-Users.' },
       { title: 'Задайте настройку', text: 'Настройте безопасный параметр, например запрет доступа к Control Panel для тестового пользователя. Не изменяйте Default Domain Policy.' },
       { title: 'Проверьте область', text: 'Убедитесь, что тестовый пользователь находится в Lab-Users и входит в Authenticated Users либо отдельную разрешённую группу фильтрации.' },
-      { title: 'Обновите политику', text: 'Войдите тестовым пользователем на клиенте и обновите пользовательскую политику.', command: 'gpupdate /force\ngpresult /h C:\\Temp\\lab-gpo.html' },
+      { title: 'Обновите политику', text: 'Войдите тестовым пользователем на клиенте и обновите пользовательскую политику.', command: 'gpupdate /target:user /force\ngpresult /h "$env:TEMP\\lab-gpo.html" /f' },
       { title: 'Подтвердите результат', text: 'Откройте отчёт, найдите Lab-User-Policy и затем проверьте настроенный параметр в интерфейсе.' },
     ],
     expected: 'GPO видна в Applied Group Policy Objects и влияет только на пользователя из Lab-Users.',
@@ -260,7 +263,7 @@ export const labs = [
       { title: 'Зафиксируйте исходное состояние', text: 'Создайте внутри VM файл recovery-proof.txt с датой, выключите VM штатно и запишите её конфигурацию.' },
       { title: 'Создайте независимую копию', text: 'Экспортируйте VM в отдельный каталог. Snapshot/checkpoint сам по себе не считается backup.', command: 'Export-VM -Name "LAB-VM" -Path "D:\\LabBackups"' },
       { title: 'Проверьте артефакты', text: 'Убедитесь, что экспорт содержит конфигурацию и виртуальные диски, а файлы читаются с места хранения.' },
-      { title: 'Импортируйте копию', text: 'Импортируйте VM как копию с новым идентификатором и отключённым сетевым адаптером, чтобы избежать конфликтов.', command: 'Import-VM -Path "D:\\LabBackups\\LAB-VM\\Virtual Machines\\<config>.vmcx" -Copy -GenerateNewId' },
+      { title: 'Импортируйте копию', text: 'Импортируйте VM как копию с новым идентификатором и отключённым сетевым адаптером, чтобы избежать конфликтов.', command: '$copy = Import-VM -Path "D:\\LabBackups\\LAB-VM\\Virtual Machines\\<config>.vmcx" -Copy -GenerateNewId -VirtualMachinePath "D:\\LabRestored\\Config" -VhdDestinationPath "D:\\LabRestored\\Disks"\n$copy | Get-VMNetworkAdapter | Disconnect-VMNetworkAdapter' },
       { title: 'Проверьте восстановление', text: 'Запустите восстановленную VM без сети, войдите и найдите recovery-proof.txt. Запишите время восстановления.' },
     ],
     expected: 'Отдельная восстановленная VM запускается, содержит контрольный файл и не конфликтует с исходной сетью.',
@@ -277,13 +280,13 @@ export const labs = [
       { title: 'Подготовьте CSV', text: 'Создайте C:\\Lab\\users.csv с колонками GivenName,Surname,SamAccountName и двумя вымышленными строками.', command: 'GivenName,Surname,SamAccountName\nAda,Lab,ada.lab\nLinus,Demo,linus.demo' },
       { title: 'Проверьте входные данные', text: 'Импортируйте CSV, проверьте пустые и повторяющиеся SamAccountName.', command: '$users = Import-Csv C:\\Lab\\users.csv\n$users | Format-Table\n$users.SamAccountName | Group-Object | Where-Object Count -gt 1' },
       { title: 'Выполните dry run', text: 'Сформируйте команду New-ADUser с -WhatIf. Не храните пароль в CSV или репозитории.', command: '$password = Read-Host "Temporary password" -AsSecureString\n$users | ForEach-Object { New-ADUser -Name "$($_.GivenName) $($_.Surname)" -GivenName $_.GivenName -Surname $_.Surname -SamAccountName $_.SamAccountName -Path "OU=Lab-Users,DC=lab,DC=example" -AccountPassword $password -Enabled $true -ChangePasswordAtLogon $true -WhatIf }' },
-      { title: 'Создайте объекты', text: 'Просмотрите WhatIf, уберите только параметр -WhatIf и выполните сценарий один раз.' },
+      { title: 'Создайте объекты', text: 'После review создавайте только отсутствующие аккаунты с New-ADUser -PassThru -ErrorAction Stop. После каждого успешного создания добавляйте возвращённые ObjectGUID/DistinguishedName в отдельный журнал. Если команда завершилась ошибкой, запись в журнал не добавляется; повторный запуск не должен присваивать себе существующие аккаунты.', command: "$created = @() # только текущий запуск\n$journal = Join-Path $env:TEMP (\"lab-created-\" + [guid]::NewGuid() + \".txt\") # уникальный журнал\nforeach ($row in $users) {\n  if ($row.SamAccountName -notmatch \"^[a-z][a-z0-9.-]{1,19}$\") { throw \"Invalid lab account name\" }\n  $sam = $row.SamAccountName\n  if (Get-ADUser -Filter \"SamAccountName -eq '$sam'\") { throw \"Account already exists: $sam\" }\n  $new = New-ADUser -Name \"$($row.GivenName) $($row.Surname)\" -GivenName $row.GivenName -Surname $row.Surname -SamAccountName $sam -Path \"OU=Lab-Users,DC=lab,DC=example\" -AccountPassword $password -Enabled $true -ChangePasswordAtLogon $true -PassThru -ErrorAction Stop\n  $created += $new # добавлять только после успеха\n  $new.DistinguishedName | Add-Content -LiteralPath $journal -ErrorAction Stop # точный DN\n}\n$created | Select-Object ObjectGUID,DistinguishedName # проверка созданных объектов\n# При ошибке журнала остановитесь; список $created остаётся в памяти. Не удаляйте по всему CSV." },
       { title: 'Проверьте результат', text: 'Получите созданные объекты из Lab-Users и выполните тестовый вход одной учётной записью.' },
     ],
     expected: 'В Lab-Users созданы только строки CSV; имена уникальны, пароль требуется сменить при первом входе.',
     verify: ['Количество объектов совпадает с CSV.', 'Перед повторным запуском существующие SamAccountName отдельно проверены через Get-ADUser; -WhatIf сам по себе не гарантирует обнаружение серверных конфликтов.', 'Секрет не записан в CSV, скрипт или журнал.'],
     troubleshooting: ['Проверьте DN OU и права выполняющей учётной записи.', 'Валидируйте SamAccountName до изменений.', 'Обрабатывайте ошибку каждой строки отдельно и ведите журнал без паролей.'],
-    rollback: ['Получите точный список созданных SamAccountName из CSV.', 'Удалите только эти объекты после ручной проверки пути.', 'Верните snapshot, если лаборатория использовала одноразовый DC.'],
+    rollback: ['Используйте журнал GUID/DN только успешно созданных в этом запуске объектов; строки исходного CSV не являются доказательством создания.', 'Удалите только подтверждённые новые GUID/DN после ручной проверки OU; существовавшие до опыта аккаунты сохраняются.', 'Верните snapshot, если лаборатория использовала одноразовый DC.'],
     resources: [{ title: 'New-ADUser', url: 'https://learn.microsoft.com/powershell/module/activedirectory/new-aduser' }, { title: 'PowerShell WhatIf', url: 'https://learn.microsoft.com/powershell/scripting/learn/deep-dives/everything-about-shouldprocess' }],
   },
   {
@@ -332,3 +335,10 @@ export const certifications = [
   { id: 'sc900', name: 'SC-900', category: 'Безопасность', description: 'Базовые концепции безопасности, соответствия и идентификации Microsoft.', url: 'https://learn.microsoft.com/credentials/certifications/security-compliance-and-identity-fundamentals/' },
   { id: 'sc200', name: 'SC-200', category: 'Безопасность', description: 'Операции безопасности: расследование и реагирование с инструментами Microsoft.', url: 'https://learn.microsoft.com/credentials/certifications/security-operations-analyst/' },
 ]
+
+export const supplementalTopics = legacyPhases.flatMap(p => p.topics).filter(t => !coreById[t.id]);
+export const phases = [...corePhases, { id: "supplemental", number: "+", title: "Дополнительные материалы", subtitle: "ПРЕЖНИЕ УРОКИ СОХРАНЕНЫ", description: "Дополнение к 31 основной теме; прежние адреса и отметки сохранены.", topics: supplementalTopics }];
+
+labs.push(linuxLab);
+
+terms.push(...foundationTerms);

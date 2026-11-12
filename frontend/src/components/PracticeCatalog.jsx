@@ -1,0 +1,3 @@
+import { useState } from 'react';
+import { courseCatalog } from '../data/catalog';
+export default function PracticeCatalog(){const [course,setCourse]=useState('all');return <section className="lesson-section"><h2>Практика всех уроков</h2><label>Курс <select value={course} onChange={e=>setCourse(e.target.value)}><option value="all">Все курсы</option>{courseCatalog.map(c=><option value={c.id} key={c.id}>{c.title}</option>)}</select></label>{courseCatalog.filter(c=>course==='all'||course===c.id).map(c=><details key={c.id}><summary>{c.title} · {c.topics.length} лабораторий</summary><ul>{c.topics.map(t=><li key={t.id}><a href={`?lesson=${t.id}#lesson-practice`} data-route-link>{t.title}</a></li>)}</ul></details>)}</section>;}

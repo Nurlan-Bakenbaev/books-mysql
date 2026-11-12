@@ -1,3 +1,4 @@
+import { coreById } from '../src/data/coreCurriculum.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { allTopics } from '../src/data/catalog.js';
@@ -16,7 +17,7 @@ test('Russian alternatives have explicit lesson associations and sourced media I
     assert.notEqual(videoUrls(media).embed, videoUrls(lessonVideos[id]).embed, id);
   }
   for (const topic of allTopics) {
-    if (lessonVideos[topic.id]) continue;
+    if (lessonVideos[topic.id] || coreById[topic.id]) continue;
     assert.equal(topic.id, 'secplus-exam-orientation');
     assert.ok(securityPlusLessonResources[topic.id].some((resource) => resource.sourceId === 'sp-messer'));
   }

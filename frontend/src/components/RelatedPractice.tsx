@@ -25,7 +25,7 @@ const relatedByChapter: Record<string, string[]> = {
   'incident-management': ['security-monitoring', 'logs-scripting', 'incident-portfolio'],
 };
 
-const topicsById = new Map<string, Topic>(phases.flatMap((phase) => phase.topics.map((topic) => [topic.id, topic] as [string, Topic])));
+const topicsById = new Map<string, Topic>(phases.flatMap((phase) => phase.topics.map((topic: Topic) => [topic.id, topic] as [string, Topic])));
 
 export default function RelatedPractice({ topicId }: Props) {
   const headingId = useId();

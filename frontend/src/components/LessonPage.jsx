@@ -1,3 +1,11 @@
+import { coreQuestions } from '../data/coreQuestions';
+import LabCompletion from './LabCompletion';
+import SecurityVideoTopics from './SecurityVideoTopics';
+import { securityVideoTopics } from '../data/securityVideoTopics';
+import LessonExercises from './LessonExercises';
+import { coreById } from '../data/coreCurriculum';
+import CoreLesson from './CoreLesson';
+import { LEARNING_KEY, readJson, saveJson } from '../lib/studyProgress';
 import { useEffect, useRef, useState } from 'react';
 import { FiArrowLeft, FiArrowRight, FiBookOpen, FiCheckCircle, FiExternalLink, FiPlay } from 'react-icons/fi';
 import { lessonDetails } from '../data/lessonDetails';
@@ -66,10 +74,21 @@ function PracticeTasks({ tasks }) {
 
 export default function LessonPage({ topic, lesson, isComplete, onToggle, track, previous, next }) {
   const headingRef = useRef(null);
-  const detail = lessonDetails[topic.id];
+  const detail = { ...lessonDetails[topic.id], question: coreQuestions[topic.id] || lessonDetails[topic.id].question };
   const walkthrough = lessonWalkthroughs[topic.id];
-  const video = lessonVideos[topic.id];
+  const ownedVideo = securityVideoTopics.find(v=>v.lessonId===topic.id);
+  const video = ownedVideo ? {...ownedVideo, source:'https://github.com/IsaacMToast/security-plus-checklist/tree/5414f6989ad34b5d6a80f704617e019a2a1e4b95',sourceName:'Каталог Professor Messer · проверенные названия и ID'} : lessonVideos[topic.id];
   const meta = getTrackMeta(track);
+
+  useEffect(() => {
+    const saved = readJson(LEARNING_KEY, {});
+    saveJson(LEARNING_KEY, { ...saved, last: { ...saved.last, [track]: topic.id }, days: [...new Set([...(saved.days || []), new Date().toISOString().slice(0,10)])] });
+    const restore = () => { if (window.location.hash) document.getElementById(window.location.hash.slice(1))?.scrollIntoView(); else window.scrollTo(0, saved.positions?.[topic.id] || 0); };
+    const timer = setTimeout(restore, 250);
+    const remember = () => { const current = readJson(LEARNING_KEY, {}); saveJson(LEARNING_KEY, { ...current, positions: { ...current.positions, [topic.id]: window.scrollY } }); };
+    window.addEventListener('scroll', remember, { passive: true });
+    return () => { clearTimeout(timer); window.removeEventListener('scroll', remember); };
+  }, [topic.id, track]);
 
   useEffect(() => {
     if (window.location.hash === '#lesson-sources') {
@@ -85,10 +104,11 @@ export default function LessonPage({ topic, lesson, isComplete, onToggle, track,
       <span className="eyebrow">{meta.label} · ОТДЕЛЬНЫЙ УРОК</span>
       <h1 id="lesson-page-title" ref={headingRef} tabIndex="-1">{topic.title}</h1>
       <p>{lesson.intro}</p>
-      <nav className="lesson-jump" aria-label="Разделы урока"><a href="#lesson-video"><FiPlay aria-hidden="true" /> Видео</a><a href="#lesson-theory">Теория</a><a href="#lesson-practice">Практика</a><a href="#lesson-check">Тест</a><a className="lesson-material-link" href="#lesson-sources"><FiBookOpen aria-hidden="true" /> Учебные материалы · {lessonResources[topic.id].length}</a></nav>
+      <button className="button" onClick={() => window.print()}>Печать / PDF</button><nav className="lesson-jump" aria-label="Разделы урока"><a href="#lesson-video"><FiPlay aria-hidden="true" /> Видео</a><a href="#lesson-theory">Теория</a><a href="#lesson-practice">Практика</a><a href="#lesson-check">Тест</a><a className="lesson-material-link" href="#lesson-sources"><FiBookOpen aria-hidden="true" /> Учебные материалы · {lessonResources[topic.id].length}</a></nav>
     </header>
     <div className="lesson-page-content">
       <LessonVideo key={topic.id} video={video} russianVideo={russianLessonVideos[topic.id]} professorMesserResource={track === 'security-plus' ? resourcesById['sp-messer'] : null} topicTitle={topic.title} />
+      {coreById[topic.id] ? <CoreLesson lesson={coreById[topic.id]} /> : <>
       <section className="lesson-section" id="lesson-goals"><span className="eyebrow">ЦЕЛИ УРОКА</span><h2>После урока вы сможете</h2><ul className="lesson-goals">{detail.goals.map((goal) => <li key={goal}>{goal}</li>)}</ul></section>
       <section className="lesson-section" id="lesson-theory"><span className="eyebrow">ТЕОРИЯ ПО ШАГАМ</span><h2>Разбираемся в теме</h2>{lesson.sections.map((section) => <div className="theory-part" key={section.title}><h3>{section.title}</h3>{section.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div>)}<div className="theory-part"><h3>Подробный разбор</h3>{detail.deepDive.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div></section>
       <figure className="lesson-diagram"><figcaption><strong>Схема процесса</strong></figcaption><ol>{detail.diagram.map((step, index) => <li key={`${step}-${index}`}><span>{step}</span>{index < detail.diagram.length - 1 && <FiArrowRight aria-hidden="true" />}</li>)}</ol></figure>
@@ -104,8 +124,12 @@ export default function LessonPage({ topic, lesson, isComplete, onToggle, track,
         {detail.labScreenshot && <figure className="lesson-screenshot"><img src={`${import.meta.env.BASE_URL}study-images/${detail.labScreenshot}`} alt={`Снимок выполнения лабораторной работы: ${lesson.lab.expected}`} loading="lazy" /><figcaption>Скриншот выполнения лабораторного примера в учебной среде.</figcaption></figure>}
         {!detail.example && <TerminalWindow terminal={detail.terminal} />}
       </section>
+      </>}
+      <SecurityVideoTopics lessonId={topic.id} />
       <PracticeTasks tasks={detail.practiceTasks} />
-      <section className="lesson-section" id="lesson-check"><Assessment key={topic.id} title="Проверьте себя" questions={[detail.question]} /></section>
+      <section className="lesson-section" id="lesson-check"><Assessment key={topic.id} storageId={`lesson:${topic.id}`} historyTitle={topic.title} title="Проверьте себя" questions={[detail.question]} /></section>
+      <LabCompletion id={topic.id} />
+      <LessonExercises id={topic.id} />
       <section className="lesson-section lesson-section-secondary" id="lesson-sources"><span className="eyebrow">УЧЕБНЫЕ МАТЕРИАЛЫ · ПЕРВОИСТОЧНИКИ</span><h2>Документация по теме</h2><ol className="lesson-resources">{lessonResources[topic.id].map(({ sourceId, focus, takeaway }) => {
         const resource = resourcesById[sourceId];
         return <li key={sourceId}><a href={resource.url} target="_blank" rel="noreferrer">{resource.title} <FiExternalLink aria-hidden="true" /></a><span>{resource.type} · {resource.language} · {resource.access}</span><p>{focus}</p>{takeaway && <p><strong>Ключевая идея источника:</strong> {takeaway}</p>}</li>;

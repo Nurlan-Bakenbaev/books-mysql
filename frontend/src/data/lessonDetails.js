@@ -1,3 +1,4 @@
+import { coreDetails } from './coreCurriculum.js';
 import { foundationDetails } from './lessonDetailsFoundations.js';
 import { operationsDetails } from './lessonDetailsOperations.js';
 import { securityDetails } from './lessonDetailsSecurity.js';
@@ -9,6 +10,7 @@ import { trackDetails } from './trackContent.js';
 const baseDetails = { ...foundationDetails, ...operationsDetails, ...securityDetails };
 
 export const lessonDetails = {
+  ...coreDetails,
   ...mergeDetails(baseDetails, [roadmapEnrichmentB, roadmapEnrichmentC]),
   ...trackDetails,
 };

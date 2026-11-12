@@ -21,10 +21,7 @@ async function expectWholeMapFits(map) {
 async function openMap(page, full = true) {
   await page.goto('/');
   await expect(page.locator('#career-map')).toHaveCount(0);
-  const menu = page.getByRole('button', { name: 'Открыть меню главной страницы', exact: true });
-  await expect(menu).toHaveAttribute('aria-expanded', 'false');
-  await menu.click();
-  const mapLink = page.getByRole('navigation', { name: 'Навигация главной страницы' }).getByRole('link', { name: 'Карта', exact: true });
+  const mapLink = page.getByRole('navigation', { name: 'Разделы платформы' }).getByRole('link', { name: 'Карта', exact: true });
   await expect(mapLink).toHaveAttribute('href', '?view=career-map');
   await mapLink.click();
   await expect(page).toHaveURL(/view=career-map/);
@@ -42,20 +39,11 @@ test.beforeEach(async ({ page }) => {
   await page.route(/youtube|googleapis|gstatic/, (route) => route.abort());
 });
 
-test('the map opens from the hamburger menu and stays inside the platform menu', async ({ page, isMobile }) => {
-  await page.goto('/');
-  const open = page.getByRole('button', { name: 'Открыть меню главной страницы', exact: true });
-  await open.focus();
-  await page.keyboard.press('Enter');
-  await expect(page.getByRole('navigation', { name: 'Навигация главной страницы' })).toBeVisible();
-  await page.keyboard.press('Escape');
-  await expect(open).toBeFocused();
-  await expect(open).toHaveAttribute('aria-expanded', 'false');
-  await expect(page.getByRole('navigation', { name: 'Навигация главной страницы' })).toHaveCount(0);
+test('the full navbar opens the map and sidebar retains its active link', async ({ page, isMobile }) => {
   await openMap(page);
-  await expect(page.locator('.topbar').getByRole('link', { name: 'Карта', exact: true })).toHaveCount(0);
-  if (isMobile) await page.getByRole('button', { name: 'Открыть меню', exact: true }).click();
-  await expect(page.locator('.academy-sidebar').getByRole('link', { name: 'Карта', exact: true })).toHaveAttribute('aria-current', 'page');
+  await expect(page.getByRole('navigation', {name:'Разделы платформы'}).getByRole('link')).toHaveCount(7);
+  if (isMobile) await page.getByRole('button', {name:'Открыть меню',exact:true}).click();
+  await expect(page.locator('.academy-sidebar').getByRole('link',{name:'Карта',exact:true})).toHaveAttribute('aria-current','page');
 });
 
 test('each level displays its own readable steps and matching lesson links', async ({ page }) => {

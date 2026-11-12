@@ -1,3 +1,4 @@
+import { coreLessonData } from './coreCurriculum.js';
 import { extendedLessons } from './extendedLessons.js';
 import { windowsSecurityLessons } from './windowsSecurity.js';
 import { mergeLessonLabs } from './enrichmentMerge.js';
@@ -767,4 +768,4 @@ BASH`,
   ...trackLessons,
 };
 
-export const lessons = mergeLessonLabs(baseLessons, [roadmapEnrichmentB, roadmapEnrichmentC]);
+export const lessons = { ...coreLessonData, ...mergeLessonLabs(baseLessons, [roadmapEnrichmentB, roadmapEnrichmentC]) };

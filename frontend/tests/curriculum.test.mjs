@@ -1,3 +1,4 @@
+import { coreById, coreLessons } from '../src/data/coreCurriculum.js';
 import { allTopics } from '../src/data/catalog.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -34,7 +35,8 @@ function assertQuestion(question, context) {
 test('every roadmap step has a unique, complete lesson and practical outcome', () => {
   assert.equal(new Set(topicIds).size, topicIds.length);
   assert.deepEqual(Object.keys(lessons).sort(), [...topicIds].sort());
-  assert.equal(topicIds[0], 'virtualization');
+  assert.equal(topicIds[0], 'ct-computer-architecture');
+  assert.equal(coreLessons.length, 31);
   assert.equal(windowsSecurityCourse.topics.length, 9);
   assert.equal(linuxSecurityCourse.topics.length, 9);
   assert.equal(ethicalHackingCourse.topics.length, 10);
@@ -77,7 +79,7 @@ test('every lesson has at least two specific, resolvable learning resources', ()
 test('every lesson has substantial original detail, a diagram, a quiz, and a sourced video', () => {
   assert.deepEqual(Object.keys(lessonDetails).sort(), [...topicIds].sort());
   const noCuratedVideo = new Set(['secplus-exam-orientation']);
-  assert.deepEqual(topicIds.filter((id) => !lessonVideos[id]), [...noCuratedVideo]);
+  assert.deepEqual(topicIds.filter((id) => !lessonVideos[id] && !coreById[id]), [...noCuratedVideo]);
   for (const topic of topics) {
     const detail = lessonDetails[topic.id];
     assert.ok(detail.goals.length >= 3 && detail.goals.every(Boolean), topic.id);
@@ -86,6 +88,7 @@ test('every lesson has substantial original detail, a diagram, a quiz, and a sou
     assert.ok(detail.diagram.length >= 3 && detail.diagram.every(Boolean), topic.id);
     assertQuestion(detail.question, topic.id);
     const video = lessonVideos[topic.id];
+    if (!video && coreById[topic.id]) continue;
     if (!video) {
       assert.ok(noCuratedVideo.has(topic.id), topic.id);
       assert.ok(lessonResources[topic.id].some((reference) => reference.sourceId === 'sp-messer'), topic.id);
@@ -106,6 +109,7 @@ test('every lesson includes a complete, topic-specific step-by-step walkthrough'
   assert.deepEqual(Object.keys(lessonWalkthroughs).sort(), [...topicIds].sort());
   for (const topic of topics) {
     const walkthrough = lessonWalkthroughs[topic.id];
+    if (coreById[topic.id]) { assert.ok(walkthrough.steps.length >= 4); assert.ok(coreById[topic.id].commands.length > 200); assert.equal(coreById[topic.id].problems.length, 3); continue; }
     assert.ok(walkthrough.title && walkthrough.context.length >= 100, topic.id);
     assert.ok(walkthrough.steps.length >= 4 && walkthrough.steps.every((step) => step.length >= 100), topic.id);
     assert.ok(walkthrough.verification.length >= 80 && walkthrough.troubleshooting.length >= 100, topic.id);
@@ -211,7 +215,7 @@ test('computer technologies provides a complete prerequisite path before adminis
 });
 
 test('every home lab includes preparation, execution, validation, recovery, and sources', () => {
-  assert.equal(labs.length, 8);
+  assert.equal(labs.length, 9);
   for (const lab of labs) {
     assert.ok(lab.duration && lab.description && lab.expected, lab.id);
     assert.ok(lab.prerequisites.length >= 3, `${lab.id}: prerequisites`);

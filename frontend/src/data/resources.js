@@ -1,3 +1,4 @@
+import { coreResources, coreReferences } from './coreCurriculum.js';
 import { accuracyResources, accuracyLessonResources } from './accuracyResources.js';
 import { trackResources, trackLessonResources } from './trackContent.js';
 
@@ -240,7 +241,7 @@ const baseResources = [
   },
 ];
 
-export const resources = [...baseResources, ...trackResources, ...accuracyResources];
+export const resources = [...baseResources, ...trackResources, ...accuracyResources, ...coreResources];
 
 export const resourcesById = Object.fromEntries(resources.map((resource) => [resource.id, resource]));
 
@@ -417,4 +418,4 @@ const baseLessonResources = {
   ],
 };
 
-export const lessonResources = Object.fromEntries(Object.entries({ ...baseLessonResources, ...trackLessonResources }).map(([id, references]) => [id, [...references, ...(accuracyLessonResources[id] || [])]]));
+export const lessonResources = Object.fromEntries(Object.entries({ ...baseLessonResources, ...trackLessonResources, ...coreReferences }).map(([id, references]) => [id, [...references, ...(accuracyLessonResources[id] || [])]]));

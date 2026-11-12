@@ -1,5 +1,5 @@
+import { moduleQuestions } from '../data/moduleAssessments';
 import { FiArrowRight, FiBookOpen } from 'react-icons/fi';
-import { lessonDetails } from '../data/lessonDetails';
 import { lessonHref, lessonMaterialsHref } from '../navigation';
 import Assessment from './Assessment';
 
@@ -9,7 +9,7 @@ import Assessment from './Assessment';
 export default function TrackCourse({ course, sectionId, eyebrow, disclaimer, icon, completed, onToggle }) {
   const headingId = `${sectionId}-heading`;
   const done = course.topics.filter((topic) => completed.includes(topic.id)).length;
-  const questions = course.topics.map((topic) => ({ ...lessonDetails[topic.id].question, context: topic.title }));
+  const questions = moduleQuestions(course.topics);
 
   return <section className="section security-course" id={sectionId} aria-labelledby={headingId}>
     <div className="section-heading">

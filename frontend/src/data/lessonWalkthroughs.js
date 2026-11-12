@@ -1,3 +1,4 @@
+import { coreWalkthroughs } from './coreCurriculum.js';
 import { foundationWalkthroughs } from './lessonWalkthroughsFoundations.js';
 import { operationsWalkthroughs } from './lessonWalkthroughsOperations.js';
 import { windowsWalkthroughs } from './lessonWalkthroughsWindows.js';
@@ -13,6 +14,7 @@ const baseWalkthroughs = {
 };
 
 export const lessonWalkthroughs = {
+  ...coreWalkthroughs,
   ...mergeWalkthroughSteps(baseWalkthroughs, [roadmapEnrichmentB, roadmapEnrichmentC]),
   ...trackWalkthroughs,
 };
