@@ -1,5 +1,6 @@
 import CourseBrand from './CourseBrand';
 import TechnologySphere from './TechnologySphere';
+import NetworkSignalBackdrop from './NetworkSignalBackdrop';
 import GlobalNavbar from './GlobalNavbar';
 import { motion, useReducedMotion } from 'motion/react';
 import { FiActivity, FiArrowRight, FiAward, FiBookOpen, FiCloud, FiCommand, FiCpu, FiMoon, FiPlay, FiSearch, FiShare2, FiShield, FiSun, FiTerminal } from 'react-icons/fi';
@@ -32,6 +33,7 @@ export default function LandingPage({ tracks, totalCount, nextLesson, theme, onT
 
     <main>
       <section className="landing-hero">
+        <NetworkSignalBackdrop />
         <motion.div className="landing-hero-copy" initial={reduceMotion ? false : { opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .65 }}>
           <span className="landing-badge"><span className="status-dot" /> {totalCount} ПОДРОБНЫХ УРОКОВ · ОБНОВЛЕНО 12.11.2026</span>
           <h1>Станьте системным<br /> администратором <em>шаг за шагом.</em></h1>

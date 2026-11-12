@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState } from 'react';
+import { gsap } from 'gsap';
 import { SiLinux, SiUbuntu, SiDebian, SiRedhat, SiDocker, SiKubernetes, SiAnsible, SiGit, SiPython, SiPrometheus, SiGrafana, SiCisco, SiIbm, SiVmware, SiTerraform, SiNginx, SiApache, SiPostgresql, SiMysql, SiOpenstack, SiWireshark } from 'react-icons/si';
 import { FaWindows } from 'react-icons/fa';
 import { VscTerminalPowershell, VscAzure } from 'react-icons/vsc';
@@ -38,6 +39,7 @@ const brands = [
 export default function TechnologySphere() {
   const sphereRef = useRef(null);
   const nodesRef = useRef([]);
+  const paintRef = useRef(null);
   const activeRef = useRef(null);
   const angleRef = useRef(.35);
   const hoveredRef = useRef(null);
@@ -53,56 +55,121 @@ export default function TechnologySphere() {
   useEffect(() => {
     const sphere = sphereRef.current;
     const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const easeReturn = gsap.parseEase('power2.inOut');
+    let width = sphere.clientWidth;
     let visible = false;
-    let frame;
-    let lastTime;
+    let firstFrame = true;
+    gsap.set(nodesRef.current, { x: 0, y: 0, xPercent: -50, yPercent: -50, force3D: true });
+    gsap.set(nodesRef.current.map(node => node.querySelector('button')), { scale: 1, force3D: false });
+    const models = nodesRef.current.map(node => ({
+      node,
+      setX: gsap.quickSetter(node, 'x', 'px'),
+      setY: gsap.quickSetter(node, 'y', 'px'),
+      setScaleX: gsap.quickSetter(node.querySelector('button'), 'scaleX'),
+      setScaleY: gsap.quickSetter(node.querySelector('button'), 'scaleY'),
+      setOpacity: gsap.quickSetter(node.querySelector('button'), 'opacity'),
+      position: null,
+      scale: 1,
+      opacity: 1,
+      wasActive: false,
+      returnFrom: null,
+      returnTime: 0,
+      zIndex: -1,
+    }));
 
-    // Project points onto a flat plane: logos never turn sideways or mirror.
-    const paint = () => {
+    // Only transforms and opacity change per frame; layout is measured on resize.
+    const paint = (delta = 0, snap = false) => {
       const angle = angleRef.current;
+      const cos = Math.cos(angle);
+      const sin = Math.sin(angle);
+      const follow = snap ? 1 : 1 - Math.exp(-delta / .11);
       brands.forEach((point, index) => {
-        const node = nodesRef.current[index];
-        if (!node || activeRef.current === index) return;
-        const x = point.x * Math.cos(angle) + point.z * Math.sin(angle);
-        const z = point.z * Math.cos(angle) - point.x * Math.sin(angle);
+        const model = models[index];
+        const selected = activeRef.current === index;
+        const x = point.x * cos + point.z * sin;
+        const z = point.z * cos - point.x * sin;
         const y = point.y * Math.cos(.22) - z * Math.sin(.22);
         const depth = (point.y * Math.sin(.22) + z * Math.cos(.22) + 1) / 2;
-        node.style.left = `${50 + x * 39}%`;
-        node.style.top = `${50 + y * 39}%`;
-        node.style.setProperty('--depth-scale', (.72 + depth * .34).toFixed(3));
-        node.style.setProperty('--depth-opacity', (.6 + depth * .4).toFixed(3));
-        node.style.setProperty('--tooltip-anchor', `${50 + x * 50}%`);
-        node.style.zIndex = String(Math.round(depth * 100));
-        node.dataset.side = y > 0 ? 'above' : 'below';
+        const target = { x: x * .39, y: y * .39, depth };
+        model.position ??= target;
+        if (selected) {
+          model.returnFrom = null;
+          if (!model.wasActive) {
+            model.node.style.setProperty('--tooltip-anchor', `${50 + model.position.x / .39 * 50}%`);
+            model.node.dataset.side = model.position.y > 0 ? 'above' : 'below';
+          }
+        } else {
+          if (model.wasActive) {
+            model.returnFrom = model.position;
+            model.returnTime = 0;
+          }
+          if (model.returnFrom && !snap) {
+            // Rejoin the moving orbit over 900 ms instead of jumping to it.
+            model.returnTime = Math.min(1, model.returnTime + delta / .9);
+            const progress = easeReturn(model.returnTime);
+            model.position = {
+              x: model.returnFrom.x + (target.x - model.returnFrom.x) * progress,
+              y: model.returnFrom.y + (target.y - model.returnFrom.y) * progress,
+              depth: model.returnFrom.depth + (target.depth - model.returnFrom.depth) * progress,
+            };
+            if (model.returnTime === 1) model.returnFrom = null;
+          } else {
+            model.position = target;
+            model.returnFrom = null;
+          }
+        }
+        model.wasActive = selected;
+        model.scale += ((selected ? 1.4 : .72 + model.position.depth * .34) - model.scale) * follow;
+        model.opacity += ((selected ? 1 : .6 + model.position.depth * .4) - model.opacity) * follow;
+        model.setX(model.position.x * width);
+        model.setY(model.position.y * width);
+        model.setScaleX(model.scale);
+        model.setScaleY(model.scale);
+        model.setOpacity(model.opacity.toFixed(4));
+        const zIndex = Math.round(model.position.depth * 100);
+        if (model.zIndex !== zIndex) {
+          model.node.style.zIndex = String(zIndex);
+          model.zIndex = zIndex;
+        }
       });
     };
-    const animate = (time) => {
-      if (lastTime !== undefined) angleRef.current += Math.min(time - lastTime, 64) * Math.PI / 24000;
-      lastTime = time;
-      paint();
-      frame = requestAnimationFrame(animate);
+    const animate = (_time, deltaTime) => {
+      const delta = firstFrame ? 0 : Math.min(deltaTime, 50) / 1000;
+      firstFrame = false;
+      angleRef.current += delta * Math.PI / 32;
+      paint(delta);
     };
     const sync = () => {
-      cancelAnimationFrame(frame);
-      lastTime = undefined;
-      paint();
-      if (visible && !document.hidden && !motionPreference.matches) frame = requestAnimationFrame(animate);
+      gsap.ticker.remove(animate);
+      firstFrame = true;
+      paint(0, motionPreference.matches);
+      if (visible && !document.hidden && !motionPreference.matches) gsap.ticker.add(animate);
     };
     const observer = new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting;
       sync();
     });
     observer.observe(sphere);
+    const resizeObserver = new ResizeObserver(([entry]) => {
+      width = entry.contentRect.width;
+      paint(0, motionPreference.matches);
+    });
+    resizeObserver.observe(sphere);
     document.addEventListener('visibilitychange', sync);
     motionPreference.addEventListener('change', sync);
-    paint();
+    paintRef.current = () => paint(0, motionPreference.matches);
+    paint(0, true);
     return () => {
-      cancelAnimationFrame(frame);
+      gsap.ticker.remove(animate);
       observer.disconnect();
+      resizeObserver.disconnect();
+      paintRef.current = null;
       document.removeEventListener('visibilitychange', sync);
       motionPreference.removeEventListener('change', sync);
     };
   }, []);
+
+  useEffect(() => { paintRef.current?.(); }, [active]);
 
   useEffect(() => {
     const dismiss = (event) => {

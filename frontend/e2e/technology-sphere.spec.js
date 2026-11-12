@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
-const position = (node) => node.evaluate(el => [el.style.left, el.style.top].join(','));
+const position = (node) => node.evaluate(el => getComputedStyle(el).transform);
 
 test('sphere uses larger, colourful, front-facing icons and keeps moving behind the selected icon', async ({ page, isMobile }) => {
   await page.goto('/');
@@ -97,4 +97,70 @@ test('sphere respects reduced motion and suspends animation outside the viewport
   expect(await position(node)).toBe(offscreen);
   await sphere.scrollIntoViewIfNeeded();
   await expect.poll(() => position(node)).not.toBe(offscreen);
+});
+
+test('an inspected icon returns to the moving orbit without a jump', async ({ page }) => {
+  await page.goto('/');
+  const icon = page.getByRole('button', { name: 'Docker', exact: true });
+  await icon.focus();
+  await expect(page.getByRole('tooltip')).toContainText('Docker');
+  await page.waitForTimeout(1200);
+  const result = await icon.locator('..').evaluate(async node => {
+    const centre = () => {
+      const box = node.getBoundingClientRect();
+      return { x: box.x + box.width / 2, y: box.y + box.height / 2 };
+    };
+    const pinned = centre();
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    const released = centre();
+    return { pinned, firstStep: Math.hypot(released.x - pinned.x, released.y - pinned.y) };
+  });
+  expect(result.firstStep).toBeLessThan(4);
+  await expect.poll(async () => {
+    const box = await icon.locator('..').boundingBox();
+    return Math.hypot(box.x + box.width / 2 - result.pinned.x, box.y + box.height / 2 - result.pinned.y);
+  }).toBeGreaterThan(8);
+});
+
+test('network signals follow the responsive route and respect motion preferences', async ({ page, isMobile }) => {
+  await page.goto('/');
+  const diagram = page.getByRole('img', { name: /Путь сетевого сигнала/ });
+  await diagram.scrollIntoViewIfNeeded();
+  const topology = diagram.locator(isMobile ? '.network-topology-mobile' : '.network-topology-desktop');
+  await expect(topology).toBeVisible();
+  await expect(topology.locator('.network-component')).toHaveCount(8);
+  await expect(topology.locator('.network-zone-label')).toHaveText(['СЕТЬ A · ОФИС', 'СЕТЬ B · ДАТА-ЦЕНТР']);
+  await expect(diagram).toHaveAttribute('data-motion', 'running');
+  const packet = diagram.locator('.network-packet').first();
+  const initial = await position(packet);
+  await expect.poll(() => position(packet)).not.toBe(initial);
+  // Sample the CSS animation at each bend and endpoint to check it follows the drawn wire.
+  const distances = await diagram.evaluate(element => {
+    const svg = [...element.querySelectorAll('.network-topology')].find(el => getComputedStyle(el).display !== 'none');
+    const path = svg.querySelector('.network-route');
+    const packet = element.querySelector('.network-packet');
+    const animation = packet.getAnimations()[0];
+    animation.pause();
+    const distances = [0, .374656, .625344, .9999].map(progress => {
+      animation.currentTime = progress * 8000;
+      const point = path.getPointAtLength(path.getTotalLength() * progress);
+      const screen = new DOMPoint(point.x, point.y).matrixTransform(path.getScreenCTM());
+      const box = packet.getBoundingClientRect();
+      return Math.hypot(box.x + box.width / 2 - screen.x, box.y + box.height / 2 - screen.y);
+    });
+    animation.play();
+    return distances;
+  });
+  expect(Math.max(...distances)).toBeLessThan(1);
+  const resumed = await position(packet);
+  await expect.poll(() => position(packet)).not.toBe(resumed);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect(diagram).toHaveAttribute('data-motion', 'paused');
+  const reduced = await position(packet);
+  await page.waitForTimeout(150);
+  expect(await position(packet)).toBe(reduced);
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.locator('.landing-footer').scrollIntoViewIfNeeded();
+  await expect(diagram).toHaveAttribute('data-motion', 'paused');
 });
