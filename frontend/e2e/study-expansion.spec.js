@@ -23,8 +23,7 @@ test('topic anchor opens the correct note and lesson anchors retain their scroll
 test('written answers and self assessment persist independently of automatic score',async({page})=>{
  await page.goto('/?lesson=network-models');const written=page.getByRole('heading',{name:'Восемь заданий урока'}).locator('..');await written.locator('textarea').first().fill('TCP устанавливает поток; HTTP проверяется отдельным запросом.');await written.getByText('Критерии самопроверки',{exact:true}).first().click();await written.getByRole('combobox').first().selectOption('meets');await page.reload();await expect(written.locator('textarea').first()).toHaveValue(/TCP устанавливает/);await expect(page.locator('.assessment-score')).toHaveText('');
 });
-test('sphere, moving rail and reduced motion support pause',async({page})=>{
- await page.goto('/');await expect(page.locator('.sphere-rotation > span')).toHaveCount(24);await page.getByRole('button',{name:'Остановить сферу'}).click();await expect(page.locator('.sphere-rotation')).toHaveCSS('animation-play-state','paused');
+test('moving rail and reduced motion support pause',async({page})=>{
  await page.goto('/?view=roadmap');const rail=page.locator('.skill-sequence-step').first();const initial=await rail.evaluate(el=>getComputedStyle(el,'::after').backgroundPosition);await page.waitForTimeout(150);expect(await rail.evaluate(el=>getComputedStyle(el,'::after').backgroundPosition)).not.toBe(initial);await page.getByRole('button',{name:'Остановить движение линий'}).click();await expect(page.locator('.skill-map-board')).toHaveClass(/map-paused/);await page.emulateMedia({reducedMotion:'reduce'});expect(await rail.evaluate(el=>getComputedStyle(el,'::after').animationName)).toBe('none');
 });
 test('new pages pass accessibility checks in both themes and at narrow width',async({page})=>{

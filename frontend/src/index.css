@@ -1274,17 +1274,29 @@ input[type='checkbox'] { width: 19px; height: 19px; flex: none; margin: 3px 0 0;
 .lesson-section, [id^="security-topic-"] { scroll-margin-top:150px; }
 @media (max-width:760px) { .landing-nav .global-navbar { order:3; flex-basis:100%; } .global-navbar { gap:5px 14px; padding:10px 12px; } }
 @media print { .academy-sidebar,.topbar,.global-navbar,.lesson-video-first,.lesson-jump,button { display:none!important; } .main { margin:0!important; } .lesson-page { color:#111; background:white; } pre { white-space:pre-wrap; } }
-.technology-sphere { width:320px; max-width:100%; margin:20px auto; perspective:850px; text-align:center; }
-.sphere-rotation { position:relative; width:280px; height:280px; margin:35px auto; transform-style:preserve-3d; animation:sphere-turn 35s linear infinite; }
-.sphere-rotation > span { position:absolute; top:50%; left:50%; width:34px; height:34px; color:var(--text); }
-.sphere-rotation svg { width:30px; height:30px; }
-@keyframes sphere-turn { to { transform:rotateY(360deg); } }
+.technology-sphere { position:relative; z-index:2; width:560px; max-width:100%; min-width:0; margin:0 auto; text-align:center; container-type:inline-size; }
+.technology-sphere::before { content:''; position:absolute; inset:4% 0 10%; border-radius:50%; background:radial-gradient(ellipse at 35% 35%,color-mix(in srgb,var(--neon-cyan) 10%,transparent),transparent 65%),radial-gradient(ellipse at 65% 65%,color-mix(in srgb,var(--neon-violet) 12%,transparent),transparent 65%); mask-image:radial-gradient(circle,#000 35%,transparent 71%); pointer-events:none; }
+.sphere-rotation { position:relative; width:100%; aspect-ratio:1; isolation:isolate; }
+.sphere-node { position:absolute; top:50%; left:50%; width:13%; min-width:44px; max-width:64px; aspect-ratio:1; transform:translate(-50%,-50%); }
+.sphere-icon { display:grid; place-items:center; width:100%; height:100%; padding:8%; border:1px solid transparent; border-radius:20px; color:var(--brand-color); background:transparent; opacity:var(--depth-opacity,1); transform:scale(var(--depth-scale,1)); transition:transform .22s ease,opacity .22s ease,background .22s ease,box-shadow .22s ease; }
+.sphere-icon svg { width:100%; height:100%; filter:drop-shadow(0 2px 8px color-mix(in srgb,var(--brand-color) 20%,transparent)); }
+.app-shell[data-theme='light'] .sphere-icon { color:color-mix(in srgb,var(--brand-color) 65%,#12263c); opacity:1; }
+.sphere-node.is-active { z-index:200!important; }
+.sphere-node.is-active .sphere-icon { transform:scale(1.4); opacity:1; border-color:color-mix(in srgb,var(--brand-color) 45%,var(--border)); background:var(--surface); box-shadow:0 8px 30px color-mix(in srgb,var(--brand-color) 22%,transparent); }
+.sphere-tooltip { position:absolute; top:calc(100% + 18px); left:50%; width:min(260px,82cqi); padding:15px 17px; border:1px solid color-mix(in srgb,var(--brand-color) 35%,var(--border)); border-radius:14px; color:var(--text); background:var(--surface); box-shadow:var(--shadow); text-align:left; transform:translateX(calc(-1 * var(--tooltip-anchor,50%))); }
+.sphere-tooltip::before { content:''; position:absolute; bottom:100%; left:0; width:100%; height:26px; }
+.sphere-node[data-side='above'] .sphere-tooltip { top:auto; bottom:calc(100% + 18px); }
+.sphere-node[data-side='above'] .sphere-tooltip::before { top:100%; bottom:auto; }
+.sphere-tooltip strong { display:block; font-size:16px; line-height:1.3; }
+.sphere-tooltip p { margin:7px 0 0; color:var(--muted); font-size:13px; line-height:1.6; }
+.sphere-hint { position:relative; margin:8px 0 0; color:var(--muted); font-size:12px; }
+@media (prefers-reduced-motion:reduce) { .sphere-icon { transition:none; } }
 .standalone-view .skill-sequence-step::after { background:linear-gradient(90deg,#38bdf8 0%,#8b5cf6 35%,#fff 48%,#38bdf8 58%,#8b5cf6 100%); background-size:250% 100%; animation:rail-flow 2.6s linear infinite; transform:translateY(-50%) scaleX(1); }
 .standalone-view .skill-column::before { background:linear-gradient(180deg,var(--lane-color),#fff,var(--lane-color)); background-size:100% 250%; animation:branch-flow 3s linear infinite; }
 .map-paused .skill-sequence-step::after,.map-paused .skill-column::before { animation-play-state:paused!important; }
 @keyframes rail-flow { from { background-position:250% 0; } to { background-position:0 0; } }
 @keyframes branch-flow { from { background-position:0 250%; } to { background-position:0 0; } }
-@media (prefers-reduced-motion:reduce) { .sphere-rotation,.standalone-view .skill-sequence-step::after,.standalone-view .skill-column::before { animation:none!important; } }
+@media (prefers-reduced-motion:reduce) { .standalone-view .skill-sequence-step::after,.standalone-view .skill-column::before { animation:none!important; } }
 .lesson-section textarea { display:block; box-sizing:border-box; width:100%; margin:12px 0; border:1px solid var(--border); border-radius:8px; padding:12px; color:var(--text); background:var(--surface); font:inherit; }
 .lesson-section select { max-width:100%; padding:8px; color:var(--text); background:var(--surface); }
 .course-brand { position:absolute; right:20px; top:65px; opacity:.16; color:var(--text); font-size:64px; pointer-events:none; }
@@ -1295,9 +1307,8 @@ input[type='checkbox'] { width: 19px; height: 19px; flex: none; margin: 3px 0 0;
 .app-shell[data-theme='light'] .academy-sidebar { --text:#12263c; --muted:#53667b; color:#12263c; }
 .app-shell[data-theme='light'] .academy-brand-copy strong { color:#12263c; }
 .storage-error { grid-column:1 / -1; margin:0; padding:14px; background:#7d1727; color:white; }
-.landing-hero { grid-template-columns:minmax(0,1fr) 320px; gap:40px; }
+.landing-hero { grid-template-columns:minmax(0,1.2fr) minmax(0,1fr); gap:40px; }
 .landing-hero-copy { min-width:0; max-width:100%; }
 .landing-hero h1 { overflow-wrap:anywhere; }
-.technology-sphere { min-width:0; }
-@media (max-width:900px) { .landing-hero { grid-template-columns:minmax(0,1fr); } .landing-hero-copy > p { max-width:100%; } }
+@media (max-width:1000px) { .landing-hero { grid-template-columns:minmax(0,1fr); } .landing-hero-copy > p { max-width:100%; } }
 @media (max-width:760px) { .landing-hero h1 { font-size:clamp(34px,10vw,46px); } }
