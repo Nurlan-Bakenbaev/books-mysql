@@ -1,8 +1,11 @@
 import { singleModuleQuestions } from './singleModuleQuestions.js';
 import { introQuestions } from './introQuestions.js';
 import { lessonDetails } from './lessonDetails.js';
+import { beginnerLessons, beginnerModuleQuestions } from './core/beginner.js';
 export function moduleQuestions(topics) {
-  const candidates = (topics.length === 1 && singleModuleQuestions(topics[0].id)) || (topics.length === 1 && topics[0].id === 'secplus-exam-orientation' ? introQuestions : topics.flatMap(t => {
+  const beginnerIds = beginnerLessons.map((lesson) => lesson.id);
+  const isBeginnerModule = topics.length === beginnerIds.length && topics.every((topic, index) => topic.id === beginnerIds[index]);
+  const candidates = (isBeginnerModule && beginnerModuleQuestions) || (topics.length === 1 && singleModuleQuestions(topics[0].id)) || (topics.length === 1 && topics[0].id === 'secplus-exam-orientation' ? introQuestions : topics.flatMap(t => {
     const d=lessonDetails[t.id];
     return [
       {...d.question,context:t.title},

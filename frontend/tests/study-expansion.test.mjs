@@ -13,9 +13,9 @@ import { moduleQuestions } from '../src/data/moduleAssessments.js';
 import { lessonExercises } from '../src/data/lessonExercises.js';
 import { ASSESSMENT_KEY, PROGRESS_KEY, LEARNING_KEY, importStudy, exportStudy, readAssessment, fingerprint } from '../src/lib/studyProgress.js';
 const storage=()=>{const data=new Map();return {getItem:k=>data.get(k)??null,setItem:(k,v)=>data.set(k,v),removeItem:k=>data.delete(k)};};
-test('31 main lessons follow 3/5/6/6/4/4/3 blocks with three distinct fault scenarios',()=>{
- assert.deepEqual(corePhases.map(p=>p.topics.length),[3,5,6,6,4,4,3]);
- assert.equal(new Set(coreLessons.map(l=>l.id)).size,31);
+test('38 main lessons follow 7/3/5/6/6/4/4/3 blocks with three distinct fault scenarios',()=>{
+ assert.deepEqual(corePhases.map(p=>p.topics.length),[7,3,5,6,6,4,4,3]);
+ assert.equal(new Set(coreLessons.map(l=>l.id)).size,38);
  for(const l of coreLessons){assert.ok(allTopics.some(t=>t.id===l.id));assert.ok(l.business.length>100,l.id);assert.ok(l.theory.length>=2);assert.ok(l.theory.every(t=>t.length>100),l.id);assert.equal(l.problems.length,3);assert.equal(new Set(l.problems.map(p=>p[0])).size,3);assert.ok(l.problems.every(p=>p[1].length>80),l.id);assert.ok(l.commands.length>200);assert.ok(l.tasks.length>=2&&l.tasks.length<=3);assert.ok(l.sources.length>=2);}
 });
 test('121 video topics have unique IDs, notes, 29 objectives and one existing owner each',()=>{

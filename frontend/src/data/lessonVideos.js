@@ -235,14 +235,6 @@ export const lessonVideos = {
   'secplus-detection-automation': videos.siem,
   'secplus-physical-deception': videos.firewall,
   'secplus-awareness-compliance': videos.lsecCia,
-  'ct-computer-architecture': videos.vm,
-  'ct-uefi-boot': videos.linuxBasics,
-  'ct-storage-filesystems': videos.storage,
-  'ct-os-internals': videos.linuxServices,
-  'ct-virtualization-containers': videos.vm,
-  'ct-network-hardware': videos.tcp,
-  'ct-interfaces-peripherals': videos.linuxBasics,
-  'ct-troubleshooting-capstone': videos.troubleshoot,
 };
 
 export const chapterVideos = {

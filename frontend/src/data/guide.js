@@ -337,7 +337,7 @@ export const certifications = [
 ]
 
 export const supplementalTopics = legacyPhases.flatMap(p => p.topics).filter(t => !coreById[t.id]);
-export const phases = [...corePhases, { id: "supplemental", number: "+", title: "Дополнительные материалы", subtitle: "ПРЕЖНИЕ УРОКИ СОХРАНЕНЫ", description: "Дополнение к 31 основной теме; прежние адреса и отметки сохранены.", topics: supplementalTopics }];
+export const phases = [...corePhases, { id: "supplemental", number: "+", title: "Дополнительные материалы", subtitle: "ПРЕЖНИЕ УРОКИ СОХРАНЕНЫ", description: "Дополнение к 38 основным темам; прежние адреса и отметки сохранены.", topics: supplementalTopics }];
 
 labs.push(linuxLab);
 

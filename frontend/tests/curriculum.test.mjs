@@ -36,7 +36,7 @@ test('every roadmap step has a unique, complete lesson and practical outcome', (
   assert.equal(new Set(topicIds).size, topicIds.length);
   assert.deepEqual(Object.keys(lessons).sort(), [...topicIds].sort());
   assert.equal(topicIds[0], 'ct-computer-architecture');
-  assert.equal(coreLessons.length, 31);
+  assert.equal(coreLessons.length, 38);
   assert.equal(windowsSecurityCourse.topics.length, 9);
   assert.equal(linuxSecurityCourse.topics.length, 9);
   assert.equal(ethicalHackingCourse.topics.length, 10);
@@ -76,9 +76,9 @@ test('every lesson has at least two specific, resolvable learning resources', ()
   assert.ok(resources.some((resource) => resource.language === 'RU'));
 });
 
-test('every lesson has substantial original detail, a diagram, a quiz, and a sourced video', () => {
+test('every lesson has substantial original detail, a diagram, a quiz, and an honest video state', () => {
   assert.deepEqual(Object.keys(lessonDetails).sort(), [...topicIds].sort());
-  const noCuratedVideo = new Set(['secplus-exam-orientation']);
+  const noCuratedVideo = new Set([...computerTechnologiesCourse.topics.map((topic) => topic.id), 'secplus-exam-orientation']);
   assert.deepEqual(topicIds.filter((id) => !lessonVideos[id] && !coreById[id]), [...noCuratedVideo]);
   for (const topic of topics) {
     const detail = lessonDetails[topic.id];
@@ -91,7 +91,7 @@ test('every lesson has substantial original detail, a diagram, a quiz, and a sou
     if (!video && coreById[topic.id]) continue;
     if (!video) {
       assert.ok(noCuratedVideo.has(topic.id), topic.id);
-      assert.ok(lessonResources[topic.id].some((reference) => reference.sourceId === 'sp-messer'), topic.id);
+      if (topic.id === 'secplus-exam-orientation') assert.ok(lessonResources[topic.id].some((reference) => reference.sourceId === 'sp-messer'), topic.id);
       continue;
     }
     assert.match(video.id, /^[A-Za-z0-9_-]{11}$/, topic.id);

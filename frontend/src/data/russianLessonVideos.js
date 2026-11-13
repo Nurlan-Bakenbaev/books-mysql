@@ -57,9 +57,6 @@ export const russianLessonVideos = {
   'az-container-instances': { ...russianVideoLibrary.docker, focus: 'Базовые принципы Docker. Настройка Azure Container Instances разобрана в тексте урока.' },
   'az-container-apps': { ...russianVideoLibrary.docker, focus: 'Базовые принципы Docker. Возможности Azure Container Apps изучайте по документации урока.' },
   'az-monitor-alerts': { ...russianVideoLibrary.prometheus, focus: 'Общие принципы метрик на примере Prometheus. Интерфейс Azure Monitor отличается.' },
-  'ct-network-hardware': { ...russianVideoLibrary.networks, focus: 'Курс по компьютерным сетям дополняет тему сетевого оборудования.' },
-  'ct-os-internals': { ...russianVideoLibrary.linuxAdvanced, focus: 'Практика Linux дополняет тему ОС. Внутреннее устройство Windows разбирается в тексте.' },
-  'ct-troubleshooting-capstone': { ...russianVideoLibrary.networkPractice, focus: 'Сетевая часть диагностики. Аппаратные неисправности разобраны в тексте урока.' },
 };
 
 export function videoUrls(item) {

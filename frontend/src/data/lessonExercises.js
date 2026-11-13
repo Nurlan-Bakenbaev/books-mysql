@@ -3,6 +3,7 @@ import { lessons } from './lessons.js';
 import { coreById } from './coreCurriculum.js';
 export function lessonExercises(id) {
   const d=lessonDetails[id], l=lessons[id], core=coreById[id];
+  if (core?.review) return core.review.map(([title, task, criteria]) => ({ title, task, criteria }));
   return [
     {title:'Объяснение механизма',task:`Объясните причинную связь: ${d.deepDive[0]}`,criteria:d.deepDive[1]},
     {title:'Практическая ситуация',task:d.caseStudy.situation,criteria:`Действие: ${d.caseStudy.action} Результат: ${d.caseStudy.result}`},

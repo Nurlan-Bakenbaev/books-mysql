@@ -3,10 +3,16 @@ import AxeBuilder from '@axe-core/playwright';
 import { coreLessons } from '../src/data/coreCurriculum.js';
 import { securityVideoTopics } from '../src/data/securityVideoTopics.js';
 test.beforeEach(async({page})=>{await page.route(/youtube|googleapis|gstatic/,r=>r.abort());});
-test('all 31 main routes render six engineering sections and preserve legacy routes',async({page})=>{
+test('all 38 main routes render six learning sections and preserve legacy routes',async({page})=>{
  test.setTimeout(120000);
  for(const l of coreLessons){await page.goto(`/?lesson=${l.id}`);await expect(page.locator('.core-lesson > section')).toHaveCount(6);await expect(page.locator('#lesson-troubleshooting h3')).toHaveCount(3);await expect(page.locator('#lesson-independent li')).toHaveCount(l.tasks.length);await expect(page.locator('.route-not-found')).toHaveCount(0);}
  await page.goto('/?lesson=virtualization');await expect(page.locator('#lesson-practice')).toBeVisible();
+});
+test('Point 00 starts with beginner concepts and keeps unverified video blocks out of the way',async({page})=>{
+ await page.goto('/?view=roadmap');await expect(page.locator('.phase-card').first()).toContainText('С самых азов');
+ await page.goto('/?lesson=admin-engineering');await expect(page.getByRole('heading',{name:'Системный администратор: компьютер, ОС и сеть с нуля'})).toBeVisible();await expect(page.locator('#lesson-video')).toHaveCount(0);await expect(page.locator('body')).not.toContainText('Incident management');
+ const guides=page.locator('.beginner-guide');await expect(guides).toHaveCount(3);await guides.first().locator('summary').focus();await page.keyboard.press('Enter');await expect(guides.first()).toHaveAttribute('open','');
+ await page.setViewportSize({width:390,height:844});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });
 test('navbar stays complete on mobile and course ordering is shared',async({page})=>{
  await page.setViewportSize({width:320,height:844});await page.goto('/');const nav=page.getByRole('navigation',{name:'Разделы платформы'});await expect(nav.getByRole('link')).toHaveText(['Карта','Профессии','Курсы','Библиотека','Практика','Сертификации','Обзор']);await expect(nav.getByText('Network Engineer')).toHaveCount(0);

@@ -32,7 +32,7 @@ function LessonVideo({ video: englishVideo, russianVideo, professorMesserResourc
     {video ? <div className="curated-video" key={language}><div className="video-card-heading"><strong>{video.title}</strong><span>{language === 'en' ? 'English' : 'Русский'} · {video.playlistId ? 'Видеокурс' : video.duration || 'Видео'}</span></div>{video.focus && <p>{video.focus}</p>}<p><a href={video.source} target="_blank" rel="noreferrer">Источник: {video.sourceName} <FiExternalLink aria-hidden="true" /></a></p>
       <div className="video-frame"><iframe title={`Видео (${language === 'en' ? 'English' : 'Русский'}): ${video.title}`} src={urls.embed} loading="eager" referrerPolicy="strict-origin-when-cross-origin" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen /></div>
       <div className="video-actions"><a className="button" href={urls.watch} target="_blank" rel="noreferrer"><FiPlay aria-hidden="true" /> {video.playlistId ? 'Открыть курс на YouTube' : 'Открыть на YouTube'} <FiExternalLink aria-hidden="true" /></a></div>
-    </div> : <p className="video-unavailable" role="status">{englishVideo || russianVideo ? (language === 'ru' ? 'Русское видео для этого урока пока не подобрано. Доступны английское видео, русскоязычный текст урока и учебные материалы ниже.' : 'Видео на выбранном языке для этого урока пока не подобрано. Доступны русскоязычный текст урока и учебные материалы ниже.') : 'Отдельное встроенное видео для этого урока не подобрано. Откройте видеокурс выше и найдите соответствующую тему.'}</p>}
+    </div> : <p className="video-unavailable" role="status">{englishVideo || russianVideo ? (language === 'ru' ? 'Русское видео для этого урока пока не подобрано. Доступны английское видео, русскоязычный текст урока и учебные материалы ниже.' : 'Видео на выбранном языке для этого урока пока не подобрано. Доступны русскоязычный текст урока и учебные материалы ниже.') : 'Проверенное видео для этого урока пока не подобрано. Теория, практика и учебные материалы доступны ниже.'}</p>}
   </section>;
 }
 
@@ -78,6 +78,7 @@ export default function LessonPage({ topic, lesson, isComplete, onToggle, track,
   const walkthrough = lessonWalkthroughs[topic.id];
   const ownedVideo = securityVideoTopics.find(v=>v.lessonId===topic.id);
   const video = ownedVideo ? {...ownedVideo, source:'https://github.com/IsaacMToast/security-plus-checklist/tree/5414f6989ad34b5d6a80f704617e019a2a1e4b95',sourceName:'Каталог Professor Messer · проверенные названия и ID'} : lessonVideos[topic.id];
+  const introductory = Boolean(coreById[topic.id]?.introductory);
   const meta = getTrackMeta(track);
 
   useEffect(() => {
@@ -104,10 +105,10 @@ export default function LessonPage({ topic, lesson, isComplete, onToggle, track,
       <span className="eyebrow">{meta.label} · ОТДЕЛЬНЫЙ УРОК</span>
       <h1 id="lesson-page-title" ref={headingRef} tabIndex="-1">{topic.title}</h1>
       <p>{lesson.intro}</p>
-      <button className="button" onClick={() => window.print()}>Печать / PDF</button><nav className="lesson-jump" aria-label="Разделы урока"><a href="#lesson-video"><FiPlay aria-hidden="true" /> Видео</a><a href="#lesson-theory">Теория</a><a href="#lesson-practice">Практика</a><a href="#lesson-check">Тест</a><a className="lesson-material-link" href="#lesson-sources"><FiBookOpen aria-hidden="true" /> Учебные материалы · {lessonResources[topic.id].length}</a></nav>
+      <button className="button" onClick={() => window.print()}>Печать / PDF</button><nav className="lesson-jump" aria-label="Разделы урока">{!introductory && <a href="#lesson-video"><FiPlay aria-hidden="true" /> Видео</a>}<a href="#lesson-theory">Теория</a><a href="#lesson-practice">Практика</a><a href="#lesson-check">Тест</a><a className="lesson-material-link" href="#lesson-sources"><FiBookOpen aria-hidden="true" /> Учебные материалы · {lessonResources[topic.id].length}</a></nav>
     </header>
     <div className="lesson-page-content">
-      <LessonVideo key={topic.id} video={video} russianVideo={russianLessonVideos[topic.id]} professorMesserResource={track === 'security-plus' ? resourcesById['sp-messer'] : null} topicTitle={topic.title} />
+      {!introductory && <LessonVideo key={topic.id} video={video} russianVideo={russianLessonVideos[topic.id]} professorMesserResource={track === 'security-plus' ? resourcesById['sp-messer'] : null} topicTitle={topic.title} />}
       {coreById[topic.id] ? <CoreLesson lesson={coreById[topic.id]} /> : <>
       <section className="lesson-section" id="lesson-goals"><span className="eyebrow">ЦЕЛИ УРОКА</span><h2>После урока вы сможете</h2><ul className="lesson-goals">{detail.goals.map((goal) => <li key={goal}>{goal}</li>)}</ul></section>
       <section className="lesson-section" id="lesson-theory"><span className="eyebrow">ТЕОРИЯ ПО ШАГАМ</span><h2>Разбираемся в теме</h2>{lesson.sections.map((section) => <div className="theory-part" key={section.title}><h3>{section.title}</h3>{section.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div>)}<div className="theory-part"><h3>Подробный разбор</h3>{detail.deepDive.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div></section>

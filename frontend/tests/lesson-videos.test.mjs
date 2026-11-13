@@ -6,6 +6,7 @@ import { lessonVideos } from '../src/data/lessonVideos.js';
 import { securityPlusLessonResources } from '../src/data/securityPlus.js';
 import { russianLessonVideos, videoUrls } from '../src/data/russianLessonVideos.js';
 import { russianVideoSchema, russianVideosSchema } from '../src/lib/videoSchema.js';
+import { computerTechnologiesCourse } from '../src/data/computerTechnologies.js';
 
 test('Russian alternatives have explicit lesson associations and sourced media IDs', () => {
   assert.equal(russianVideosSchema.safeParse(russianLessonVideos).success, true);
@@ -18,8 +19,16 @@ test('Russian alternatives have explicit lesson associations and sourced media I
   }
   for (const topic of allTopics) {
     if (lessonVideos[topic.id] || coreById[topic.id]) continue;
+    if (computerTechnologiesCourse.topics.some((item) => item.id === topic.id)) continue;
     assert.equal(topic.id, 'secplus-exam-orientation');
     assert.ok(securityPlusLessonResources[topic.id].some((resource) => resource.sourceId === 'sp-messer'));
+  }
+});
+
+test('Computer Technologies keeps theory and practice without the rejected video associations', () => {
+  for (const topic of computerTechnologiesCourse.topics) {
+    assert.equal(lessonVideos[topic.id], undefined, topic.id);
+    assert.equal(russianLessonVideos[topic.id], undefined, topic.id);
   }
 });
 
