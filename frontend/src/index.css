@@ -365,6 +365,7 @@ input[type='checkbox'] { width: 19px; height: 19px; flex: none; margin: 3px 0 0;
 .standalone-view .skill-column .phase-subtitle { color: var(--lane-color); font-family: 'Inter', sans-serif; font-size: 10px; letter-spacing: .07em; }
 .standalone-view .skill-column .phase-heading strong { margin-top: 8px; color: #fff; font-size: 17px; }
 .standalone-view .skill-column .phase-description { min-height: 53px; color: #adbbce; font-size: 12px; line-height: 1.5; }
+.standalone-view .skill-column:not(.is-open) .phase-description { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
 .standalone-view .skill-column .map-phase-progress { max-width: none; height: 4px; background: #344158; }
 .standalone-view .skill-column .map-phase-progress > span { background: var(--lane-color); }
 .standalone-view .skill-column .phase-meta { grid-column: 1 / -1; flex-flow: row wrap; align-items: center; justify-content: space-between; gap: 8px; }
@@ -1059,6 +1060,17 @@ input[type='checkbox'] { width: 19px; height: 19px; flex: none; margin: 3px 0 0;
 }
 .standalone-view .map-stop.skill-column { border-color: color-mix(in srgb, var(--lane-color) 58%, var(--border)); box-shadow: 0 18px 36px color-mix(in srgb, var(--lane-color) 11%, transparent), inset 0 1px var(--glass-highlight); }
 .standalone-view .map-stop.skill-column.is-open { box-shadow: 0 0 0 1px color-mix(in srgb, var(--lane-color) 45%, transparent), 0 18px 42px color-mix(in srgb, var(--lane-color) 20%, transparent), inset 0 1px var(--glass-highlight); }
+.standalone-view .skill-map-board.has-open-phase .skill-column { transition: opacity .24s ease, filter .24s ease, transform .24s ease, box-shadow .24s ease; }
+.standalone-view .skill-map-board.has-open-phase .skill-column.is-muted { opacity: .52 !important; filter: saturate(.62); }
+.standalone-view .skill-map-board.has-open-phase .skill-column.is-open { grid-column: 1 / -1; opacity: 1; transform: scale(1.01); }
+.standalone-view .skill-column.is-open .phase-header { min-height: 0; }
+.standalone-view .skill-column.is-open .phase-description { max-width: 920px; min-height: 0; }
+.standalone-view .skill-column.is-open .skill-node-list { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.standalone-view .skill-column.is-open .skill-node-list::before { display: none; }
+@media (max-width: 760px) {
+  .standalone-view .skill-map-board.has-open-phase .skill-column.is-open { grid-column: auto; transform: none; }
+  .standalone-view .skill-map-board.has-open-phase .skill-column.is-muted { opacity: .62 !important; }
+}
 .standalone-view .map-stop.skill-column .phase-number { color: var(--lane-color); border-color: color-mix(in srgb, var(--lane-color) 48%, var(--border)); background: color-mix(in srgb, var(--lane-color) 10%, var(--surface)); box-shadow: 0 0 18px color-mix(in srgb, var(--lane-color) 15%, transparent); }
 .topic-item.is-current { border-color: color-mix(in srgb, var(--lane-color, var(--accent)) 58%, var(--border)); background: linear-gradient(100deg, color-mix(in srgb, var(--lane-color, var(--accent)) 13%, var(--surface)), color-mix(in srgb, var(--neon-violet) 5%, var(--surface))); box-shadow: 0 10px 28px color-mix(in srgb, var(--lane-color, var(--accent)) 10%, transparent); }
 .topic-item.is-complete { background: linear-gradient(100deg, color-mix(in srgb, #32d6a0 10%, transparent), transparent); }

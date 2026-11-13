@@ -20,10 +20,7 @@ export default function Roadmap({
   const orderedTopics = phases.flatMap((phase) => phase.topics);
   const topicNumbers = new Map(orderedTopics.map((topic, index) => [topic.id, index + 1]));
   const nextTopic = orderedTopics.find((topic) => !completed.includes(topic.id));
-  const [openPhases, setOpenPhases] = useState(() => {
-    const activePhase = phases.find((phase) => phase.topics.some((topic) => !completed.includes(topic.id)));
-    return activePhase ? [activePhase.id] : phases[0] ? [phases[0].id] : [];
-  });
+  const [openPhases, setOpenPhases] = useState([]);
   const reduceMotion = useReducedMotion();
   const Heading = headingLevel;
   const headingId = `${id}-heading`;
@@ -38,7 +35,7 @@ export default function Roadmap({
       <div><span className="eyebrow">ВАШ СЛЕДУЮЩИЙ ШАГ</span><strong>{nextTopic ? `${String(topicNumbers.get(nextTopic.id)).padStart(2, '0')} / ${nextTopic.title}` : 'Все темы отмечены как изученные'}</strong><p>{startHint}</p></div>
       {nextTopic && <a className="button button-primary" href={lessonHref(nextTopic.id)} data-route-link>Открыть следующий урок <FiArrowRight aria-hidden="true" /></a>}
     </div>
-    <div className="roadmap-map skill-map-board" style={{ '--phase-count': phases.length }} aria-label={`Интерактивная карта навыков: ${title}. Этапы соединены в порядке прохождения.`} tabIndex="0">
+    <div className={`roadmap-map skill-map-board${openPhases.length ? ' has-open-phase' : ''}`} style={{ '--phase-count': phases.length }} aria-label={`Интерактивная карта навыков: ${title}. Этапы соединены в порядке прохождения.`} tabIndex="0">
       <div className="roadmap-route" aria-hidden="true"><span /></div>
       <div className="skill-sequence-rail" aria-label={`Порядок этапов: ${phases.map((phase) => phase.title).join(', ')}`}>
         {phases.map((phase, index) => <div className="skill-sequence-step" style={{ '--map-index': index }} key={phase.id}><span>{String(index + 1).padStart(2, '0')}</span>{index < phases.length - 1 && <FiArrowRight aria-hidden="true" />}</div>)}
@@ -51,7 +48,7 @@ export default function Roadmap({
       const phaseStatus = isComplete ? 'Завершён' : done > 0 ? 'В процессе' : 'Не начат';
       const panelId = `phase-panel-${id}-${phase.id}`;
       const PhaseIcon = phaseIcons[phaseIndex % phaseIcons.length];
-      return <motion.article className={`phase-card map-stop skill-column${isOpen ? ' is-open' : ''}${isComplete ? ' is-complete' : ''}`} key={phase.id} style={{ '--map-index': phaseIndex, '--lane-color': laneColors[phaseIndex % laneColors.length] }} initial={reduceMotion ? false : { opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .12 }} transition={{ duration: reduceMotion ? 0 : .38, delay: reduceMotion ? 0 : phaseIndex * .055 }}>
+      return <motion.article className={`phase-card map-stop skill-column${isOpen ? ' is-open' : ''}${openPhases.length && !isOpen ? ' is-muted' : ''}${isComplete ? ' is-complete' : ''}`} key={phase.id} style={{ '--map-index': phaseIndex, '--lane-color': laneColors[phaseIndex % laneColors.length] }} initial={reduceMotion ? false : { opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .12 }} transition={{ duration: reduceMotion ? 0 : .38, delay: reduceMotion ? 0 : phaseIndex * .055 }}>
         <div className="map-node" aria-hidden="true">{isComplete ? <FiCheck /> : <PhaseIcon />}</div>
         <button className="phase-header" type="button" aria-expanded={isOpen} aria-controls={panelId} onClick={() => togglePhase(phase.id)}>
           <span className="phase-number">{phase.number}</span><span className="phase-heading"><span className="phase-subtitle">ТОЧКА {phase.number} · {phase.subtitle}</span><strong>{phase.title}</strong><span className="phase-description">{phase.description}</span>{(phase.duration || phase.outcome) && <span className="phase-plan-meta">{phase.duration && <b>{phase.duration}</b>}{phase.outcome && <small>{phase.outcome}</small>}</span>}<span className="map-phase-progress" aria-label={`Прогресс этапа ${phasePercent}%`}><span style={{ width: `${phasePercent}%` }} /></span></span><span className="phase-meta"><span className={`phase-status${isComplete ? ' is-complete' : done > 0 ? ' is-progress' : ''}`}>{phaseStatus}</span><span className="phase-progress">{phasePercent}%<small>{done} / {phase.topics.length} шагов</small></span><FiChevronDown className="phase-chevron" aria-hidden="true" /></span>
