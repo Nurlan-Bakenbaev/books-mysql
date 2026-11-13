@@ -1,4 +1,4 @@
-import CodeBlock from './CodeBlock';
+import SysadminPractice from './SysadminPractice';
 
 /* eslint-disable react/prop-types */
 export default function IntroductoryLesson({ lesson }) {
@@ -23,18 +23,7 @@ export default function IntroductoryLesson({ lesson }) {
       <ol>{lesson.diagram.map((step) => <li key={step}><span>{step}</span></li>)}</ol>
     </figure>
 
-    <section className="lesson-section" id="lesson-practice">
-      <h2>3. Практика без лишнего риска</h2>
-      {lesson.platformGuides?.map((guide) => <details className="beginner-guide" key={guide.title}>
-        <summary>{guide.title}</summary>
-        <ol className="lesson-steps">{guide.steps.map((step) => <li key={step}>{step}</li>)}</ol>
-      </details>)}
-      <h3>Общий порядок</h3>
-      <ol className="lesson-steps">{lesson.steps.map((step) => <li key={step}>{step}</li>)}</ol>
-      {lesson.commands && (lesson.commandsOptional ? <details className="beginner-guide"><summary>Необязательные команды после практики через интерфейс</summary><CodeBlock label="НЕОБЯЗАТЕЛЬНАЯ ПРОВЕРКА" code={lesson.commands} /></details> : <CodeBlock label="КОМАНДЫ УЧЕБНОГО СТЕНДА" code={lesson.commands} />)}
-      <div className="lesson-result"><strong>Как проверить результат</strong><p>{lesson.expected}</p></div>
-      <p>Текст урока и успешная сборка сайта не подтверждают выполнение лаборатории на вашей машине. Сохраняйте фактический вывод и отмечайте ограничения стенда.</p>
-    </section>
+    <SysadminPractice lessonId={lesson.id} />
 
     <section className="lesson-section" id="lesson-troubleshooting">
       <h2>4. Если результат отличается</h2>
@@ -45,10 +34,6 @@ export default function IntroductoryLesson({ lesson }) {
       <h2>5. Границы и безопасность</h2><p>{lesson.security}</p>
     </section>
 
-    <section className="lesson-section" id="lesson-independent">
-      <h2>6. Закрепите самостоятельно</h2>
-      <ol>{lesson.tasks.map((task) => <li key={task}>{task}</li>)}</ol>
-      <p>В отчёте отделите то, что прочитали, от того, что выполнили и проверили самостоятельно.</p>
-    </section>
+
   </div>;
 }

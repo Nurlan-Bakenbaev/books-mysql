@@ -48,7 +48,7 @@ test('a partial storage write failure restores prior values and reports failure'
  const s=storage();s.setItem(PROGRESS_KEY,'["future-id"]');s.setItem(LEARNING_KEY,'{"course":"roadmap"}');const before=exportStudy(s);const set=s.setItem;let n=0;s.setItem=(k,v)=>{if(++n===2)throw Error('quota');set(k,v);};
  assert.throws(()=>importStudy({version:1,progress:['new'],learning:{},assessments:{}},s),/не удалось/);assert.deepEqual(exportStudy(s),before);
 });
-test('course order is consistent with the agreed prerequisite sequence',()=>{assert.deepEqual(courseCatalog.map(c=>c.id),['computer-technologies','roadmap','network-engineer','azure-admin','security-plus','windows-security','linux-security','ethical-hacking']);});
+test('course order is consistent with the agreed prerequisite sequence',()=>{assert.deepEqual(courseCatalog.map(c=>c.id),['computer-technologies','roadmap','network-engineer','azure-admin','security-plus','windows-security','linux-security','ethical-hacking']);assert.equal(courseCatalog[0].title,'Фундаментальный Computer Science: Архитектура, ОС и Сети');});
 
 test('all core procedures and lab step checks cover the published objects',async()=>{
  const {coreProcedures}=await import('../src/data/coreProcedures.js');const {labs}=await import('../src/data/guide.js');const {labStepChecks}=await import('../src/data/labStepChecks.js');

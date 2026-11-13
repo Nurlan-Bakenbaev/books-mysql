@@ -7,7 +7,7 @@ const trackMeta = {
   'linux-security': { hash: '#linux-security', label: 'БЕЗОПАСНОСТЬ LINUX', back: 'К курсу безопасности Linux' },
   'ethical-hacking': { hash: '#ethical-hacking', label: 'ЭТИЧНЫЙ ХАКИНГ', back: 'К курсу этичного хакинга' },
   'security-plus': { hash: '#security-plus', label: 'COMPTIA SECURITY+ · SY0-701', back: 'К курсу Security+' },
-  'computer-technologies': { hash: '#computer-technologies', label: 'КОМПЬЮТЕРНЫЕ ТЕХНОЛОГИИ', back: 'К курсу компьютерных технологий' },
+  'computer-technologies': { hash: '#computer-technologies', label: 'ФУНДАМЕНТАЛЬНЫЙ COMPUTER SCIENCE', back: 'К курсу Computer Science' },
 };
 
 const defaultTrackMeta = { hash: '#roadmap', label: 'ДОРОЖНАЯ КАРТА', back: 'К дорожной карте' };

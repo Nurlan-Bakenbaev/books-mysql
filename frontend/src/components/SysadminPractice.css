@@ -1,0 +1,24 @@
+.sysadmin-practice { min-width: 0; }
+.sysadmin-practice h3 { margin-top: 2rem; scroll-margin-top: 6rem; }
+.sysadmin-practice-nav { display: flex; flex-wrap: wrap; gap: .6rem 1.2rem; margin: 1rem 0; }
+.sysadmin-practice .sysadmin-safety { padding: 1px 20px 12px; border-left: 3px solid #e8b96c; background: var(--surface); border-radius: 6px; }
+.sysadmin-steps { padding-left: 1.6rem; }
+.sysadmin-steps li { padding-left: .4rem; margin: 1rem 0; }
+.sysadmin-code { max-width: 100%; min-width: 0; margin: 1.2rem 0; border: 1px solid #375776; border-left: 4px solid #7caeff; border-radius: 9px; background: #0d1725; color: #e6edf3; overflow: hidden; }
+.sysadmin-code[data-kind="output"] { border-left-color: #72d9ae; background: #101d20; }
+.sysadmin-code[data-kind="config"] { border-left-color: #c8a0f0; }
+.sysadmin-code figcaption { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding: 12px 16px; background: #17283b; border-bottom: 1px solid #375776; color: #e6edf3; }
+.sysadmin-code[data-kind="output"] figcaption { background: #17302f; }
+.sysadmin-code figcaption > span { display: grid; gap: 5px; min-width: 0; overflow-wrap: anywhere; }
+.sysadmin-code figcaption strong { font: 600 12px/1.5 'JetBrains Mono', monospace; }
+.sysadmin-code figcaption span span { font: 13px/1.5 'Inter', sans-serif; }
+.sysadmin-code button { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; border: 1px solid #6482a0; border-radius: 6px; padding: 7px 10px; background: #213b54; color: #fff; cursor: pointer; font: 13px/1.4 'Inter', sans-serif; }
+.sysadmin-code button:focus-visible, .sysadmin-code pre:focus-visible { outline: 2px solid #a5d4ff; outline-offset: -2px; }
+.sysadmin-code pre { display: block; max-width: 100%; margin: 0; padding: 18px; overflow-x: auto; white-space: pre; tab-size: 2; }
+.sysadmin-code pre code { display: block; padding: 0; background: transparent; color: inherit; font: 14px/1.7 'JetBrains Mono', ui-monospace, monospace; white-space: pre; overflow-wrap: normal; word-break: normal; }
+.sysadmin-copy-status { display: block; padding: 0 16px; font: 13px/1.5 'Inter', sans-serif; }
+.sysadmin-copy-status:not(:empty) { padding-bottom: 12px; }
+.sysadmin-troubleshooting > div { padding: 12px 0; border-bottom: 1px solid var(--border); }
+.sysadmin-troubleshooting dt { font-weight: 700; }
+.sysadmin-troubleshooting dd { margin: 8px 0 0; }
+@media (max-width: 520px) { .sysadmin-code figcaption { flex-direction: column; } .sysadmin-code pre { padding: 14px; } }

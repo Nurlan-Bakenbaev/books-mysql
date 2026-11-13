@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync, spawnSync } from 'node:child_process';
-import { mkdtempSync, rmSync, writeFileSync, readFileSync } from 'node:fs';
+import { mkdtempSync, readdirSync, rmSync, writeFileSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { lessons } from '../src/data/lessons.js';
@@ -12,13 +12,12 @@ function inLab(run) {
 }
 const exercise = (id) => lessons[id].lab.extraCommands[0].commands;
 
-test('storage copy exercise rejects a corrupted backup instead of checking only the source', () => {
+test('IPC and filesystem laboratory transfers data and cleans its temporary objects', () => {
   inLab((cwd) => {
-    const script = exercise('ct-storage-filesystems');
-    execFileSync('bash', ['-e', '-c', script], { cwd });
-    const corrupt = script.replace('cmp ', "printf 'corruption' >> storage-lab/backup.txt\ncmp ");
-    assert.notEqual(corrupt, script);
-    assert.throws(() => execFileSync('bash', ['-e', '-c', corrupt], { cwd, stdio: 'pipe' }));
+    const output = execFileSync('bash', ['-e', '-c', lessons['csf-memory-ipc-filesystems'].lab.commands], { cwd, encoding: 'utf8' });
+    assert.match(output, /received: message-through-pipe/);
+    assert.match(output, /links=2/);
+    assert.deepEqual(readdirSync(cwd), []);
   });
 });
 

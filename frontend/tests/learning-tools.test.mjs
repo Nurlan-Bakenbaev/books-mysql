@@ -8,7 +8,7 @@ import { highlightCode } from '../src/lib/highlight.js';
 test('course search covers every published lesson and finds misspellings across content kinds', () => {
   assert.equal(courseSearchItems.filter((item) => item.kind === 'Урок').length, curriculum.topics.length);
   assert.ok(searchCourse('криптогрфия').some((item) => item.id === 'lesson:secplus-crypto-pki'));
-  assert.ok(searchCourse('USB').some((item) => item.id === 'lesson:ct-interfaces-peripherals'));
+  assert.ok(searchCourse('REST').some((item) => item.id === 'lesson:csf-transport-web-rest'));
   assert.ok(searchCourse('MFA').some((item) => item.kind === 'Термин'));
   assert.ok(searchCourse('OWASP').some((item) => item.kind === 'Источник'));
   assert.deepEqual(searchCourse('zzzzzzzzzzzzzzzz'), []);

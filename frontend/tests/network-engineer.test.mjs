@@ -25,7 +25,7 @@ const baseline = JSON.parse(readFileSync(new URL('./baseline-lesson-ids.json', i
 const newIds = networkEngineerCourse.topics.map((topic) => topic.id);
 
 test('Network Engineer publishes twenty ordered lessons without replacing baseline identifiers', () => {
-  assert.equal(baseline.length, 107);
+  assert.equal(baseline.length, 105);
   assert.equal(networkEngineerCourse.id, 'network-engineer');
   assert.equal(newIds.length, 20);
   assert.equal(new Set(newIds).size, 20);

@@ -99,7 +99,7 @@ test('existing progress and navigation remain usable after reload and search', a
   await page.getByRole('button', { name: 'Открыть меню', exact: true }).click();
   await page.locator('.academy-nav-group-toggle').filter({ hasText: 'Все курсы' }).click();
   await page.locator('.academy-nav-group-toggle').filter({ hasText: 'Все курсы' }).click();
-  await expect(page.locator('.academy-sidebar').getByRole('link', { name: 'Компьютерные технологии', exact: true })).toBeVisible();
+  await expect(page.locator('.academy-sidebar').getByRole('link', { name: 'Фундаментальный Computer Science', exact: true })).toBeVisible();
   await page.locator('.academy-sidebar .sidebar-close').click();
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem('sysadmin-path-2026-progress')))).toEqual(saved);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);

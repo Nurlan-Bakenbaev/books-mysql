@@ -35,13 +35,13 @@ function assertQuestion(question, context) {
 test('every roadmap step has a unique, complete lesson and practical outcome', () => {
   assert.equal(new Set(topicIds).size, topicIds.length);
   assert.deepEqual(Object.keys(lessons).sort(), [...topicIds].sort());
-  assert.equal(topicIds[0], 'ct-computer-architecture');
+  assert.equal(topicIds[0], 'csf-cpu-architecture');
   assert.equal(coreLessons.length, 38);
   assert.equal(windowsSecurityCourse.topics.length, 9);
   assert.equal(linuxSecurityCourse.topics.length, 9);
   assert.equal(ethicalHackingCourse.topics.length, 10);
   assert.equal(securityPlusCourse.topics.length, 37);
-  assert.equal(computerTechnologiesCourse.topics.length, 8);
+  assert.equal(computerTechnologiesCourse.topics.length, 6);
 
   for (const topic of topics) {
     const lesson = lessons[topic.id];
@@ -78,7 +78,7 @@ test('every lesson has at least two specific, resolvable learning resources', ()
 
 test('every lesson has substantial original detail, a diagram, a quiz, and an honest video state', () => {
   assert.deepEqual(Object.keys(lessonDetails).sort(), [...topicIds].sort());
-  const noCuratedVideo = new Set([...computerTechnologiesCourse.topics.map((topic) => topic.id), 'secplus-exam-orientation']);
+  const noCuratedVideo = new Set(['secplus-exam-orientation']);
   assert.deepEqual(topicIds.filter((id) => !lessonVideos[id] && !coreById[id]), [...noCuratedVideo]);
   for (const topic of topics) {
     const detail = lessonDetails[topic.id];
@@ -204,9 +204,10 @@ test('Security+ follows all five SY0-701 domains and publishes a lab for every l
   }
 });
 
-test('computer technologies provides a complete prerequisite path before administration', () => {
-  assert.equal(computerTechnologiesPhases.length, 4);
-  assert.deepEqual(computerTechnologiesPhases.map((phase) => phase.topics.length), [2, 2, 2, 2]);
+test('fundamental computer science course follows three modules and six supplied lessons', () => {
+  assert.equal(computerTechnologiesCourse.title, 'Фундаментальный Computer Science: Архитектура, ОС и Сети');
+  assert.equal(computerTechnologiesPhases.length, 3);
+  assert.deepEqual(computerTechnologiesPhases.map((phase) => phase.topics.length), [2, 2, 2]);
   for (const topic of computerTechnologiesCourse.topics) {
     assert.ok(lessons[topic.id].lab.steps.length >= 6, topic.id);
     assert.ok(lessonDetails[topic.id].deepDive.length >= 5, topic.id);

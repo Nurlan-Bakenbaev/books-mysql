@@ -1,3 +1,5 @@
+import SysadminPractice from './SysadminPractice';
+import { sysadminPractices } from '../data/sysadminPractices';
 import { coreQuestions } from '../data/coreQuestions';
 import LabCompletion from './LabCompletion';
 import SecurityVideoTopics from './SecurityVideoTopics';
@@ -19,20 +21,24 @@ import Assessment from './Assessment';
 import CodeBlock from './CodeBlock';
 
 /* eslint-disable react/prop-types */
-function LessonVideo({ video: englishVideo, russianVideo, professorMesserResource, topicTitle }) {
-  // Deliberately not persisted: every lesson opening/reload starts in English.
-  const [language, setLanguage] = useState('en');
-  const video = language === 'en' ? englishVideo : russianVideo;
+function LessonVideo({ video: primaryVideo, russianVideo, professorMesserResource, topicTitle }) {
+  const primaryLanguage = primaryVideo?.language || 'en';
+  // Deliberately not persisted: every lesson opening/reload starts with its curated primary video.
+  const [language, setLanguage] = useState(primaryLanguage);
+  const video = language === primaryLanguage ? primaryVideo : russianVideo;
   const urls = video ? videoUrls(video) : null;
+  const languageLabel = language === 'ru' ? 'Русский' : 'English';
+  const languageChoices = primaryLanguage === 'ru' ? [['ru', 'Русский']] : [['en', 'English'], ['ru', 'Русский']];
   return <section className="lesson-section lesson-video-first" id="lesson-video" aria-labelledby="lesson-video-title">
     <span className="eyebrow">ВИДЕОУРОК · YOUTUBE</span><h2 id="lesson-video-title">Начните с видео по теме</h2>
-    {(englishVideo || russianVideo) && <div className="video-language-switch" role="group" aria-label="Язык видео">{[['en', 'English'], ['ru', 'Русский']].map(([id, label]) => <button type="button" className="button" key={id} aria-pressed={language === id} onClick={() => setLanguage(id)}>{label}</button>)}</div>}
-    {(englishVideo || russianVideo) && <p className="video-language-note">По умолчанию — English. Русский материал — отдельное объяснение или курс по теме.</p>}
+    {(primaryVideo || russianVideo) && <div className="video-language-switch" role="group" aria-label="Язык видео">{languageChoices.map(([id, label]) => <button type="button" className="button" key={id} aria-pressed={language === id} onClick={() => setLanguage(id)}>{label}</button>)}</div>}
+    {primaryLanguage === 'en' && (primaryVideo || russianVideo) && <p className="video-language-note">По умолчанию — English. Русский материал — отдельное объяснение или курс по теме.</p>}
+    {primaryLanguage === 'ru' && primaryVideo && <p className="video-language-note">Основное видео этого курса — на русском языке. Дополнительные видео доступны в учебных материалах урока.</p>}
     {professorMesserResource && <p className="video-language-note"><a href={professorMesserResource.url} target="_blank" rel="noreferrer">Видеокурс Professor Messer · SY0-701 <FiExternalLink aria-hidden="true" /></a>{' · '}<a href={`https://www.youtube.com/results?search_query=${encodeURIComponent(`Professor Messer SY0-701 ${topicTitle}`)}`} target="_blank" rel="noreferrer">Найти видео по теме «{topicTitle}» <FiExternalLink aria-hidden="true" /></a></p>}
-    {video ? <div className="curated-video" key={language}><div className="video-card-heading"><strong>{video.title}</strong><span>{language === 'en' ? 'English' : 'Русский'} · {video.playlistId ? 'Видеокурс' : video.duration || 'Видео'}</span></div>{video.focus && <p>{video.focus}</p>}<p><a href={video.source} target="_blank" rel="noreferrer">Источник: {video.sourceName} <FiExternalLink aria-hidden="true" /></a></p>
-      <div className="video-frame"><iframe title={`Видео (${language === 'en' ? 'English' : 'Русский'}): ${video.title}`} src={urls.embed} loading="eager" referrerPolicy="strict-origin-when-cross-origin" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen /></div>
+    {video ? <div className="curated-video" key={language}><div className="video-card-heading"><strong>{video.title}</strong><span>{languageLabel} · {video.playlistId ? 'Видеокурс' : video.duration || 'Видео'}</span></div>{video.focus && <p>{video.focus}</p>}<p><a href={video.source} target="_blank" rel="noreferrer">Источник: {video.sourceName} <FiExternalLink aria-hidden="true" /></a></p>
+      <div className="video-frame"><iframe title={`Видео (${languageLabel}): ${video.title}`} src={urls.embed} loading="eager" referrerPolicy="strict-origin-when-cross-origin" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen /></div>
       <div className="video-actions"><a className="button" href={urls.watch} target="_blank" rel="noreferrer"><FiPlay aria-hidden="true" /> {video.playlistId ? 'Открыть курс на YouTube' : 'Открыть на YouTube'} <FiExternalLink aria-hidden="true" /></a></div>
-    </div> : <p className="video-unavailable" role="status">{englishVideo || russianVideo ? (language === 'ru' ? 'Русское видео для этого урока пока не подобрано. Доступны английское видео, русскоязычный текст урока и учебные материалы ниже.' : 'Видео на выбранном языке для этого урока пока не подобрано. Доступны русскоязычный текст урока и учебные материалы ниже.') : 'Проверенное видео для этого урока пока не подобрано. Теория, практика и учебные материалы доступны ниже.'}</p>}
+    </div> : <p className="video-unavailable" role="status">{primaryVideo || russianVideo ? (language === 'ru' ? 'Русское видео для этого урока пока не подобрано. Доступны основное видео, текст урока и учебные материалы ниже.' : 'Видео на выбранном языке для этого урока пока не подобрано. Доступны русскоязычный текст урока и учебные материалы ниже.') : 'Проверенное видео для этого урока пока не подобрано. Теория, практика и учебные материалы доступны ниже.'}</p>}
   </section>;
 }
 
@@ -115,19 +121,19 @@ export default function LessonPage({ topic, lesson, isComplete, onToggle, track,
       <figure className="lesson-diagram"><figcaption><strong>Схема процесса</strong></figcaption><ol>{detail.diagram.map((step, index) => <li key={`${step}-${index}`}><span>{step}</span>{index < detail.diagram.length - 1 && <FiArrowRight aria-hidden="true" />}</li>)}</ol></figure>
       <UiMockup mockup={detail.uiMockup} />
       <section className="lesson-section"><span className="eyebrow">ПРИМЕР ИЗ ПРАКТИКИ</span><h2>Разберём ситуацию</h2><p><strong>Ситуация.</strong> {detail.caseStudy.situation}</p><p><strong>Действия.</strong> {detail.caseStudy.action}</p><p><strong>Что должно получиться.</strong> {detail.caseStudy.result}</p></section>
-      <section className="lesson-section"><span className="eyebrow">ПОШАГОВЫЙ РАЗБОР</span><h2>{walkthrough.title}</h2><p>{walkthrough.context}</p><ol className="lesson-steps">{walkthrough.steps.map((step) => <li key={step}>{step}</li>)}</ol><div className="lesson-result"><strong>Как проверить результат</strong><p>{walkthrough.verification}</p></div><p><strong>Если результат отличается.</strong> {walkthrough.troubleshooting}</p></section>
+      {!sysadminPractices[topic.id] && <>      <section className="lesson-section"><span className="eyebrow">ПОШАГОВЫЙ РАЗБОР</span><h2>{walkthrough.title}</h2><p>{walkthrough.context}</p><ol className="lesson-steps">{walkthrough.steps.map((step) => <li key={step}>{step}</li>)}</ol><div className="lesson-result"><strong>Как проверить результат</strong><p>{walkthrough.verification}</p></div><p><strong>Если результат отличается.</strong> {walkthrough.troubleshooting}</p></section></>}
       {detail.example && <section className="lesson-section"><span className="eyebrow">ПОЛНЫЙ ПРИМЕР</span><h2>{detail.example.title}</h2><p>{detail.example.introduction}</p><CodeBlock label={detail.example.language} code={detail.example.code} /><div className="lesson-result"><strong>Ожидаемый результат</strong><p>{detail.example.expected}</p></div><p>{detail.example.explanation}</p>{detail.example.screenshot && <figure className="lesson-screenshot"><img src={`${import.meta.env.BASE_URL}study-images/${detail.example.screenshot}`} alt={`Снимок выполнения учебного примера: ${detail.example.expected}`} loading="lazy" /><figcaption>Скриншот выполнения учебного примера. На вашей системе оформление терминала может отличаться.</figcaption></figure>}<TerminalWindow terminal={detail.terminal} /></section>}
-      <section className="lesson-section" id="lesson-practice"><span className="eyebrow">ПРАКТИКА</span><h2>Домашняя лаборатория</h2><p>Выполняйте шаги только в изолированной тестовой среде, где у вас есть необходимые права. Не используйте реальные пароли и конфиденциальные данные.</p>{lesson.lab.prerequisites && <div className="lesson-lab-preparation"><h3>Подготовка стенда</h3><ul>{lesson.lab.prerequisites.map((item) => <li key={item}>{item}</li>)}</ul></div>}<ol className="lesson-steps">{lesson.lab.steps.map((step) => <li key={step}>{step}</li>)}</ol>
+      {sysadminPractices[topic.id] ? <SysadminPractice lessonId={topic.id} /> : <>      <section className="lesson-section" id="lesson-practice"><span className="eyebrow">ПРАКТИКА</span><h2>Домашняя лаборатория</h2><p>Выполняйте шаги только в изолированной тестовой среде, где у вас есть необходимые права. Не используйте реальные пароли и конфиденциальные данные.</p>{lesson.lab.prerequisites && <div className="lesson-lab-preparation"><h3>Подготовка стенда</h3><ul>{lesson.lab.prerequisites.map((item) => <li key={item}>{item}</li>)}</ul></div>}<ol className="lesson-steps">{lesson.lab.steps.map((step) => <li key={step}>{step}</li>)}</ol>
         {[...(lesson.lab.commands ? [{ label: lesson.lab.commandsLabel || 'КОМАНДЫ', commands: lesson.lab.commands }] : []), ...(lesson.lab.extraCommands || [])].map((block) => <CodeBlock key={block.label} label={block.label} code={block.commands} />)}
         <div className="lesson-result"><strong>Ожидаемый результат</strong><p>{lesson.lab.expected}</p></div><div className="lesson-warning"><strong>На что обратить внимание</strong><ul>{lesson.lab.pitfalls.map((pitfall) => <li key={pitfall}>{pitfall}</li>)}</ul></div>
         {lesson.lab.troubleshooting && <div><h3>Диагностика</h3><ul>{lesson.lab.troubleshooting.map((item) => <li key={item}>{item}</li>)}</ul></div>}
         {lesson.lab.cleanup && <div><h3>Очистка стенда</h3><ol>{lesson.lab.cleanup.map((item) => <li key={item}>{item}</li>)}</ol></div>}
         {detail.labScreenshot && <figure className="lesson-screenshot"><img src={`${import.meta.env.BASE_URL}study-images/${detail.labScreenshot}`} alt={`Снимок выполнения лабораторной работы: ${lesson.lab.expected}`} loading="lazy" /><figcaption>Скриншот выполнения лабораторного примера в учебной среде.</figcaption></figure>}
         {!detail.example && <TerminalWindow terminal={detail.terminal} />}
-      </section>
+      </section></>}
       </>}
       <SecurityVideoTopics lessonId={topic.id} />
-      <PracticeTasks tasks={detail.practiceTasks} />
+      {!sysadminPractices[topic.id] && <PracticeTasks tasks={detail.practiceTasks} />}
       <section className="lesson-section" id="lesson-check"><Assessment key={topic.id} storageId={`lesson:${topic.id}`} historyTitle={topic.title} title="Проверьте себя" questions={[detail.question]} /></section>
       <LabCompletion id={topic.id} />
       <LessonExercises id={topic.id} />

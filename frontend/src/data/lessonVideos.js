@@ -1,4 +1,5 @@
 import { networkEngineerVideos } from './networkEngineerVideos.js';
+import { computerTechnologiesVideos } from './computerTechnologies.js';
 
 const linuxVideo = (id, title, day) => ({
   id, title,
@@ -110,6 +111,7 @@ const videos = {
 // Some videos cover a related foundational concept, not the entire lesson.
 export const lessonVideos = {
   ...networkEngineerVideos,
+  ...computerTechnologiesVideos,
   virtualization: videos.vm,
   'network-models': videos.tcp,
   'ip-addressing': videos.cidr,

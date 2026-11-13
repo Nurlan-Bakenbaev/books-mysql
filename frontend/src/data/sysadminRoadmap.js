@@ -96,9 +96,9 @@ flowchart TD
   style career fill:#211b2c,stroke:#78506c,color:#ffd8ef
   linkStyle default stroke:#83a8be,stroke-width:1.6px
 
-  click hardware href "?lesson=ct-computer-architecture" "Оборудование компьютера и сервера: CPU, RAM, диски и RAID: ресурсы и надёжность." _self
+  click hardware href "?lesson=csf-cpu-architecture" "Устройство ПК и CPU: ALU, блок управления, регистры и instruction cycle." _self
   click network href "?lesson=network-models" "Сети: OSI, TCP/IP, IPv4 и IPv6: DNS и DHCP: имена, адреса и путь пакета." _self
-  click os_internals href "?lesson=ct-os-internals" "Принципы Windows и Linux: Ядро, память, процессы и файловые системы." _self
+  click os_internals href "?lesson=csf-kernel-processes" "Ядро, системные вызовы, процессы, потоки и планировщик." _self
   click os_choice href "?view=roadmap" "Твоя первая серверная ОС: Начни с одной ветки; вторую добавь по задаче." _self
   click linux href "?lesson=linux-basics" "Linux: Ubuntu / Debian / RHEL: CLI, права, пакеты, процессы, службы и логи." _self
   click windows href "?lesson=server-deployment" "Windows Server: AD, GPO, IIS, DNS и DHCP: домен и службы." _self
@@ -156,9 +156,9 @@ export const sysadminRoadmapLevels = [
 
 // The same destinations remain available without interacting with the diagram.
 export const sysadminRoadmapNodes = [
-  { id: 'hardware', title: 'Оборудование компьютера и сервера', description: 'CPU, RAM, диски и RAID: ресурсы и надёжность.', href: '?lesson=ct-computer-architecture', level: 0 },
+  { id: 'hardware', title: 'Устройство ПК и CPU', description: 'ALU, блок управления, регистры и instruction cycle.', href: '?lesson=csf-cpu-architecture', level: 0 },
   { id: 'network', title: 'Сети: OSI, TCP/IP, IPv4 и IPv6', description: 'DNS и DHCP: имена, адреса и путь пакета.', href: '?lesson=network-models', level: 0 },
-  { id: 'os_internals', title: 'Принципы Windows и Linux', description: 'Ядро, память, процессы и файловые системы.', href: '?lesson=ct-os-internals', level: 0 },
+  { id: 'os_internals', title: 'Ядро, процессы и потоки', description: 'System calls, процессы, потоки и планировщик.', href: '?lesson=csf-kernel-processes', level: 0 },
   { id: 'os_choice', title: 'Твоя первая серверная ОС', description: 'Начни с одной ветки; вторую добавь по задаче.', href: '?view=roadmap', level: 1 },
   { id: 'linux', title: 'Linux: Ubuntu / Debian / RHEL', description: 'CLI, права, пакеты, процессы, службы и логи.', href: '?lesson=linux-basics', level: 1 },
   { id: 'windows', title: 'Windows Server', description: 'AD, GPO, IIS, DNS и DHCP: домен и службы.', href: '?lesson=server-deployment', level: 1 },

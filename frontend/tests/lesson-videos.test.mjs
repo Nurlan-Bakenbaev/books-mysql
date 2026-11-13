@@ -25,9 +25,10 @@ test('Russian alternatives have explicit lesson associations and sourced media I
   }
 });
 
-test('Computer Technologies keeps theory and practice without the rejected video associations', () => {
+test('Fundamental Computer Science uses the supplied Russian videos as curated primary media', () => {
   for (const topic of computerTechnologiesCourse.topics) {
-    assert.equal(lessonVideos[topic.id], undefined, topic.id);
+    assert.equal(lessonVideos[topic.id].language, 'ru', topic.id);
+    assert.equal(new URL(lessonVideos[topic.id].source).protocol, 'https:', topic.id);
     assert.equal(russianLessonVideos[topic.id], undefined, topic.id);
   }
 });
