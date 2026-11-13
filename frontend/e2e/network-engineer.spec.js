@@ -56,8 +56,10 @@ test('completing a network lesson survives reload and preserves old and unknown 
   await page.locator('.lesson-back').click();
   await expectCourse(page);
   await expect(page.getByRole('link', { name: 'Открыть следующий урок', exact: true })).toHaveAttribute('href', `?lesson=${networkEngineerCourse.topics[1].id}`);
-  await page.locator('.phase-header').first().click();
-  await expect(page.getByRole('checkbox', { name: `Отметить тему «${firstTopic.title}» как изученную`, exact: true })).toBeChecked();
+  const firstModule = page.locator('.phase-header').first();
+  await firstModule.click();
+  await expect(firstModule).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('.phase-card').first().locator('.phase-body')).toHaveCount(0);
   expect(await page.evaluate((key) => JSON.parse(localStorage.getItem(key)), progressKey)).toEqual(expected);
 });
 
