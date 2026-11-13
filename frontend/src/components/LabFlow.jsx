@@ -1,2 +1,1 @@
-import { useState } from 'react';
-export default function LabFlow(){const [paused,setPaused]=useState(false);return <div className={`lab-flow${paused?' is-paused':''}`}><ol aria-label="Порядок лабораторной работы">{['Подготовка','Выполнение','Проверка','Очистка'].map(s=><li key={s}>{s}</li>)}</ol><button className="button" aria-pressed={paused} onClick={()=>setPaused(!paused)}>{paused?'Продолжить поток':'Остановить поток'}</button></div>;}
+export default function LabFlow(){return <div className="lab-flow"><ol aria-label="Порядок лабораторной работы">{['Подготовка','Выполнение','Проверка','Очистка'].map(s=><li key={s}>{s}</li>)}</ol></div>;}

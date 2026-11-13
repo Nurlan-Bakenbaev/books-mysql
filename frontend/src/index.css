@@ -1293,7 +1293,6 @@ input[type='checkbox'] { width: 19px; height: 19px; flex: none; margin: 3px 0 0;
 @media (prefers-reduced-motion:reduce) { .sphere-icon { transition:none; } }
 .standalone-view .skill-sequence-step::after { background:linear-gradient(90deg,#38bdf8 0%,#8b5cf6 35%,#fff 48%,#38bdf8 58%,#8b5cf6 100%); background-size:250% 100%; animation:rail-flow 2.6s linear infinite; transform:translateY(-50%) scaleX(1); }
 .standalone-view .skill-column::before { background:linear-gradient(180deg,var(--lane-color),#fff,var(--lane-color)); background-size:100% 250%; animation:branch-flow 3s linear infinite; }
-.map-paused .skill-sequence-step::after,.map-paused .skill-column::before { animation-play-state:paused!important; }
 @keyframes rail-flow { from { background-position:250% 0; } to { background-position:0 0; } }
 @keyframes branch-flow { from { background-position:0 250%; } to { background-position:0 0; } }
 @media (prefers-reduced-motion:reduce) { .standalone-view .skill-sequence-step::after,.standalone-view .skill-column::before { animation:none!important; } }
@@ -1302,7 +1301,6 @@ input[type='checkbox'] { width: 19px; height: 19px; flex: none; margin: 3px 0 0;
 .course-brand { position:absolute; right:20px; top:65px; opacity:.16; color:var(--text); font-size:64px; pointer-events:none; }
 .lab-flow ol { display:flex; flex-wrap:wrap; gap:20px; padding:20px; list-style:none; }
 .lab-flow li { padding:14px; border-bottom:4px solid var(--accent); background-image:linear-gradient(90deg,transparent,var(--accent-soft),transparent); background-size:250% 100%; animation:rail-flow 3s linear infinite; }
-.lab-flow.is-paused li { animation-play-state:paused; }
 @media (prefers-reduced-motion:reduce) { .app-shell { transition:none; } .lab-flow li { animation:none; } }
 .app-shell[data-theme='light'] .academy-sidebar { --text:#12263c; --muted:#53667b; color:#12263c; }
 .app-shell[data-theme='light'] .academy-brand-copy strong { color:#12263c; }

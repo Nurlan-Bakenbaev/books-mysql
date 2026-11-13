@@ -25,7 +25,6 @@ export default function Roadmap({
     return activePhase ? [activePhase.id] : phases[0] ? [phases[0].id] : [];
   });
   const reduceMotion = useReducedMotion();
-  const [paused,setPaused] = useState(false);
   const Heading = headingLevel;
   const headingId = `${id}-heading`;
 
@@ -39,8 +38,7 @@ export default function Roadmap({
       <div><span className="eyebrow">ВАШ СЛЕДУЮЩИЙ ШАГ</span><strong>{nextTopic ? `${String(topicNumbers.get(nextTopic.id)).padStart(2, '0')} / ${nextTopic.title}` : 'Все темы отмечены как изученные'}</strong><p>{startHint}</p></div>
       {nextTopic && <a className="button button-primary" href={lessonHref(nextTopic.id)} data-route-link>Открыть следующий урок <FiArrowRight aria-hidden="true" /></a>}
     </div>
-    <button className="button" aria-pressed={paused} onClick={()=>setPaused(!paused)}>{paused ? 'Продолжить движение линий' : 'Остановить движение линий'}</button>
-    <div className={`roadmap-map skill-map-board${paused ? ' map-paused' : ''}`} style={{ '--phase-count': phases.length }} aria-label={`Интерактивная карта навыков: ${title}. Этапы соединены в порядке прохождения.`} tabIndex="0">
+    <div className="roadmap-map skill-map-board" style={{ '--phase-count': phases.length }} aria-label={`Интерактивная карта навыков: ${title}. Этапы соединены в порядке прохождения.`} tabIndex="0">
       <div className="roadmap-route" aria-hidden="true"><span /></div>
       <div className="skill-sequence-rail" aria-label={`Порядок этапов: ${phases.map((phase) => phase.title).join(', ')}`}>
         {phases.map((phase, index) => <div className="skill-sequence-step" style={{ '--map-index': index }} key={phase.id}><span>{String(index + 1).padStart(2, '0')}</span>{index < phases.length - 1 && <FiArrowRight aria-hidden="true" />}</div>)}
