@@ -70,7 +70,7 @@ test('collapsed course group expands sidebar before showing items',async({page,i
 });
 test('topic anchor opens the correct note and lesson anchors retain their scroll',async({page})=>{
  const v=securityVideoTopics.find(v=>v.objective==='4.9');await page.goto(`/?lesson=${v.lessonId}#${v.anchor}`);await expect(page.locator(`#${v.anchor}`)).toHaveAttribute('open','');await expect(page.locator(`#${v.anchor}`)).toBeInViewport();
- await page.goto('/?lesson=network-models');await page.getByRole('link',{name:'Практика',exact:true}).last().click();await expect(page.locator('#lesson-practice')).toBeInViewport();await page.waitForTimeout(400);expect(await page.evaluate(()=>scrollY)).toBeGreaterThan(300);
+ await page.goto('/?lesson=network-models');await expect(page.locator('.lesson-page')).toBeVisible();await page.getByRole('link',{name:'Практика',exact:true}).last().click();await expect(page.locator('#lesson-practice')).toBeInViewport();await page.waitForTimeout(400);expect(await page.evaluate(()=>scrollY)).toBeGreaterThan(300);
 });
 test('written answers and self assessment persist independently of automatic score',async({page})=>{
  await page.goto('/?lesson=network-models');const written=page.getByRole('heading',{name:'Восемь заданий урока'}).locator('..');await written.locator('textarea').first().fill('TCP устанавливает поток; HTTP проверяется отдельным запросом.');await written.getByText('Критерии самопроверки',{exact:true}).first().click();await written.getByRole('combobox').first().selectOption('meets');await page.reload();await expect(written.locator('textarea').first()).toHaveValue(/TCP устанавливает/);await expect(page.locator('.assessment-score')).toHaveText('');
