@@ -44,6 +44,7 @@ test('a missing Russian counterpart is explicit and never plays an unrelated vid
 
 test('language controls work by keyboard and pass accessibility checks in both themes', async ({ page }) => {
   await page.goto('/?lesson=devops-basics');
+  await page.emulateMedia({ reducedMotion: 'reduce' });
   const section = page.locator('#lesson-video');
   await section.getByRole('button', { name: 'English', exact: true }).focus();
   await page.keyboard.press('Tab');
