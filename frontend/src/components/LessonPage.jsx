@@ -11,6 +11,7 @@ import { LEARNING_KEY, readJson, saveJson } from '../lib/studyProgress';
 import { useEffect, useRef, useState } from 'react';
 import { FiArrowLeft, FiArrowRight, FiBookOpen, FiCheckCircle, FiExternalLink, FiPlay } from 'react-icons/fi';
 import { lessonDetails } from '../data/lessonDetails';
+import { lessons } from '../data/lessons';
 import { lessonWalkthroughs } from '../data/lessonWalkthroughs';
 import { lessonResources, resourcesById } from '../data/resources';
 import { lessonVideos } from '../data/lessonVideos';
@@ -32,8 +33,6 @@ function LessonVideo({ video: primaryVideo, russianVideo, professorMesserResourc
   return <section className="lesson-section lesson-video-first" id="lesson-video" aria-labelledby="lesson-video-title">
     <span className="eyebrow">ВИДЕОУРОК · YOUTUBE</span><h2 id="lesson-video-title">Начните с видео по теме</h2>
     {(primaryVideo || russianVideo) && <div className="video-language-switch" role="group" aria-label="Язык видео">{languageChoices.map(([id, label]) => <button type="button" className="button" key={id} aria-pressed={language === id} onClick={() => setLanguage(id)}>{label}</button>)}</div>}
-    {primaryLanguage === 'en' && (primaryVideo || russianVideo) && <p className="video-language-note">По умолчанию — English. Русский материал — отдельное объяснение или курс по теме.</p>}
-    {primaryLanguage === 'ru' && primaryVideo && <p className="video-language-note">Основное видео этого курса — на русском языке. Дополнительные видео доступны в учебных материалах урока.</p>}
     {professorMesserResource && <p className="video-language-note"><a href={professorMesserResource.url} target="_blank" rel="noreferrer">Видеокурс Professor Messer · SY0-701 <FiExternalLink aria-hidden="true" /></a>{' · '}<a href={`https://www.youtube.com/results?search_query=${encodeURIComponent(`Professor Messer SY0-701 ${topicTitle}`)}`} target="_blank" rel="noreferrer">Найти видео по теме «{topicTitle}» <FiExternalLink aria-hidden="true" /></a></p>}
     {video ? <div className="curated-video" key={language}><div className="video-card-heading"><strong>{video.title}</strong><span>{languageLabel} · {video.playlistId ? 'Видеокурс' : video.duration || 'Видео'}</span></div>{video.focus && <p>{video.focus}</p>}<p><a href={video.source} target="_blank" rel="noreferrer">Источник: {video.sourceName} <FiExternalLink aria-hidden="true" /></a></p>
       <div className="video-frame"><iframe title={`Видео (${languageLabel}): ${video.title}`} src={urls.embed} loading="eager" referrerPolicy="strict-origin-when-cross-origin" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen /></div>
@@ -65,20 +64,7 @@ function UiMockup({ mockup }) {
   </figure>;
 }
 
-function PracticeTasks({ tasks }) {
-  if (!tasks?.length) return null;
-  return <section className="lesson-section" id="lesson-extra-practice">
-    <span className="eyebrow">ДОПОЛНИТЕЛЬНАЯ ПРАКТИКА</span><h2>Закрепите самостоятельно</h2>
-    <p>Не подглядывайте в решение сразу — сначала попробуйте сами, подсказка и решение скрыты под спойлером.</p>
-    <ol className="practice-tasks">{tasks.map((item, index) => <li className="practice-task" key={item.task}>
-      <p className="practice-task-text"><strong>Задание {index + 1}.</strong> {item.task}</p>
-      <details><summary>Показать подсказку</summary><p>{item.hint}</p></details>
-      <details><summary>Показать решение</summary><p>{item.solution}</p></details>
-    </li>)}</ol>
-  </section>;
-}
-
-export default function LessonPage({ topic, lesson, isComplete, onToggle, track, previous, next }) {
+export default function LessonPage({ topic, lesson = lessons[topic.id], isComplete, onToggle, track, previous, next }) {
   const headingRef = useRef(null);
   const detail = { ...lessonDetails[topic.id], question: coreQuestions[topic.id] || lessonDetails[topic.id].question };
   const walkthrough = lessonWalkthroughs[topic.id];
@@ -86,6 +72,8 @@ export default function LessonPage({ topic, lesson, isComplete, onToggle, track,
   const video = ownedVideo ? {...ownedVideo, source:'https://github.com/IsaacMToast/security-plus-checklist/tree/5414f6989ad34b5d6a80f704617e019a2a1e4b95',sourceName:'Каталог Professor Messer · проверенные названия и ID'} : lessonVideos[topic.id];
   const introductory = Boolean(coreById[topic.id]?.introductory);
   const meta = getTrackMeta(track);
+  const theoryParagraphs = new Set(lesson.sections.flatMap((section) => section.paragraphs));
+  const additionalTheory = detail.deepDive.filter((paragraph) => !theoryParagraphs.has(paragraph));
 
   useEffect(() => {
     const saved = readJson(LEARNING_KEY, {});
@@ -108,7 +96,7 @@ export default function LessonPage({ topic, lesson, isComplete, onToggle, track,
   return <article className="lesson-page" aria-labelledby="lesson-page-title">
     <header className="lesson-page-header">
       <a className="lesson-back" href={sectionHref(meta.hash)} data-route-link><FiArrowLeft aria-hidden="true" /> {meta.back}</a>
-      <span className="eyebrow">{meta.label} · ОТДЕЛЬНЫЙ УРОК</span>
+      <span className="eyebrow">{meta.label}</span>
       <h1 id="lesson-page-title" ref={headingRef} tabIndex="-1">{topic.title}</h1>
       <p>{lesson.intro}</p>
       <button className="button" onClick={() => window.print()}>Печать / PDF</button><nav className="lesson-jump" aria-label="Разделы урока">{!introductory && <a href="#lesson-video"><FiPlay aria-hidden="true" /> Видео</a>}<a href="#lesson-theory">Теория</a><a href="#lesson-practice">Практика</a><a href="#lesson-check">Тест</a><a className="lesson-material-link" href="#lesson-sources"><FiBookOpen aria-hidden="true" /> Учебные материалы · {lessonResources[topic.id].length}</a></nav>
@@ -117,7 +105,7 @@ export default function LessonPage({ topic, lesson, isComplete, onToggle, track,
       {!introductory && <LessonVideo key={topic.id} video={video} russianVideo={russianLessonVideos[topic.id]} professorMesserResource={track === 'security-plus' ? resourcesById['sp-messer'] : null} topicTitle={topic.title} />}
       {coreById[topic.id] ? <CoreLesson lesson={coreById[topic.id]} /> : <>
       <section className="lesson-section" id="lesson-goals"><span className="eyebrow">ЦЕЛИ УРОКА</span><h2>После урока вы сможете</h2><ul className="lesson-goals">{detail.goals.map((goal) => <li key={goal}>{goal}</li>)}</ul></section>
-      <section className="lesson-section" id="lesson-theory"><span className="eyebrow">ТЕОРИЯ ПО ШАГАМ</span><h2>Разбираемся в теме</h2>{lesson.sections.map((section) => <div className="theory-part" key={section.title}><h3>{section.title}</h3>{section.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div>)}<div className="theory-part"><h3>Подробный разбор</h3>{detail.deepDive.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div></section>
+      <section className="lesson-section" id="lesson-theory"><span className="eyebrow">ТЕОРИЯ</span><h2>Разбираемся в теме</h2>{lesson.sections.map((section) => <div className="theory-part" key={section.title}><h3>{section.title}</h3>{section.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div>)}{additionalTheory.length > 0 && <div className="theory-part"><h3>Подробный разбор</h3>{additionalTheory.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div>}</section>
       <figure className="lesson-diagram"><figcaption><strong>Схема процесса</strong></figcaption><ol>{detail.diagram.map((step, index) => <li key={`${step}-${index}`}><span>{step}</span>{index < detail.diagram.length - 1 && <FiArrowRight aria-hidden="true" />}</li>)}</ol></figure>
       <UiMockup mockup={detail.uiMockup} />
       <section className="lesson-section"><span className="eyebrow">ПРИМЕР ИЗ ПРАКТИКИ</span><h2>Разберём ситуацию</h2><p><strong>Ситуация.</strong> {detail.caseStudy.situation}</p><p><strong>Действия.</strong> {detail.caseStudy.action}</p><p><strong>Что должно получиться.</strong> {detail.caseStudy.result}</p></section>
@@ -133,13 +121,12 @@ export default function LessonPage({ topic, lesson, isComplete, onToggle, track,
       </section></>}
       </>}
       <SecurityVideoTopics lessonId={topic.id} />
-      {!sysadminPractices[topic.id] && <PracticeTasks tasks={detail.practiceTasks} />}
       <section className="lesson-section" id="lesson-check"><Assessment key={topic.id} storageId={`lesson:${topic.id}`} historyTitle={topic.title} title="Проверьте себя" questions={[detail.question]} /></section>
       <LabCompletion id={topic.id} />
       <LessonExercises id={topic.id} />
-      <section className="lesson-section lesson-section-secondary" id="lesson-sources"><span className="eyebrow">УЧЕБНЫЕ МАТЕРИАЛЫ · ПЕРВОИСТОЧНИКИ</span><h2>Документация по теме</h2><ol className="lesson-resources">{lessonResources[topic.id].map(({ sourceId, focus, takeaway }) => {
+      <section className="lesson-section lesson-section-secondary" id="lesson-sources"><span className="eyebrow">УЧЕБНЫЕ МАТЕРИАЛЫ</span><h2>Источники по теме</h2><ol className="lesson-resources">{lessonResources[topic.id].map(({ sourceId, focus }) => {
         const resource = resourcesById[sourceId];
-        return <li key={sourceId}><a href={resource.url} target="_blank" rel="noreferrer">{resource.title} <FiExternalLink aria-hidden="true" /></a><span>{resource.type} · {resource.language} · {resource.access}</span><p>{focus}</p>{takeaway && <p><strong>Ключевая идея источника:</strong> {takeaway}</p>}</li>;
+        return <li key={sourceId}><a href={resource.url} target="_blank" rel="noreferrer">{resource.title} <FiExternalLink aria-hidden="true" /></a><span>{resource.type} · {resource.language} · {resource.access}</span><p>{focus}</p></li>;
       })}</ol></section>
       <div className="lesson-completion"><span>{isComplete ? 'Тема отмечена как изученная' : 'Отметьте тему после изучения и выполнения практики'}</span><button className="button button-primary" type="button" onClick={() => onToggle(topic.id)}><FiCheckCircle aria-hidden="true" /> {isComplete ? 'Отменить отметку' : 'Тема изучена'}</button></div>
       <nav className="lesson-neighbors" aria-label="Соседние уроки">{previous ? <a href={lessonHref(previous.id)} data-route-link><FiArrowLeft aria-hidden="true" /> {previous.title}</a> : <span />}{next && <a href={lessonHref(next.id)} data-route-link>{next.title} <FiArrowRight aria-hidden="true" /></a>}</nav>

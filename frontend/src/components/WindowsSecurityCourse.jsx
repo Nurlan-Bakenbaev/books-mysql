@@ -11,10 +11,10 @@ export default function WindowsSecurityCourse({ completed, onToggle }) {
 
   return <section className="section security-course" id="windows-security" aria-labelledby="security-course-heading">
     <div className="section-heading">
-      <div><span className="eyebrow">ОТДЕЛЬНЫЙ УЧЕБНЫЙ ТРЕК · ПО МАТЕРИАЛАМ MICROSOFT</span><h2 id="security-course-heading">{windowsSecurityCourse.title} <span className="heading-icon"><FiShield aria-hidden="true" /></span></h2><p>{windowsSecurityCourse.description}</p></div>
+      <div><span className="eyebrow">WINDOWS · БЕЗОПАСНОСТЬ</span><h2 id="security-course-heading">{windowsSecurityCourse.title} <span className="heading-icon"><FiShield aria-hidden="true" /></span></h2><p>{windowsSecurityCourse.description}</p></div>
       <span className="section-count">{done} / {windowsSecurityCourse.topics.length} ИЗУЧЕНО</span>
     </div>
-    <p className="course-disclaimer">Авторские объяснения на русском по открытой документации и лабораториям Microsoft SC-900 / SC-200; это не официальный курс или сертификат Microsoft. Для некоторых облачных упражнений потребуются отдельные лицензии и возможны расходы.</p>
+    <p className="course-disclaimer">Неофициальный курс по материалам SC-900 / SC-200. Для облачных лабораторий могут потребоваться платные лицензии.</p>
     <div className="security-topic-grid">{windowsSecurityCourse.topics.map((topic) => <article className="security-topic-card" key={topic.id}>
       <label className="security-topic-check"><input type="checkbox" checked={completed.includes(topic.id)} onChange={() => onToggle(topic.id)} aria-label={`Отметить тему «${topic.title}» как изученную`} /><span>{completed.includes(topic.id) ? 'Изучено' : 'Не изучено'}</span></label>
       <h3>{topic.title}</h3><p>{topic.description}</p>

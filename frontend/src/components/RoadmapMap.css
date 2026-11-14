@@ -1,0 +1,63 @@
+/* Compact serpentine board. SVG connections follow the measured card edges. */
+.standalone-view .roadmap-map.skill-map-board.compact-skill-map {
+  grid-template-columns: repeat(var(--map-columns), minmax(0, 1fr));
+  align-items: stretch;
+  gap: 38px 22px;
+  padding: 30px 18px 38px;
+  overflow: visible;
+  min-height: 0;
+  width: 100%;
+}
+.compact-skill-map .roadmap-connections { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.roadmap-connection-base, .roadmap-connection-signal { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.roadmap-connection-base { opacity: .7; }
+.roadmap-connection-signal { stroke: #dffffd; stroke-width: 2.5; stroke-dasharray: var(--signal-pattern, 4 22); filter: drop-shadow(0 0 4px var(--connection-color)); animation: compact-map-signal-forward var(--signal-duration, 4s) ease-in-out var(--signal-delay, 0s) infinite; }
+.roadmap-connection-signal.is-reversed { animation-name: compact-map-signal-reverse; }
+.standalone-view .compact-skill-map .map-stop.skill-column,
+.standalone-view .compact-skill-map .map-stop.skill-column:nth-of-type(even),
+.standalone-view .compact-skill-map.has-open-phase .skill-column,
+.standalone-view .compact-skill-map.has-open-phase .skill-column.is-open {
+  width: 100%; min-width: 0; margin: 0;
+  transform: translateY(var(--map-stagger));
+}
+.standalone-view .compact-skill-map .map-stop.skill-column::before,
+.standalone-view .compact-skill-map .map-stop.skill-column:nth-of-type(even)::before { display: none; }
+.standalone-view .compact-skill-map .skill-column .phase-header {
+  position: relative; height: 100%; min-height: 220px; padding: 26px 14px 14px; gap: 10px;
+}
+.standalone-view .compact-skill-map .skill-column .phase-heading strong { margin-top: 7px; font-size: 16px; line-height: 1.3; }
+.standalone-view .compact-skill-map .skill-column .phase-subtitle { display: block; padding-right: 22px; font-size: 9px; line-height: 1.4; }
+.standalone-view .compact-skill-map .skill-column .phase-description { min-height: 48px; margin-top: 7px; font-size: 12px; line-height: 1.4; }
+.standalone-view .compact-skill-map .skill-column .phase-number { display: block; position: absolute; top: 7px; right: 10px; width: auto; height: auto; padding: 2px 6px; border: 0; border-radius: 5px; font-size: 10px; line-height: 1.5; box-shadow: none; }
+.standalone-view .compact-skill-map .skill-column .phase-plan-meta { display: none; }
+.standalone-view .compact-skill-map .skill-column .phase-status { padding: 3px 6px; font-size: 8px; }
+.standalone-view .compact-skill-map .skill-column .phase-progress { font-size: 12px; }
+.standalone-view .compact-skill-map .skill-column .phase-progress small { font-size: 9px; margin-left: 4px; }
+.standalone-view .compact-skill-map .skill-column .map-node,
+.standalone-view .compact-skill-map .skill-column:nth-of-type(even) .map-node { left: 18px; right: auto; top: -16px; width: 34px; height: 34px; border-width: 4px; transform: none; font-size: 16px; }
+.standalone-view .compact-skill-map.has-open-phase .skill-column.is-open .phase-header { min-height: 220px; transform: translateY(-4px) scale(1.025); }
+.app-shell[data-site-motion='paused'] .roadmap-connection-signal { animation-play-state: paused; }
+@keyframes compact-map-signal-forward {
+  0% { stroke-dashoffset: 0; opacity: .25; }
+  9% { stroke-dashoffset: -7; opacity: .95; }
+  18% { stroke-dashoffset: -7; opacity: .75; }
+  51% { stroke-dashoffset: -31; opacity: 1; }
+  59% { stroke-dashoffset: -31; opacity: .48; }
+  100% { stroke-dashoffset: -68; opacity: .25; }
+}
+@keyframes compact-map-signal-reverse {
+  0% { stroke-dashoffset: 0; opacity: .25; }
+  9% { stroke-dashoffset: 7; opacity: .95; }
+  18% { stroke-dashoffset: 7; opacity: .75; }
+  51% { stroke-dashoffset: 31; opacity: 1; }
+  59% { stroke-dashoffset: 31; opacity: .48; }
+  100% { stroke-dashoffset: 68; opacity: .25; }
+}
+@media (max-width: 760px) {
+  .standalone-view .roadmap-map.skill-map-board.compact-skill-map { padding: 24px 12px; gap: 30px 18px; }
+  .standalone-view .compact-skill-map .skill-column .phase-header,
+  .standalone-view .compact-skill-map.has-open-phase .skill-column.is-open .phase-header { min-height: 178px; }
+  .standalone-view .compact-skill-map .skill-column .phase-description { min-height: 0; }
+  .standalone-view .compact-skill-map .skill-column .phase-heading strong { font-size: 17px; }
+}
+@media (prefers-reduced-motion: reduce) { .roadmap-connection-signal { animation: none; } }

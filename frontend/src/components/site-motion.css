@@ -1,0 +1,79 @@
+/* One shared ambient circuit; only the narrow signal strokes animate. */
+.app-shell { isolation: isolate; }
+.site-signal-backdrop { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; contain: strict; }
+.site-circuit { width: 100%; height: 100%; display: block; opacity: .52; }
+.site-circuit-mobile { display: none; }
+.site-circuit-lane { color: var(--neon-cyan); }
+.site-circuit-lane.lane-1 { color: var(--neon-violet); }
+.site-circuit-lane.lane-2 { color: var(--neon-pink); }
+.site-circuit-track, .site-circuit-packet { fill: none; stroke: currentColor; vector-effect: non-scaling-stroke; stroke-linecap: round; stroke-linejoin: round; }
+.site-circuit-track { stroke-width: 1; opacity: .24; }
+.site-circuit-packet { stroke-width: 2; stroke-dasharray: var(--signal-pattern, 1.1 32); animation: site-signal-travel var(--signal-duration, 12s) ease-in-out var(--signal-delay, 0s) infinite; filter: drop-shadow(0 0 3px currentColor); }
+.site-circuit-lane.is-reversed .site-circuit-packet { animation-name: site-signal-travel-reverse; }
+.site-circuit-node { fill: var(--bg); stroke: var(--neon-cyan); stroke-width: 1.5; }
+.app-shell[data-theme='light'] .site-circuit { opacity: .35; }
+.app-shell .landing-page { background: transparent; }
+
+.app-shell .topbar::after, .app-shell .landing-nav::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; pointer-events: none;
+  background: linear-gradient(90deg, transparent 20%, var(--neon-cyan) 42%, var(--neon-violet) 50%, transparent 72%) 100% 0 / 280% 100%;
+  animation: site-header-signal 9s cubic-bezier(.58,.04,.27,.96) infinite;
+  opacity: .8;
+}
+.app-shell :is(.standalone-view, .lesson-page) { animation: site-page-enter .4s cubic-bezier(.22, 1, .36, 1) both; }
+.app-shell :is(.resource-card, .landing-track-card, .lab-card, .certification-card) {
+  border-color: color-mix(in srgb, var(--neon-cyan) 18%, var(--border));
+  transition: border-color .3s ease, box-shadow .3s ease, background-color .3s ease;
+}
+.app-shell :is(.button, .theme-toggle, .filter-button, .academy-nav-link, .global-navbar a) {
+  transition: color .22s ease, background-color .22s ease, border-color .22s ease, box-shadow .22s ease;
+}
+.app-shell .button-primary { box-shadow: 0 4px 20px color-mix(in srgb, var(--neon-cyan) 18%, transparent); }
+.app-shell .academy-nav-link.active { box-shadow: inset 2px 0 var(--accent), 0 0 18px color-mix(in srgb, var(--neon-cyan) 8%, transparent); }
+.app-shell .status-dot { animation: site-node-pulse 3.6s ease-in-out infinite; }
+.app-shell :is(.button, .resource-external, .roadmap-lesson-link) svg { transition: transform .25s cubic-bezier(.22, 1, .36, 1); }
+
+@media (hover: hover) {
+  .app-shell :is(.resource-card, .landing-track-card, .lab-card, .certification-card):hover {
+    border-color: color-mix(in srgb, var(--neon-cyan) 65%, var(--border));
+    box-shadow: 0 10px 30px color-mix(in srgb, var(--neon-cyan) 9%, transparent), 0 0 0 1px color-mix(in srgb, var(--neon-violet) 12%, transparent);
+  }
+  .app-shell .button-primary:hover { box-shadow: 0 6px 28px color-mix(in srgb, var(--neon-cyan) 30%, transparent); }
+  .app-shell :is(.resource-external, .roadmap-lesson-link):hover svg:last-child { transform: translateX(3px); }
+  .app-shell :is(.global-navbar a, .academy-nav-link):hover { color: var(--accent-strong); }
+}
+
+@keyframes site-signal-travel {
+  0% { stroke-dashoffset: 0; opacity: .3; }
+  11% { stroke-dashoffset: -12; opacity: 1; }
+  19% { stroke-dashoffset: -12; opacity: .7; }
+  52% { stroke-dashoffset: -56; opacity: .96; }
+  60% { stroke-dashoffset: -56; opacity: .4; }
+  100% { stroke-dashoffset: -100; opacity: .3; }
+}
+@keyframes site-signal-travel-reverse {
+  0% { stroke-dashoffset: 0; opacity: .3; }
+  11% { stroke-dashoffset: 12; opacity: 1; }
+  19% { stroke-dashoffset: 12; opacity: .7; }
+  52% { stroke-dashoffset: 56; opacity: .96; }
+  60% { stroke-dashoffset: 56; opacity: .4; }
+  100% { stroke-dashoffset: 100; opacity: .3; }
+}
+@keyframes site-header-signal { to { background-position: -100% 0; } }
+@keyframes site-node-pulse { 0%, 100% { box-shadow: 0 0 0 3px color-mix(in srgb, var(--neon-cyan) 10%, transparent); } 50% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--neon-cyan) 3%, transparent), 0 0 12px color-mix(in srgb, var(--neon-cyan) 35%, transparent); } }
+@keyframes site-page-enter { from { opacity: .35; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+.app-shell[data-site-motion='paused'] :is(.site-circuit-packet, .status-dot),
+.app-shell[data-site-motion='paused'] .topbar::after,
+.app-shell[data-site-motion='paused'] .landing-nav::after { animation-play-state: paused; }
+@media (max-width: 760px) {
+  .site-circuit-desktop { display: none; }
+  .site-circuit-mobile { display: block; opacity: .65; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-shell :is(.site-circuit-packet, .status-dot, .standalone-view, .lesson-page),
+  .app-shell .topbar::after, .app-shell .landing-nav::after { animation: none; }
+  .app-shell :is(.button, .theme-toggle, .filter-button, .academy-nav-link, .global-navbar a, .resource-card, .landing-track-card, .lab-card, .certification-card),
+  .app-shell :is(.button, .resource-external, .roadmap-lesson-link) svg { transition: none; }
+  .app-shell :is(.resource-external, .roadmap-lesson-link):hover svg:last-child { transform: none; }
+}

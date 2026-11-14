@@ -1,8 +1,4 @@
 import { LEARNING_KEY } from './lib/studyProgress';
-import LabFlow from './components/LabFlow';
-import PracticeCatalog from './components/PracticeCatalog';
-import { SecurityPlusSyllabus } from './components/SecurityVideoTopics';
-import LearningPanel from './components/LearningPanel';
 import { orderCourses } from './data/courseOrder';
 import GlobalNavbar from './components/GlobalNavbar';
 import CareersPage from './components/CareersPage';
@@ -10,7 +6,6 @@ import { networkEngineerCourse } from './data/networkEngineer';
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { FiArrowRight, FiCheckCircle, FiChevronRight, FiMenu, FiMoon, FiSearch, FiSun, FiX } from 'react-icons/fi';
 import { phases, labs, certifications } from './data/guide';
-import { lessons } from './data/lessons';
 import { windowsSecurityCourse } from './data/windowsSecurity';
 import { azureAdminPhases, azureAdminCourse } from './data/azureAdmin';
 import { azureCurrentSnapshot } from './data/azureAdminComplete';
@@ -19,19 +14,25 @@ import { securityPlusCourse, securityPlusPhases } from './data/securityPlus';
 import { computerTechnologiesCourse, computerTechnologiesPhases } from './data/computerTechnologies';
 import { currentRoute, lessonHref, sectionHref } from './navigation';
 import Roadmap from './components/Roadmap';
-import SecurityPlusExam from './components/SecurityPlusExam';
-import Glossary from './components/Glossary';
-import ResourceLibrary from './components/ResourceLibrary';
-import WindowsSecurityCourse from './components/WindowsSecurityCourse';
 import LandingPage from './components/LandingPage';
 import Sidebar from './components/Sidebar';
-import Dashboard from './components/Dashboard';
-import { CertificationsPage, LabsPage } from './components/UtilityPages';
+import SiteSignalBackdrop from './components/SiteSignalBackdrop';
 
 const InteractiveRoadmap = lazy(() => import('./components/InteractiveRoadmap'));
 const NetworkEngineerPage = lazy(() => import('./components/NetworkEngineerPage'));
 const CourseSearch = lazy(() => import('./components/CourseSearch'));
 const LessonPage = lazy(() => import('./components/LessonPage'));
+const ResourceLibrary = lazy(() => import('./components/ResourceLibrary'));
+const Glossary = lazy(() => import('./components/Glossary'));
+const SecurityPlusExam = lazy(() => import('./components/SecurityPlusExam'));
+const SecurityPlusSyllabus = lazy(() => import('./components/SecurityVideoTopics').then((module) => ({ default: module.SecurityPlusSyllabus })));
+const WindowsSecurityCourse = lazy(() => import('./components/WindowsSecurityCourse'));
+const Dashboard = lazy(() => import('./components/Dashboard'));
+const LearningPanel = lazy(() => import('./components/LearningPanel'));
+const PracticeCatalog = lazy(() => import('./components/PracticeCatalog'));
+const LabFlow = lazy(() => import('./components/LabFlow'));
+const LabsPage = lazy(() => import('./components/UtilityPages').then((module) => ({ default: module.LabsPage })));
+const CertificationsPage = lazy(() => import('./components/UtilityPages').then((module) => ({ default: module.CertificationsPage })));
 
 const STORAGE_KEY = 'sysadmin-path-2026-progress';
 const THEME_KEY = 'sysadmin-path-2026-theme';
@@ -174,7 +175,7 @@ export default function App() {
     'career-map': <InteractiveRoadmap />,
     'network-engineer': <NetworkEngineerPage completed={completed} onToggle={toggle} />,
     overview: <><LearningPanel /><Dashboard percent={percent} done={done} total={allIds.length} nextTopic={nextTopic} lastCompleted={lastCompleted} tracks={tracks} phases={phases} /></>,
-    roadmap: <><Roadmap eyebrow="MASTER PLAN · СИСТЕМНЫЙ АДМИНИСТРАТОР 2026" title="Авторский учебный план системного администратора 2026" description="38 основных уроков в восьми блоках: вводная Точка 00, фундамент, сети, Linux, Windows Server, виртуализация и облака, автоматизация, SecOps. Прежние темы сохранены дополнительно." startHint="Если вы начинаете с нуля, начните с Точки 00: компьютер и ОС, учебная Linux-машина, терминал, права, службы, сети и SSH. Затем двигайтесь по следующим блокам и подтверждайте результат каждой лаборатории." phases={phases.filter(p => p.id !== 'supplemental')} completed={completed} onToggle={toggle} /><section><h2>Дополнительные материалы</h2><ul>{phases.find(p => p.id === 'supplemental').topics.map(t => <li key={t.id}><a href={lessonHref(t.id)} data-route-link>{t.title}</a></li>)}</ul></section></>,
+    roadmap: <><Roadmap eyebrow="SYSADMIN" title="Путь системного администратора" description="Компьютер, сети, Linux, Windows Server, облака, автоматизация и безопасность." startHint="Начните с Точки 00, если изучаете администрирование с нуля." phases={phases.filter(p => p.id !== 'supplemental')} completed={completed} onToggle={toggle} /><section><h2>Дополнительные материалы</h2><ul>{phases.find(p => p.id === 'supplemental').topics.map(t => <li key={t.id}><a href={lessonHref(t.id)} data-route-link>{t.title}</a></li>)}</ul></section></>,
     'computer-technologies': <Roadmap id="computer-technologies" eyebrow="ФУНДАМЕНТАЛЬНЫЙ КУРС · АРХИТЕКТУРА, ОС И СЕТИ" title={computerTechnologiesCourse.title} description={computerTechnologiesCourse.description} startHint="Двигайтесь от instruction cycle и иерархии памяти к процессам, файловым системам, маршрутизации, HTTP и REST. Каждый урок завершайте локальной проверкой." phases={computerTechnologiesPhases} completed={completed} onToggle={toggle} />,
     'windows-security': <WindowsSecurityCourse completed={completed} onToggle={toggle} />,
     'azure-admin': <><Roadmap id="azure-admin" eyebrow="НЕОФИЦИАЛЬНЫЙ ТРЕК · СВЕРЕНО С MICROSOFTLEARNING" title={azureAdminCourse.title} description={azureAdminCourse.description} startHint="Пройдите identity, compute, storage, networking и monitoring с практикой по каждому модулю." phases={azureAdminPhases} completed={completed} onToggle={toggle} /><p className="course-source-note"><FiCheckCircle /> Проверено по открытому комплекту: {azureCurrentSnapshot.labs} лабораторий. <a href={azureCurrentSnapshot.source} target="_blank" rel="noreferrer">Открыть официальный репозиторий</a>.</p></>,
@@ -188,6 +189,7 @@ export default function App() {
   const topbar = <header className="topbar"><button ref={menuButtonRef} className="navigation-toggle button-icon" type="button" onClick={() => mobileNavigation ? setMenuOpen((value) => !value) : setSidebarCollapsed((value) => !value)} aria-controls="platform-navigation" aria-expanded={mobileNavigation ? menuOpen : !compactSidebar} aria-label={mobileNavigation ? (menuOpen ? 'Закрыть меню' : 'Открыть меню') : (compactSidebar ? 'Развернуть боковое меню' : 'Свернуть боковое меню')}>{mobileNavigation && menuOpen ? <FiX /> : <FiMenu />}</button><div className="topbar-breadcrumb"><span>Учебная платформа</span><FiChevronRight /><strong>{breadcrumb || 'Материал'}</strong></div><div className="topbar-actions"><button className="theme-toggle search-toggle" type="button" aria-label="Поиск по курсу" aria-haspopup="dialog" onClick={() => setSearchOpen(true)}><FiSearch aria-hidden="true" /></button><span className="topbar-date"><span className="status-dot" /> ПЛАН НА 2026</span><button className="theme-toggle" type="button" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} aria-label={theme === 'dark' ? 'Включить светлую тему' : 'Включить тёмную тему'}>{theme === 'dark' ? <FiSun /> : <FiMoon />}</button><span className="avatar" aria-hidden="true">SA</span></div></header>;
 
   return <div className={`app-shell${route.type === 'landing' ? ' landing-shell' : ''}${compactSidebar && route.type !== 'landing' ? ' sidebar-collapsed' : ''}`} data-theme={theme} onClick={followRouteLink}>
+    <SiteSignalBackdrop />
     {storageError && <p role="alert" className="storage-error">{storageError}</p>}
     {searchOpen && <Suspense fallback={<span className="sr-only" role="status">Загружаем поиск…</span>}><CourseSearch onClose={() => setSearchOpen(false)} /></Suspense>}
     <a className="skip-link" href={route.type === 'landing' ? '#landing-tracks' : '#route-main'}>Перейти к содержимому</a>
@@ -196,7 +198,7 @@ export default function App() {
     {route.type === 'landing' && <LandingPage onSearch={() => setSearchOpen(true)} tracks={tracks} totalCount={topicIds.length} nextLesson={nextTopic ? { title: nextTopic.title, href: lessonHref(nextTopic.id) } : null} theme={theme} onToggleTheme={() => setTheme(theme === 'dark' ? 'light' : 'dark')} />}
     {route.type !== 'landing' && <main className="main" id="route-main" tabIndex="-1">{topbar}<GlobalNavbar /><div className="content-wrap route-content"><Suspense fallback={<p role="status">Загружаем учебный материал…</p>}>
       {route.type === 'view' && viewContent[route.id] ? <div className="standalone-view" key={route.id}>{viewContent[route.id]}</div>
-        : route.type === 'lesson' && selectedTopic && lessons[selectedTopic.id] ? <LessonPage key={selectedTopic.id} topic={selectedTopic} lesson={lessons[selectedTopic.id]} isComplete={completed.includes(selectedTopic.id)} onToggle={toggle} track={track} previous={sequence[topicIndex - 1]} next={sequence[topicIndex + 1]} />
+        : route.type === 'lesson' && selectedTopic ? <LessonPage key={selectedTopic.id} topic={selectedTopic} isComplete={completed.includes(selectedTopic.id)} onToggle={toggle} track={track} previous={sequence[topicIndex - 1]} next={sequence[topicIndex + 1]} />
           : <section className="route-not-found"><h1>Учебный материал не найден</h1><p>Проверьте ссылку или выберите существующий урок.</p><a className="button" href={sectionHref('#roadmap')} data-route-link>К дорожной карте <FiArrowRight /></a></section>}
     </Suspense></div></main>}
   </div>;

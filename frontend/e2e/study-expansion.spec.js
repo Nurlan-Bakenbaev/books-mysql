@@ -2,6 +2,14 @@ import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { coreLessons } from '../src/data/coreCurriculum.js';
 import { securityVideoTopics } from '../src/data/securityVideoTopics.js';
+const computerScienceLabs = [
+ ['csf-cpu-architecture','PYTHON · МОДЕЛЬ ЦИКЛА ИНСТРУКЦИИ'],
+ ['csf-memory-hierarchy','PYTHON · СТРАНИЦЫ ПАМЯТИ И CACHE LINE'],
+ ['csf-kernel-processes','PYTHON · СИСТЕМНЫЕ ВЫЗОВЫ, ПРОЦЕСС И ПОТОКИ'],
+ ['csf-memory-ipc-filesystems','BASH · FIFO, HARD LINK И INODE'],
+ ['csf-network-models-routing','PYTHON · CIDR И LONGEST PREFIX MATCH'],
+ ['csf-transport-web-rest','PYTHON · ЛОКАЛЬНЫЙ HTTP И REST-РЕСУРС'],
+];
 test.beforeEach(async({page})=>{await page.route(/youtube|googleapis|gstatic/,r=>r.abort());});
 test('all 38 main routes render five learning sections and preserve legacy routes',async({page})=>{
  test.setTimeout(120000);
@@ -14,8 +22,43 @@ test('Point 00 starts with beginner concepts and keeps unverified video blocks o
  const practice=page.locator('.sysadmin-practice');await expect(practice.locator(':scope > h3, :scope > .sysadmin-safety > h3')).toHaveCount(11);await practice.getByRole('link',{name:'Выполнение',exact:true}).focus();await page.keyboard.press('Enter');await expect(page).toHaveURL(/#practice-execution$/);
  await page.setViewportSize({width:390,height:844});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });
-test('roadmap selection gently enlarges one fixed card and keeps only its short description',async({page,isMobile})=>{
- await page.goto('/?view=roadmap');const cards=page.locator('.phase-card');const first=cards.first();const header=first.locator('.phase-header');const before=await header.boundingBox();await expect(first.locator('.phase-description')).toHaveCSS('-webkit-line-clamp','3');await expect(cards.locator('.phase-body')).toHaveCount(0);if(!isMobile){const connected=await page.locator('.skill-map-board').evaluate(board=>{const steps=[...board.querySelectorAll('.skill-sequence-step')],columns=[...board.querySelectorAll('.skill-column')];return columns.every((card,index)=>{const step=steps[index],stepBox=step.getBoundingClientRect(),cardBox=card.getBoundingClientRect(),stepCenter=stepBox.left+stepBox.width/2,cardCenter=cardBox.left+cardBox.width/2,upperEnd=stepBox.top+stepBox.height/2+parseFloat(getComputedStyle(step,'::before').height),lowerStart=cardBox.top+parseFloat(getComputedStyle(card,'::before').top),next=steps[index+1],horizontalEnd=stepCenter+parseFloat(getComputedStyle(step,'::after').width);return Math.abs(stepCenter-cardCenter)<1&&upperEnd>=lowerStart&&(!next||horizontalEnd>=next.getBoundingClientRect().left+next.getBoundingClientRect().width/2-1);});});expect(connected).toBe(true);}await header.click();await expect(first).toHaveClass(/is-open/);await expect(header).toHaveAttribute('aria-pressed','true');await expect(cards.nth(1)).not.toHaveClass(/is-muted/);await expect(cards.locator('.phase-body')).toHaveCount(0);await expect.poll(async()=>{const after=await header.boundingBox();return after.width;}).toBeGreaterThan(before.width);expect(await first.evaluate(el=>getComputedStyle(el).gridColumnEnd)).not.toBe('-1');await header.click();await expect(header).toHaveAttribute('aria-pressed','false');
+test('Computer Science lessons use matching labs and omit the removed generic practice cards',async({page})=>{
+ for(const [lessonId,label] of computerScienceLabs){await page.goto(`/?lesson=${lessonId}`);await expect(page.getByRole('heading',{name:'Домашняя лаборатория',exact:true})).toBeVisible();await expect(page.getByText(label,{exact:true})).toBeVisible();await expect(page.locator('#lesson-extra-practice, .practice-task')).toHaveCount(0);await expect(page.locator('body')).not.toContainText('Закрепите самостоятельно');}
+});
+test('roadmap modules reveal visible lesson links and the connected path stays compact',async({page,isMobile})=>{
+ await page.goto('/?view=roadmap');
+ const cards=page.locator('.phase-card');
+ const first=cards.first();
+ const header=first.locator('.phase-header');
+ const before=await header.boundingBox();
+ await expect(first.locator('.phase-description')).toHaveCSS('-webkit-line-clamp','3');
+ await expect(cards.locator('.phase-body')).toHaveCount(0);
+ const board=page.locator('.skill-map-board');
+ await expect(board.locator('.roadmap-connection-signal')).toHaveCount(await cards.count()-1);
+ const columns=await board.evaluate(el=>getComputedStyle(el).gridTemplateColumns.split(' ').length);
+ expect(columns).toBe(isMobile?2:4);
+ await header.click();
+ await expect(first).toHaveClass(/is-open/);
+ await expect(header).toHaveAttribute('aria-pressed','true');
+ await expect(header).toHaveAttribute('aria-expanded','true');
+ await expect(header).toContainText('уроков');
+ await expect(cards.nth(1)).not.toHaveClass(/is-muted/);
+ await expect(cards.locator('.phase-body')).toHaveCount(0);
+ const lessons=page.locator('.roadmap-lessons-panel');
+ await expect(lessons).toBeVisible();
+ await expect(lessons.getByText('УРОКИ ВЫБРАННОГО МОДУЛЯ',{exact:true})).toBeInViewport();
+ await expect(lessons.locator('.roadmap-lesson-link')).toHaveCount(7);
+ await expect(lessons.locator('.roadmap-lesson-link').first()).toBeInViewport();
+ await expect(lessons.locator('.roadmap-lesson-link').first()).toHaveAttribute('href',/lesson=/);
+ await expect.poll(async()=>{const after=await header.boundingBox();return after.width;}).toBeGreaterThan(before.width);
+ expect(await first.evaluate(el=>getComputedStyle(el).gridColumnEnd)).not.toBe('-1');
+ await header.click();
+ await expect(header).toHaveAttribute('aria-pressed','false');
+ await expect(lessons).toHaveCount(0);
+ await header.click();
+ await lessons.locator('.roadmap-lesson-link').first().click();
+ await expect(page).toHaveURL(/lesson=/);
+ await expect(page.locator('.lesson-page')).toBeVisible();
 });
 test('navbar stays complete on mobile and course ordering is shared',async({page})=>{
  await page.setViewportSize({width:320,height:844});await page.goto('/');const nav=page.getByRole('navigation',{name:'Разделы платформы'});await expect(nav.getByRole('link')).toHaveText(['Карта','Профессии','Курсы','Библиотека','Практика','Сертификации','Обзор']);await expect(nav.getByText('Network Engineer')).toHaveCount(0);
@@ -32,8 +75,16 @@ test('topic anchor opens the correct note and lesson anchors retain their scroll
 test('written answers and self assessment persist independently of automatic score',async({page})=>{
  await page.goto('/?lesson=network-models');const written=page.getByRole('heading',{name:'Восемь заданий урока'}).locator('..');await written.locator('textarea').first().fill('TCP устанавливает поток; HTTP проверяется отдельным запросом.');await written.getByText('Критерии самопроверки',{exact:true}).first().click();await written.getByRole('combobox').first().selectOption('meets');await page.reload();await expect(written.locator('textarea').first()).toHaveValue(/TCP устанавливает/);await expect(page.locator('.assessment-score')).toHaveText('');
 });
-test('moving rail respects the operating-system reduced-motion preference without extra controls',async({page,isMobile})=>{
- await page.goto('/?view=roadmap');const path=isMobile?page.locator('.skill-column').first():page.locator('.skill-sequence-step').first();const pseudo=isMobile?'::before':'::after';await expect(page.getByRole('button',{name:/Остановить движение|Продолжить движение|Остановить поток|Продолжить поток/})).toHaveCount(0);const initial=await path.evaluate((el,pseudoElement)=>getComputedStyle(el,pseudoElement).backgroundPosition,pseudo);await expect.poll(()=>path.evaluate((el,pseudoElement)=>getComputedStyle(el,pseudoElement).backgroundPosition,pseudo),{timeout:2000}).not.toBe(initial);await page.emulateMedia({reducedMotion:'reduce'});expect(await path.evaluate((el,pseudoElement)=>getComputedStyle(el,pseudoElement).animationName,pseudo)).toBe('none');
+test('signals move at varied speeds and respect the operating-system reduced-motion preference',async({page})=>{
+ await page.goto('/?view=roadmap');
+ const path=page.locator('.roadmap-connection-signal').first();
+ await expect(page.getByRole('button',{name:/Остановить движение|Продолжить движение|Остановить поток|Продолжить поток/})).toHaveCount(0);
+ const durations=await page.locator('.roadmap-connection-signal').evaluateAll(paths=>paths.map(el=>getComputedStyle(el).animationDuration));
+ expect(new Set(durations).size).toBeGreaterThan(1);
+ const initial=await path.evaluate(el=>getComputedStyle(el).strokeDashoffset);
+ await expect.poll(()=>path.evaluate(el=>getComputedStyle(el).strokeDashoffset),{timeout:2000}).not.toBe(initial);
+ await page.emulateMedia({reducedMotion:'reduce'});
+ expect(await path.evaluate(el=>getComputedStyle(el).animationName)).toBe('none');
  await page.goto('/?view=labs');await expect(page.getByRole('button',{name:/Остановить движение|Продолжить движение|Остановить поток|Продолжить поток/})).toHaveCount(0);
 });
 test('new pages pass accessibility checks in both themes and at narrow width',async({page})=>{

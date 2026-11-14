@@ -32,10 +32,15 @@ test('fuzzy course search finds a lesson, supports keyboard close and opens a gl
 
 test('resource search tolerates typos and resolves titles for both new tracks', async ({ page }) => {
   await page.goto('/?view=resources');
+  await expect(page.getByRole('group', { name: 'Тип источника' }).getByRole('button')).toHaveText(['Все', 'Видео', 'Курсы', 'Книги', 'Документация']);
+  await expect(page.locator('.resource-card')).toHaveCount(24);
+  await page.getByRole('button', { name: 'Видео', exact: true }).click();
+  await expect(page.locator('.resource-card .tag')).toHaveText(Array(10).fill('Видео'));
+  await page.getByRole('button', { name: 'Все', exact: true }).click();
   await page.getByRole('searchbox', { name: 'Поиск источников' }).fill('криптогрфия');
   await expect(page.locator('.resource-card').first()).toBeVisible();
   const uses = page.locator('.resource-study-plan').first();
-  await uses.getByText('Как использовать в курсе', { exact: false }).click();
+  await uses.getByText('Связанные уроки', { exact: false }).click();
   await expect(page.locator('.resource-card a[data-route-link]').first()).not.toHaveText(/^secplus-|^ct-/);
   await page.getByRole('searchbox', { name: 'Поиск источников' }).fill('zzzzzzzzzzzzzz');
   await expect(page.getByText('По вашему запросу ничего не найдено. Измените поиск или тип источника.')).toBeVisible();

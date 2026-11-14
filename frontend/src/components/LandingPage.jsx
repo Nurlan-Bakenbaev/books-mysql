@@ -35,18 +35,16 @@ export default function LandingPage({ tracks, totalCount, nextLesson, theme, onT
       <section className="landing-hero">
         <NetworkSignalBackdrop />
         <motion.div className="landing-hero-copy" initial={reduceMotion ? false : { opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .65 }}>
-          <span className="landing-badge"><span className="status-dot" /> {totalCount} ПОДРОБНЫХ УРОКОВ · ОБНОВЛЕНО 12.11.2026</span>
+          <span className="landing-badge"><span className="status-dot" /> {totalCount} УРОКОВ · НА РУССКОМ</span>
           <h1>Станьте системным<br /> администратором <em>шаг за шагом.</em></h1>
-          <p>Полноценная учебная платформа на русском: теория, схемы, команды с пояснениями, безопасные лаборатории, диагностика, тесты и проверенные первоисточники.</p>
+          <p>Компьютеры, сети, Linux, Windows и безопасность. Изучайте теорию, выполняйте лаборатории и проверяйте знания.</p>
           <div className="landing-hero-actions"><a className="button button-primary landing-primary" href={viewHref('roadmap')} data-route-link><FiPlay /> Открыть путь сисадмина</a>{nextLesson && <a className="landing-text-link" href={nextLesson.href} data-route-link>Продолжить: {nextLesson.title} <FiArrowRight /></a>}</div>
         </motion.div>
         <TechnologySphere />
       </section>
 
-      <section className="landing-proof" aria-label="Состав курса"><div><strong>{totalCount}</strong><span>отдельных уроков</span></div><div><strong>{tracks.length}</strong><span>учебных маршрутов</span></div><div><strong>100%</strong><span>уроков с практикой</span></div><div><strong>2+</strong><span>источника к уроку</span></div></section>
-
       <section className="landing-tracks" id="landing-tracks" aria-labelledby="landing-tracks-title">
-        <div className="landing-section-heading"><span className="eyebrow">ВЫБЕРИТЕ НАПРАВЛЕНИЕ</span><h2 id="landing-tracks-title">Выберите учебное направление</h2></div>
+        <div className="landing-section-heading"><span className="eyebrow">КУРСЫ</span><h2 id="landing-tracks-title">Выберите учебное направление</h2></div>
         <div className="landing-track-grid">{tracks.map((track, index) => {
           const Icon = iconByTrack[track.id] || FiBookOpen;
           const trackPercent = track.total ? Math.round(track.done / track.total * 100) : 0;
@@ -57,6 +55,6 @@ export default function LandingPage({ tracks, totalCount, nextLesson, theme, onT
       </section>
 
     </main>
-    <footer className="landing-footer"><span><FiCommand /> sysadmin<span className="brand-accent">.</span></span><p>Авторский учебный план системного администратора 2026</p><a href={viewHref('roadmap')} data-route-link>Начать обучение <FiArrowRight /></a></footer>
+    <footer className="landing-footer"><span><FiCommand /> sysadmin<span className="brand-accent">.</span></span><a href={viewHref('roadmap')} data-route-link>Начать обучение <FiArrowRight /></a></footer>
   </div>;
 }

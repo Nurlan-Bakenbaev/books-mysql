@@ -1,0 +1,19 @@
+#resources .resource-controls { align-items: stretch; }
+#resources .resource-controls > .search-field { flex: 1 1 260px; }
+#resources .filter-list { align-self: center; }
+#resources .resource-grid { align-items: stretch; }
+#resources .resource-card { padding: 20px; }
+#resources .resource-card > p { line-height: 1.6; }
+#resources .resource-study-plan { margin-top: auto; }
+#resources .resource-study-plan > summary { align-items: center; }
+#resources .resource-study-plan ul { max-height: 240px; overflow-y: auto; }
+#resources .resource-study-plan li > a { min-height: 36px; margin: 0; }
+#resources .resource-external { margin-top: 0; align-self: flex-start; }
+#resources .resource-card:not(:has(.resource-study-plan)) .resource-external { margin-top: auto; }
+.library-more { display: flex; justify-content: center; margin-top: 28px; }
+
+@media (max-width: 760px) {
+  #resources .resource-controls { gap: 12px; }
+  #resources .filter-list { width: 100%; }
+  #resources .resource-card { padding: 18px; }
+}

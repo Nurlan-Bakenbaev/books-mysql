@@ -60,6 +60,9 @@ test('completing a network lesson survives reload and preserves old and unknown 
   await firstModule.click();
   await expect(firstModule).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('.phase-card').first().locator('.phase-body')).toHaveCount(0);
+  const selectedLessons = page.locator('.roadmap-lessons-panel');
+  await expect(selectedLessons).toBeVisible();
+  await expect(selectedLessons.getByRole('link', { name: new RegExp(firstTopic.title) })).toHaveClass(/is-complete/);
   expect(await page.evaluate((key) => JSON.parse(localStorage.getItem(key)), progressKey)).toEqual(expected);
 });
 
